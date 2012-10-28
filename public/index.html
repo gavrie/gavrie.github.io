@@ -9,7 +9,7 @@
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="Blog Archives Recent Posts GitHub Repos Status updating&#8230; @gavrie on GitHub $.domReady(function(){ if (!window.jXHR){ var jxhr = document. &hellip;">
+  <meta name="description" content="Lately I&#8217;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,455 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I Don&#8217;t Like RPC</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-20T09:47:00+03:00" pubdate data-updated="true">Jun 20<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Lately I&#8217;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
+
+<p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
+
+<p>Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &#8211; be it shell commands, Python code or anything else.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/06/20/why-i-dont-like-rpc/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-15T10:38:00+03:00" pubdate data-updated="true">Jun 15<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&#8217;re not a software developer (or a technical person at all).</p>
+
+<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&#8217;re one of those people who are nodding your head now and smiling), so I&#8217;ll explain.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &#8220;You ain&#8217;t gonna need it&#8221;, and refers to a software development principle according to which you don&#8217;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &#8220;Not Invented Here&#8221;, and refers to a reluctance among some software developers to base their work on code written by someone else: &#8220;Hey, I can do this myself, so why should I use this existing project&#8221;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-16T16:30:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
+scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
+
+<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
+
+<h2>The Problem</h2>
+
+<p>WWPNs can&#8217;t just be pulled out of thin air. They are allocated &#8211; in chunks &#8211; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
+
+<ol>
+<li>The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&#8217;t be using the same WWPN and thereby confuse the fabric.</li>
+<li>The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.</li>
+</ol>
+
+
+<p>With physical (as opposed to virtual) HBAs, this is managed by allocating a OUI (Organizationally Unique Identifier) to every vendor, who in turns tacks on his own vendor-specific serial number to come up with a unique WWPN. This is similar to the MAC address allocation of Ethernet, Wi-Fi and Bluetooth devices.</p>
+
+<p>The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/02/16/improving-readability-and-flow-control-in-python/">Improving Readability and Flow Control in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the readability of the
+code using several techniques that I&#8217;ll describe below.</p>
+
+<h2>Where We Started</h2>
+
+<p>The original code was fairly simple: It decides whether certain &#8220;dead&#8221;
+components need to be &#8220;revived&#8221;, and presents the user with a prompt to choose
+from one of several actions.
+Depending on the user&#8217;s choice, the code then proceeds to take the appropriate action:</p>
+
+<figure class='code'><figcaption><span>The original code (code0.py)</span> <a href='/downloads/code/flow_control/code0.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="k">def</span> <span class="nf">revive_dead_components</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">choice</span> <span class="o">=</span> <span class="n">choose</span><span class="p">(</span><span class="s">&#39;&quot;I see dead components...&quot;</span><span class="se">\n</span><span class="s">&#39;</span>
+</span><span class='line'>       <span class="s">&quot;Do you wish to (r)evive them, (c)ontinue without reviving, or (q)uit?&quot;</span><span class="p">,</span>
+</span><span class='line'>       <span class="p">{</span> <span class="s">&quot;r&quot;</span><span class="p">:</span> <span class="s">&quot;revive&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">&quot;c&quot;</span><span class="p">:</span> <span class="s">&quot;continue&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">&quot;Q&quot;</span><span class="p">:</span> <span class="s">&quot;quit&quot;</span><span class="p">},</span>
+</span><span class='line'>       <span class="n">default</span> <span class="o">=</span> <span class="s">&quot;quit&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;revive&quot;</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">revive_components</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;quit&quot;</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">raise</span> <span class="n">TestCannotRunException</span><span class="p">(</span><span class="s">&quot;Dead components exist&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;continue&quot;</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Adding New Behavior</h2>
+
+<p>We now wanted to add some new functionality to the above code, namely the ability to
+allow the user to select a <em>subset</em> of the components that he wants to revive.</p>
+
+<p>To make things more foolproof, in case the user chose to revive selected
+components but then neglected to select any components from the list, the code
+would not proceed blindly but rather send the user back to the menu so that he could try again.</p>
+
+<p>The first version of the new code looked like this:</p>
+
+<figure class='code'><figcaption><span>New behavior, first version (code1.py)</span> <a href='/downloads/code/flow_control/code1.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="k">def</span> <span class="nf">revive_dead_components</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">choice</span> <span class="o">=</span> <span class="n">choose</span><span class="p">(</span><span class="s">&#39;&quot;I see dead components...&quot;</span><span class="se">\n</span><span class="s">&#39;</span>
+</span><span class='line'>            <span class="s">&quot;Do you wish to (r)evive them all, (s)elect components to revive, &quot;</span>
+</span><span class='line'>            <span class="s">&quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="p">{</span> <span class="s">&quot;r&quot;</span><span class="p">:</span> <span class="s">&quot;revive&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">&quot;s&quot;</span><span class="p">:</span> <span class="s">&quot;select&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">&quot;c&quot;</span><span class="p">:</span> <span class="s">&quot;continue&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">&quot;Q&quot;</span><span class="p">:</span> <span class="s">&quot;quit&quot;</span><span class="p">},</span>
+</span><span class='line'>            <span class="n">default</span> <span class="o">=</span> <span class="s">&quot;quit&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;revive&quot;</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">revive_components</span><span class="p">()</span>
+</span><span class='line'>            <span class="k">break</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;quit&quot;</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">raise</span> <span class="n">TestCannotRunException</span><span class="p">(</span><span class="s">&quot;Dead components exist&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;continue&quot;</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">break</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s">&quot;select&quot;</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">selected</span> <span class="o">=</span> <span class="n">show_menu</span><span class="p">(</span><span class="s">&quot;Which components would you like to revive?&quot;</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">revive_components</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">break</span>
+</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Nothing selected...&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To get the required behavior, we used an infinite <code>while True</code> loop that terminates with an
+explicit <code>break</code> when a valid choice is made by the user and reiterates otherwise.
+This ensures that we don&#8217;t continue until a valid choice is made.</p>
+
+<h2>Can We Do Better?</h2>
+
+<p>The problem with the above method is that the flow control is not immediately
+apparent when looking at the code: It&#8217;s not obvious that the infinite loop
+should actually terminate in all but one case. A future developer could easily
+break this behavior.</p>
+
+<p>In addition, the <code>if</code>/<code>elif</code> ladder becomes a bit too long to read
+comfortably.</p>
+
+<p>The second iteration was meant to make the flow control clearer:</p>
+
+<figure class='code'><figcaption><span>Refactoring, first try (code2.py)</span> <a href='/downloads/code/flow_control/code2.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="k">def</span> <span class="nf">revive_dead_components</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">class</span> <span class="nc">InvalidChoiceError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">choice_revive</span><span class="p">():</span>    <span class="n">revive_components</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">choice_quit</span><span class="p">():</span>      <span class="k">raise</span> <span class="n">TestCannotRunException</span><span class="p">(</span><span class="s">&quot;Dead components exist&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">choice_continue_</span><span class="p">():</span> <span class="k">pass</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">choice_select</span><span class="p">():</span>
+</span><span class='line'>        <span class="n">selected</span> <span class="o">=</span> <span class="n">show_menu</span><span class="p">(</span><span class="s">&quot;Which components would you like to revive?&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Nothing selected...&quot;</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">raise</span> <span class="n">InvalidChoiceError</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">revive_components</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">choice</span> <span class="o">=</span> <span class="n">choose</span><span class="p">(</span><span class="s">&#39;&quot;I see dead components...&quot;</span><span class="se">\n</span><span class="s">&#39;</span>
+</span><span class='line'>            <span class="s">&quot;Do you wish to (r)evive them all, (s)elect components to revive, &quot;</span>
+</span><span class='line'>            <span class="s">&quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="p">{</span> <span class="s">&quot;r&quot;</span><span class="p">:</span> <span class="s">&quot;revive&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">&quot;s&quot;</span><span class="p">:</span> <span class="s">&quot;select&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">&quot;c&quot;</span><span class="p">:</span> <span class="s">&quot;continue&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">&quot;Q&quot;</span><span class="p">:</span> <span class="s">&quot;quit&quot;</span><span class="p">},</span>
+</span><span class='line'>            <span class="n">default</span> <span class="o">=</span> <span class="s">&quot;quit&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>            <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;choice_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">choice</span><span class="p">)()</span>
+</span><span class='line'>            <span class="k">break</span>
+</span><span class='line'>        <span class="k">except</span> <span class="n">InvalidChoiceError</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">continue</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We use several techniques here to improve the clarity of the code:</p>
+
+<ul>
+<li><p>We used internal functions to encapsulate the possible actions to take. The
+advantage of using internal functions is that it keeps the external namespace
+clean, and the naming of each function makes its purpose quite clear.</p></li>
+<li><p>We used a dictionary instead of the <code>if</code>/<code>elif</code> construct. Since Python
+doesn&#8217;t have a <code>switch</code> or <code>case</code> statement, this is a more readable replacement.</p></li>
+<li><p>We decided to use an exception to signify, well, <em>exceptional</em> flow control: If the user hasn&#8217;t
+selected any components, this warrants exceptional behavior. This technique is
+much debated, but we felt like it was appropriate in this case.</p></li>
+<li><p>The function name to be called is determined dynamically at runtime from the
+user&#8217;s selection. The idea was to avoid code duplication by needing to specify the names
+of the functions yet again (but see below).</p></li>
+</ul>
+
+
+<h2>Removing Some Coolness For Readability</h2>
+
+<p>My colleague pointed out that the <code>locals().get('choice_%s' % choice)()</code> trick
+is not quite readable. I agreed, and was happy to accept his improved proposal:</p>
+
+<figure class='code'><figcaption><span>Refactoring, final version (code3.py)</span> <a href='/downloads/code/flow_control/code3.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="k">def</span> <span class="nf">revive_dead_components</span><span class="p">():</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">choice_func</span> <span class="o">=</span> <span class="n">choose</span><span class="p">(</span><span class="s">&#39;&quot;I see dead components...&quot;</span><span class="se">\n</span><span class="s">&#39;</span>
+</span><span class='line'>            <span class="s">&quot;Do you wish to (r)evive them all, (s)elect components to revive, &quot;</span>
+</span><span class='line'>            <span class="s">&quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nb">dict</span><span class="p">(</span><span class="n">r</span> <span class="o">=</span> <span class="n">choice_revive</span><span class="p">,</span>
+</span><span class='line'>                 <span class="n">s</span> <span class="o">=</span> <span class="n">choice_select</span><span class="p">,</span>
+</span><span class='line'>                 <span class="n">c</span> <span class="o">=</span> <span class="n">choice_continue</span><span class="p">,</span>
+</span><span class='line'>                 <span class="n">Q</span> <span class="o">=</span> <span class="n">choice_quit</span>
+</span><span class='line'>                 <span class="p">),</span>
+</span><span class='line'>            <span class="n">default</span> <span class="o">=</span> <span class="s">&quot;quit&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">choice_func</span><span class="p">()</span>
+</span><span class='line'>            <span class="k">break</span>
+</span><span class='line'>        <span class="k">except</span> <span class="n">InvalidChoiceError</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">continue</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This version has several advantages:</p>
+
+<ul>
+<li><p>It doesn&#8217;t use &#8220;magic&#8221; to achieve the selection of the function. Duplication
+is better than magic in this case, since it makes the code more readable.</p></li>
+<li><p>The dictionary is created using the <code>dict()</code> syntax instead of the <code>{...}</code>
+syntax, which gets rid of a lot of punctuation and makes the code clearer.</p></li>
+</ul>
+
+
+<h2>Conclusion</h2>
+
+<p>It turns out that even in such a simple piece of code, several programming
+techniques can be used to make the code clearer to read and maintain.</p>
+
+<p>See you next time!</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
     <a href="/blog/archives">Blog Archives</a>
@@ -80,6 +529,22 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/improving-readability-and-flow-control-in-python/">Improving readability and flow control in Python</a>
+      </li>
     
   </ul>
 </section>

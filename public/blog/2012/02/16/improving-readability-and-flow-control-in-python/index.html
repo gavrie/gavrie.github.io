@@ -1,221 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Gavrie's Blog]]></title>
-  <link href="http://philipson.co.il/atom.xml" rel="self"/>
-  <link href="http://philipson.co.il/"/>
-  <updated>2012-10-28T21:38:37+02:00</updated>
-  <id>http://philipson.co.il/</id>
-  <author>
-    <name><![CDATA[Gavrie Philipson]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Improving readability and flow control in Python - Gavrie's Blog</title>
+  <meta name="author" content="Gavrie Philipson">
 
   
-  <entry>
-    <title type="html"><![CDATA[Why I don't like RPC]]></title>
-    <link href="http://philipson.co.il/blog/2012/06/20/why-i-dont-like-rpc/"/>
-    <updated>2012-06-20T09:47:00+03:00</updated>
-    <id>http://philipson.co.il/blog/2012/06/20/why-i-dont-like-rpc</id>
-    <content type="html"><![CDATA[<p>Lately I&#8217;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
-
-<p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
-
-<p>Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &#8211; be it shell commands, Python code or anything else.</p>
-
-<!-- more -->
-
-
-<h2>The Problem With RPC</h2>
-
-<p>Our existing codebase makes heavy use of <a href="http://rpyc.sourceforge.net/">RPyC</a>, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.</p>
-
-<p>Using a variant of RPC sounds like a great solution. RPyC is also a very nice and seamless tool. Code that is running remotely looks just like code that is running locally. Which is the exact reason for why I <em>don&#8217;t</em> like using it: I don&#8217;t want transparent RPC! I want it to be immediately clear which code runs locally and which code runs remotely. &#8220;Seamless&#8221; RPC encourages the writing of spaghetti code, because it&#8217;s so easy to mix local and remote code. This makes it deceptively easy to write distributed code without thinking about the design of the API and about which parts should reside on each side of the connection. Code can quickly become an intermix of RPC calls with local calls, causing it to be an opaque blob that is impossible to test or debug. In addition, its performance can quickly deteriorate: Objects are being serialized back and forth all the time, and tens of implicit network round-trips introduce latency all around the code.</p>
-
-<p>Of course, the tool is not necessarily at blame here. The problem may lie with those developers who use it incorrectly, instead of designing a clean distributed model around it &#8211; which is certainly possible. But I tend to find that the thoughts and practices of developers become molded to the tools they have at hand. A tool that encourages calling remote code without a conscious effort makes it too easy to avoid thinking about the distributed design.</p>
-
-<p>So, yes, I don&#8217;t like RPC, especially not <em>stateful RPC</em> that supports access of remote objects by reference. I can live with simple designs like XML-RPC, supporting value-based RPC with native data types, which are fairly easy to understand and debug: There are no remote objects, just data that is passing back and forth. But I dislike tools that try to hide everything under a shiny exterior, and try to act as if remote code were just the same as local code, and as if remote objects actually exist locally with magic proxies doing all the work behind the scenes.</p>
-
-<p>The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&#8217;re at all interested in this debate, I heartily recommend reading some of the <a href="http://steve.vinoski.net/blog/category/rpc/">articles by Steve Vinoski</a>, who is a leading expert on the matter and writes on it very eloquently. <a href="http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf">This presentation</a> summarizes his viewpoint quite nicely, and I quite agree with many of his points.</p>
-
-<h2>What Now?</h2>
-
-<p>So, I&#8217;m looking for a good tool to create a distributed architecture that is based on explicit message passing. It should be able to send and receive native Python data types by value. It should be nicely designed, clearly documented, and should make the distinction between local code and remote code crystal clear to the developer.</p>
-
-<p>I am currently investigating and evaluating several solutions. Most of them are based on the excellent ZeroMQ messaging library, along with some kind of serialization tool such as MsgPack. There are several good candidates. I&#8217;ll write more about it as I make progress.</p>
-]]></content>
-  </entry>
+  <meta name="description" content="Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the &hellip;">
   
-  <entry>
-    <title type="html"><![CDATA[The YAGNI/NIH Conundrum]]></title>
-    <link href="http://philipson.co.il/blog/2012/06/15/the-yagni-slash-nih-conundrum/"/>
-    <updated>2012-06-15T10:38:00+03:00</updated>
-    <id>http://philipson.co.il/blog/2012/06/15/the-yagni-slash-nih-conundrum</id>
-    <content type="html"><![CDATA[<p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&#8217;re not a software developer (or a technical person at all).</p>
 
-<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&#8217;re one of those people who are nodding your head now and smiling), so I&#8217;ll explain.</p>
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &#8220;You ain&#8217;t gonna need it&#8221;, and refers to a software development principle according to which you don&#8217;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
-
-<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &#8220;Not Invented Here&#8221;, and refers to a reluctance among some software developers to base their work on code written by someone else: &#8220;Hey, I can do this myself, so why should I use this existing project&#8221;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
-
-<!-- more -->
-
-
-<h2>The Conundrum</h2>
-
-<p>I consider myself a firm believer in the YAGNI principle, and a staunch opponent of the NIH syndrome: I try to avoid writing code that could stay unwritten, since I consider a large codebase a liability rather than an asset. Writing more code means having to expend more resources on maintaining it. In many corporate cultures, it also decreases the ability to respond to change, due to a reluctance to throw away existing code (which is often due to sentimental reasons rather than objective ones).</p>
-
-<p>Now, as software developers, many of us would much rather write new code than maintain a bunch of old code.</p>
-
-<p>One reason for this is that old code bases tend to have accumulated a lot of baggage over the years, and we love the idea of getting rid of all that and starting with a fresh, blank page: All those old bugs can be forgotten, all those workarounds and little tricks can be left behind.</p>
-
-<p>Another reason is that good developers love to learn new ideas and techniques and are itching to try them out. Seeing our own old code after a few months or years make us cringe with the feeling, &#8220;who was the idiot that wrote this?!&#8221;. We are sure that the code we&#8217;re going to write now, with our new and shiny tools, will be better by leaps and bounds. And then the cycle starts all over again.</p>
-
-<h2>Coding in the Corporate World</h2>
-
-<p>I&#8217;d like to argue that in the corporate world, as opposed to the Open Source world, writing new code can be an irresponsible thing to do. In the corporate world, we write code not just to scratch our own itches. We&#8217;re creating something that may very well continue to exist long after we have moved on to greener pastures. Other people will have to maintain what we created. Adhering to good software engineering principles means that not only our own lives will be easier down the road, but also those of other people.</p>
-
-<p>Now, those who profess not to care about the experience of other people, or who think that at the very least it is less important that their own experience, may want to consider a few points:</p>
-
-<p>First of all, those &#8220;other people&#8221; may be yourselves a few months or years from now, trying to adapt your own code to new requirements. Suddenly, all this code is no longer new nor fun, and you&#8217;ll have to dig in to adapt it to the required changes.</p>
-
-<p>Second, those other people may be your future co-workers, managers or employees. They will remember what you left them with.</p>
-
-<p>Third, people will appreciate your efforts to make their lives easier (or at least won&#8217;t hate you for making it harder). This increases the likelihood that they will want to work with you in the future.</p>
-
-<p>So all this makes sense even from a perfectly selfish point of view.</p>
-
-<h2>Conclusion</h2>
-
-<p>When faced with a new software problem to solve, I always spend a significant amount of energy in investigating existing solutions and see if they can work for me. I will resort to writing code only if I fail to find a solution that has enough similarity or has a good enough quality. Of course, as my friend Eli claims, this may very well mean that I often pass on the chance to be creative by deferring to existing solutions. But that&#8217;s something I can live with: I feel the need to reach the right balance between creativity and responsibility.</p>
-
-<p>I can find creativity in ways other than writing a lot of new code: I&#8217;d rather leverage existing code that I like and that is maintained by a third party (which becomes more and more commong with the huge Open Source ecosystem). It is more important to me to feel happy with a solution than it is to prove to myself that I can solve a problem that has been solved before by others. That just seems so wasteful.</p>
-
-<p>In an upcoming post, I will analyze a specific case that I encountered in light of the above thoughts.</p>
-]]></content>
-  </entry>
   
-  <entry>
-    <title type="html"><![CDATA[Generating Virtual FC WWPNs for a Storage Lab]]></title>
-    <link href="http://philipson.co.il/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/"/>
-    <updated>2012-02-16T16:30:00+02:00</updated>
-    <id>http://philipson.co.il/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab</id>
-    <content type="html"><![CDATA[<p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
-scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
+  <link rel="canonical" href="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Gavrie's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
-<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
+  
 
-<h2>The Problem</h2>
+</head>
 
-<p>WWPNs can&#8217;t just be pulled out of thin air. They are allocated &#8211; in chunks &#8211; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Gavrie's Blog</a></h1>
+  
+    <h2>Whatever I find interesting.</h2>
+  
+</hgroup>
 
-<ol>
-<li>The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&#8217;t be using the same WWPN and thereby confuse the fabric.</li>
-<li>The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.</li>
-</ol>
-
-
-<p>With physical (as opposed to virtual) HBAs, this is managed by allocating a OUI (Organizationally Unique Identifier) to every vendor, who in turns tacks on his own vendor-specific serial number to come up with a unique WWPN. This is similar to the MAC address allocation of Ethernet, Wi-Fi and Bluetooth devices.</p>
-
-<p>The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.</p>
-
-<!-- more -->
-
-
-<h2>Some Background</h2>
-
-<p>We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&#8217;ll refer to the IEEE&#8217;s <a href="http://standards.ieee.org/develop/regauth/tut/fibre.pdf">Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)</a>, and cheat a bit.</p>
-
-<p>Let&#8217;s assume that we have an FC HBA with a WWPN of <code>10:00:00:00:c9:93:53:6d</code>.
-We&#8217;ll decode it according to the IEEE Guidelines:</p>
-
-<pre><code>10:00:vv:vv:vv:ss:ss:ss
-\___/ \______/ \______/
-  |      |        |
-  |      |        |
-  |      |         \__ Vendor-specific part (24 bits)
-  |      |
-  |       \__ Vendor OUI (24 bits)
-  |
-   \__ This WWPN uses the Original WWN format
-</code></pre>
-
-<p>According to this diagram, our sample WWPN contains the following information:</p>
-
-<ul>
-<li>The <code>10:00</code> prefix means that it uses the original WWN format (a.k.a. &#8220;NAA IEEE 48-bit address format&#8221;), as opposed to newer formats that starting with another sequence</li>
-<li>The vendor is <code>00:00:c9</code>, which is an OUI belonging to Emulex Corporation
-(according to the <a href="http://standards.ieee.org/develop/regauth/oui/oui.txt">OUI list</a>)</li>
-<li>The vendor-specific part is <code>93:53:6d</code>, which is 24 bits long</li>
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:philipson.co.il" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
 </ul>
 
-
-<h2>Using One WWPN to Generate Many New Ones</h2>
-
-<p>For every physical WWPN, we need to be able to generate up to 256 virtual WWPNs to be used with NPIV (assuming that each HBA port supports up to 256 virtual ports). The trick lies in reusing the vendor-specific part to generate multiple WWPNs per physical port, each of which would be guaranteed to be unique throughout the lab.</p>
-
-<p>For that, we rely on the existence of a newer WWN format (&#8220;NAA IEEE Registered&#8221;) that has more space for the vendor-specific part:</p>
-
-<pre><code>5v:vv:vv:vs:ss:ss:ss:ss
-|\_______/\___________/
-|   |        |
-|   |        |
-|   |         \__ Vendor-specific part (extended to 36 bits)
-|   |
-|    \__ Vendor OUI (still 24 bits)
-|
- \__ Newer WWN format (NAA IEEE Registered)
-</code></pre>
-
-<p>Good, we now have 36 bits for the vendor-specific part!</p>
-
-<p>We will use the larger vendor-specific field to include <em>both</em> the vendor-specific part of the physical ports WWPN (which is just 24 bits), <em>and</em> our own 12-bit custom part. This will let us generate up to 2<sup>12</sup> = 4096 virtual ports per physical port, which is more than enough.</p>
-
-<p>Just to be safe, and to avoid a future clash with HBAs from the same vendor who might use the new numbering scheme as well, we&#8217;ll modify the OUI to a currently unused one (<code>0000c8</code> instead of <code>0000c9</code>). This is of course not 100% future-proof, but is good enough for our purposes.</p>
-
-<p>This leads us to the following range of generated WWPNs:</p>
-
-<pre><code>Original WWPN:
-
-    10:00:00:00:c9:93:53:6d, semantically represented as:
-
-    1000 0000c9 93536d
-         \____/ \____/
-           |      |
-         vendor   |
-                serial
-
-Generated WWPN range:
-
-    5 0000c8 93536d 000
-    5 0000c8 93536d 001
-    5 0000c8 93536d 002
-    ...
-    5 0000c8 93536d fff
-      \____/ \____/ \_/
-        |      |     |
-      vendor   |    custom
-             serial
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>While still being a hack, the above scheme allows us to generate as many WWPNs as we need.</p>
-
-<p>It has the advantage of being intuitive, since it is easy to determine just by looking at the WWPNs which ones of them are physical (starting with <code>1000 0000c9</code>) and which are virtual (starting with <code>5 0000c8</code>).</p>
-
-<p>It also makes it easy to see which virtual WWPNs belong to each physical port, which is important for debugging purposes: The serial number of the physical port (<code>93536d</code>) is part of the virtual port&#8217;s WWPN as well.</p>
-]]></content>
-  </entry>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
   
-  <entry>
-    <title type="html"><![CDATA[Improving readability and flow control in Python]]></title>
-    <link href="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/"/>
-    <updated>2012-02-16T00:31:00+02:00</updated>
-    <id>http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python</id>
-    <content type="html"><![CDATA[<p>Recently, a colleague and I refactored a piece of existing code that had new
+  <header>
+    
+      <h1 class="entry-title">Improving Readability and Flow Control in Python</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently, a colleague and I refactored a piece of existing code that had new
 behavior added to it. During the process, we managed to improve the readability of the
 code using several techniques that I&#8217;ll describe below.</p>
 
@@ -226,7 +102,7 @@ components need to be &#8220;revived&#8221;, and presents the user with a prompt
 from one of several actions.
 Depending on the user&#8217;s choice, the code then proceeds to take the appropriate action:</p>
 
-<figure class='code'><figcaption><span>The original code (code0.py)</span> <a href='http://philipson.co.il/downloads/code/flow_control/code0.py'>download</a></figcaption>
+<figure class='code'><figcaption><span>The original code (code0.py)</span> <a href='/downloads/code/flow_control/code0.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -269,7 +145,7 @@ would not proceed blindly but rather send the user back to the menu so that he c
 
 <p>The first version of the new code looked like this:</p>
 
-<figure class='code'><figcaption><span>New behavior, first version (code1.py)</span> <a href='http://philipson.co.il/downloads/code/flow_control/code1.py'>download</a></figcaption>
+<figure class='code'><figcaption><span>New behavior, first version (code1.py)</span> <a href='/downloads/code/flow_control/code1.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -339,7 +215,7 @@ comfortably.</p>
 
 <p>The second iteration was meant to make the flow control clearer:</p>
 
-<figure class='code'><figcaption><span>Refactoring, first try (code2.py)</span> <a href='http://philipson.co.il/downloads/code/flow_control/code2.py'>download</a></figcaption>
+<figure class='code'><figcaption><span>Refactoring, first try (code2.py)</span> <a href='/downloads/code/flow_control/code2.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -421,7 +297,7 @@ of the functions yet again (but see below).</p></li>
 <p>My colleague pointed out that the <code>locals().get('choice_%s' % choice)()</code> trick
 is not quite readable. I agreed, and was happy to accept his improved proposal:</p>
 
-<figure class='code'><figcaption><span>Refactoring, final version (code3.py)</span> <a href='http://philipson.co.il/downloads/code/flow_control/code3.py'>download</a></figcaption>
+<figure class='code'><figcaption><span>Refactoring, final version (code3.py)</span> <a href='/downloads/code/flow_control/code3.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -479,7 +355,175 @@ syntax, which gets rid of a lot of punctuation and makes the code clearer.</p></
 techniques can be used to make the code clearer to read and maintain.</p>
 
 <p>See you next time!</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-</feed>
+
+<span class="byline author vcard">Posted by <span class="fn">Gavrie Philipson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/" data-via="gavrieph" data-counturl="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/" title="Next Post: Generating Virtual FC WWPNs for a Storage Lab">Generating Virtual FC WWPNs for a Storage Lab &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <img src="http://gravatar.com/avatar/cff901a9060e2b4ee1fe095b9fde0679" alt="Gravatar image" title="Gravatar Image" />
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don't like RPC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/improving-readability-and-flow-control-in-python/">Improving readability and flow control in Python</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/gavrie">@gavrie</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'gavrie',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("gavrieph", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/gavrieph" class="twitter-follow-button" data-show-count="false">Follow @gavrieph</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Gavrie Philipson -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span> -
+
+<a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://philipson.co.il/" property="cc:attributionName" rel="cc:attributionURL">Gavrie Philipson</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.
+
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

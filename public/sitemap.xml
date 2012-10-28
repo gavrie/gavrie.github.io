@@ -1,11 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
+        <loc>
+            http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/
+        </loc>
+        <lastmod>2012-10-28T21:34:18+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://philipson.co.il/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/
+        </loc>
+        <lastmod>2012-10-28T21:34:18+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://philipson.co.il/blog/2012/06/15/the-yagni-slash-nih-conundrum/</loc>
+        <lastmod>2012-10-28T21:34:18+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://philipson.co.il/blog/2012/06/20/why-i-dont-like-rpc/</loc>
+        <lastmod>2012-10-28T21:34:18+02:00</lastmod>
+    </url>
+    <url>
         <loc>http://philipson.co.il/blog/archives/</loc>
-        <lastmod>2012-10-28T21:14:30+02:00</lastmod>
+        <lastmod>2012-10-28T21:34:18+02:00</lastmod>
     </url>
     <url>
         <loc>http://philipson.co.il/</loc>
-        <lastmod>2012-10-28T21:14:30+02:00</lastmod>
+        <lastmod>2012-10-28T21:34:18+02:00</lastmod>
     </url>
 </urlset>
