@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Gavrie's Blog]]></title>
+  <link href="http://philipson.co.il/atom.xml" rel="self"/>
+  <link href="http://philipson.co.il/"/>
+  <updated>2012-10-28T21:31:37+02:00</updated>
+  <id>http://philipson.co.il/</id>
+  <author>
+    <name><![CDATA[Gavrie Philipson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>
