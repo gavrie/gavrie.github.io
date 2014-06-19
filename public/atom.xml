@@ -4,7 +4,7 @@
   <title><![CDATA[Gavrie's Blog]]></title>
   <link href="http://philipson.co.il/atom.xml" rel="self"/>
   <link href="http://philipson.co.il/"/>
-  <updated>2014-06-19T16:42:11+03:00</updated>
+  <updated>2014-06-19T17:10:05+03:00</updated>
   <id>http://philipson.co.il/</id>
   <author>
     <name><![CDATA[Gavrie Philipson]]></name>
@@ -61,7 +61,7 @@ From gitserver:/git/qa/tlib
    65572
 </code></pre>
 
-<p>Aha! This number looks suspiciously like &#8220;a bit more than 64k&#8221;. Which affirms the suspicion. Let&#8217;s try to reduce its size by deleting some old remote branches:</p>
+<p>Aha! This number looks suspiciously like &#8220;a bit more than 64k&#8221;. Which affirms our hypothesis. Let&#8217;s try to reduce its size by deleting some old remote branches:</p>
 
 <pre><code>$ git push origin :old_branch1
 $ git push origin :old_branch2
