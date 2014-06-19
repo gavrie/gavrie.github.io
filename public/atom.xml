@@ -4,7 +4,7 @@
   <title><![CDATA[Gavrie's Blog]]></title>
   <link href="http://philipson.co.il/atom.xml" rel="self"/>
   <link href="http://philipson.co.il/"/>
-  <updated>2014-06-18T18:38:01+03:00</updated>
+  <updated>2014-06-19T16:42:11+03:00</updated>
   <id>http://philipson.co.il/</id>
   <author>
     <name><![CDATA[Gavrie Philipson]]></name>
@@ -12,6 +12,126 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Buffers will fill Up... Eventually]]></title>
+    <link href="http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/"/>
+    <updated>2014-06-18T18:42:00+03:00</updated>
+    <id>http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually</id>
+    <content type="html"><![CDATA[<p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+
+<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
+
+<pre><code>^CTraceback (most recent call last):
+  File "./execute_wrong.py", line 8, in &lt;module&gt;
+    retval, out, err = execute("git ls-remote")
+  File "./execute_wrong.py", line 5, in execute
+    retval = p.wait()
+  File "/usr/lib/python2.7/subprocess.py", line 1376, in wait
+    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+  File "/usr/lib/python2.7/subprocess.py", line 476, in _eintr_retry_call
+    return func(*args)
+KeyboardInterrupt
+</code></pre>
+
+<p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
+
+<!-- more -->
+
+
+<h2>Investigating the Issue</h2>
+
+<p>Let&#8217;s look at the code history to see if anything has changed recently.</p>
+
+<p>Nope. A quick <code>git blame</code> shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?</p>
+
+<p>Let&#8217;s see what is happening while waiting for the <code>git</code> child process to finish, by running <code>strace</code> on the process:</p>
+
+<pre><code>$ strace -p 5774
+Process 5774 attached
+write(1, "pull/624/merge\n2fe9da91f5a4b5ba3"..., 4096
+</code></pre>
+
+<p>OK. The process is trying to write to <code>stdout</code>, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.</p>
+
+<p>Let&#8217;s look at the size of the data returned by the child process:</p>
+
+<pre><code>$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65572
+</code></pre>
+
+<p>Aha! This number looks suspiciously like &#8220;a bit more than 64k&#8221;. Which affirms the suspicion. Let&#8217;s try to reduce its size by deleting some old remote branches:</p>
+
+<pre><code>$ git push origin :old_branch1
+$ git push origin :old_branch2
+...
+$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65368
+</code></pre>
+
+<p>Now to run the program again&#8230; It worked! The program continues to run successfully.</p>
+
+<h2>The Code</h2>
+
+<p>Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?</p>
+
+<figure class='code'><figcaption><span>The original code (execute_wrong.py)</span> <a href='http://philipson.co.il/downloads/code/buffers/execute_wrong.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">subprocess</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">retval</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">retval</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">p</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="s">&quot;git ls-remote&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output was by change smaller than 64k and fitted completely in the pipe&#8217;s buffer. Once it exceeded the buffer&#8217;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
+
+<h2>The Fix</h2>
+
+<p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
+
+<figure class='code'><figcaption><span>The fixed code (execute_right.py)</span> <a href='http://philipson.co.il/downloads/code/buffers/execute_right.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">subprocess</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">out</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">err</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">retval</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="s">&quot;git ls-remote&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&#8217;t assume that it will be OK &#8211; because it will come back to bite you, or at least some future user of your code.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Why I don't like RPC]]></title>

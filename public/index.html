@@ -9,7 +9,7 @@
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="Lately I&#8217;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution &hellip;">
+  <meta name="description" content="A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,63 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers Will Fill Up&#8230; Eventually</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true">Jun 18<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+
+<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
+
+<pre><code>^CTraceback (most recent call last):
+  File "./execute_wrong.py", line 8, in &lt;module&gt;
+    retval, out, err = execute("git ls-remote")
+  File "./execute_wrong.py", line 5, in execute
+    retval = p.wait()
+  File "/usr/lib/python2.7/subprocess.py", line 1376, in wait
+    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+  File "/usr/lib/python2.7/subprocess.py", line 476, in _eintr_retry_call
+    return func(*args)
+KeyboardInterrupt
+</code></pre>
+
+<p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -531,6 +588,10 @@ techniques can be used to make the code clearer to read and maintain.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
       </li>
     
@@ -614,6 +675,19 @@ techniques can be used to make the code clearer to read and maintain.</p>
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'gavriesbl';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 
