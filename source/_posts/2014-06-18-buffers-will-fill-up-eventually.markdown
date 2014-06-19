@@ -47,7 +47,7 @@ Let's look at the size of the data returned by the child process:
     From gitserver:/git/qa/tlib
        65572
 
-Aha! This number looks suspiciously like "a bit more than 64k". Which affirms the suspicion. Let's try to reduce its size by deleting some old remote branches:
+Aha! This number looks suspiciously like "a bit more than 64k". Which affirms our hypothesis. Let's try to reduce its size by deleting some old remote branches:
 
     $ git push origin :old_branch1
     $ git push origin :old_branch2
