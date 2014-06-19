@@ -169,7 +169,7 @@ From gitserver:/git/qa/tlib
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output was by change smaller than 64k and fitted completely in the pipe&#8217;s buffer. Once it exceeded the buffer&#8217;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
+<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&#8217;s buffer. Once it exceeded the buffer&#8217;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
 
 <h2>The Fix</h2>
 

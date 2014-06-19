@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | Gavrie's Blog]]></title>
   <link href="http://philipson.co.il/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://philipson.co.il/"/>
-  <updated>2014-06-19T17:10:05+03:00</updated>
+  <updated>2014-06-19T17:11:47+03:00</updated>
   <id>http://philipson.co.il/</id>
   <author>
     <name><![CDATA[Gavrie Philipson]]></name>
@@ -96,7 +96,7 @@ From gitserver:/git/qa/tlib
 </span><span class='line'><span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="s">&quot;git ls-remote&quot;</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output was by change smaller than 64k and fitted completely in the pipe's buffer. Once it exceeded the buffer's size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
+<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe's buffer. Once it exceeded the buffer's size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
 
 <h2>The Fix</h2>
 
