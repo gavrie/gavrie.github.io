@@ -65,7 +65,7 @@ Here is what the original code looked like (slightly changed to protect the inno
 
 {% include_code The original code buffers/execute_wrong.py %}
 
-The problem is that we `wait()` for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output was by change smaller than 64k and fitted completely in the pipe's buffer. Once it exceeded the buffer's size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.
+The problem is that we `wait()` for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe's buffer. Once it exceeded the buffer's size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.
 
 The Fix
 -------
