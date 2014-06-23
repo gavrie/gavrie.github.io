@@ -9,7 +9,7 @@
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is &hellip;">
+  <meta name="description" content="(Updated version: Incorporates fixes from reader comments) A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,7 +93,9 @@
   </header>
 
 
-  <div class="entry-content"><p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+  <div class="entry-content"><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
+
+<p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
 
 <p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
 

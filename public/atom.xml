@@ -4,7 +4,7 @@
   <title><![CDATA[Gavrie's Blog]]></title>
   <link href="http://philipson.co.il/atom.xml" rel="self"/>
   <link href="http://philipson.co.il/"/>
-  <updated>2014-06-19T17:11:47+03:00</updated>
+  <updated>2014-06-23T17:38:32+03:00</updated>
   <id>http://philipson.co.il/</id>
   <author>
     <name><![CDATA[Gavrie Philipson]]></name>
@@ -18,7 +18,9 @@
     <link href="http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/"/>
     <updated>2014-06-18T18:42:00+03:00</updated>
     <id>http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually</id>
-    <content type="html"><![CDATA[<p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+    <content type="html"><![CDATA[<p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
+
+<p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
 
 <p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
 
@@ -99,7 +101,7 @@ From gitserver:/git/qa/tlib
 
 <p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&#8217;s buffer. Once it exceeded the buffer&#8217;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
 
-<h2>The Fix</h2>
+<h2>Fixing the Problem</h2>
 
 <p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
 
@@ -126,6 +128,10 @@ From gitserver:/git/qa/tlib
 </span><span class='line'><span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="s">&quot;git ls-remote&quot;</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>Unfortunately, as Alon Horev and Baruch Even pointed out in theirs comments, this is still not correct. Since we try to read from <code>stdout</code> until it gets an EOF and only then try to read from <code>stderr</code>, the <code>stderr</code> pipe&#8217;s buffer can fill up if the child process writes a lot of data to it.</p>
+
+<p>The correct solution involves reading from both pipes in tandem. The <code>communicate()</code> method of the <code>Popen</code> class implements this using the <code>select()</code> system call on POSIX, and with threads on Windows platforms.</p>
 
 <h2>Conclusion</h2>
 
