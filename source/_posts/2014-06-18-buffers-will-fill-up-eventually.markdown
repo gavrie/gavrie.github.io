@@ -7,6 +7,8 @@ categories: [python, code]
 published: true
 ---
 
+*(Updated version: Incorporates fixes from reader comments)*
+
 A colleague asked me to look into a problem with him, mentioning that "Tlib hangs when we run it". Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.
 
 Running the code, and interrupting it with `^C` when it hangs, turned up a result similar to the following:
@@ -67,12 +69,16 @@ Here is what the original code looked like (slightly changed to protect the inno
 
 The problem is that we `wait()` for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe's buffer. Once it exceeded the buffer's size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.
 
-The Fix
--------
+Fixing the Problem
+------------------
 
 Now that we see the problem, fixing it is simple: First read, then wait.
 
 {% include_code The fixed code buffers/execute_right.py %}
+
+Unfortunately, as Alon Horev and Baruch Even pointed out in theirs comments, this is still not correct. Since we try to read from `stdout` until it gets an EOF and only then try to read from `stderr`, the `stderr` pipe's buffer can fill up if the child process writes a lot of data to it.
+
+The correct solution involves reading from both pipes in tandem. The `communicate()` method of the `Popen` class implements this using the `select()` system call on POSIX, and with threads on Windows platforms.
 
 Conclusion
 ----------
