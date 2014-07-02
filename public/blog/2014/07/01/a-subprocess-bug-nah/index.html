@@ -1,0 +1,414 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>A subprocess bug? Nah. - Gavrie's Blog</title>
+  <meta name="author" content="Gavrie Philipson">
+
+  
+  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s subprocess module, no exception is &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Gavrie's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Gavrie's Blog</a></h1>
+  
+    <h2>Whatever I find interesting.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:philipson.co.il" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">A Subprocess Bug? Nah.</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true">Jul 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
+
+<pre><code>&gt;&gt;&gt; import subprocess
+&gt;&gt;&gt; subprocess.check_call("false")
+0
+</code></pre>
+
+<p>The <code>false</code> command always exits with a nonzero exit code. The expected behavior, as confirmed on another machine, would be as follows:</p>
+
+<pre><code>&gt;&gt;&gt; subprocess.check_call("false")
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py", line 542, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
+</code></pre>
+
+<p>So, what happens is that <code>subprocess</code> thinks that the child process exited successfully, even though it did not.</p>
+
+<p>This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of <a href="http://en.wikipedia.org/wiki/Fail-fast">failing early</a>, as embodied by the way Python uses exceptions instead of error codes.</p>
+
+<p>So, what is going on here? You may want to think it through and see if you can find the problem.</p>
+
+<!-- more -->
+
+
+<h2>Diving In</h2>
+
+<p>At first sight, this looks like a problem with either Python itself or with the OS (Linux, in our case). How could this happen?  The colleague who first encountered this issue looked at it through the Python debugger, and got as far as the <code>wait()</code> function of <code>subprocess</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Wait for child process to terminate.  Returns returncode attribute.&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">returncode</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">pid</span><span class="p">,</span> <span class="n">sts</span> <span class="o">=</span> <span class="n">_eintr_retry_call</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">waitpid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">ECHILD</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">raise</span>
+</span><span class='line'>            <span class="c"># This happens if SIGCLD is set to be ignored or waiting</span>
+</span><span class='line'>            <span class="c"># for child processes has otherwise been disabled for our</span>
+</span><span class='line'>            <span class="c"># process.  This child is dead, we can&#39;t get the status.</span>
+</span><span class='line'>            <span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span>
+</span><span class='line'>            <span class="n">sts</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="c"># Check the pid and loop as waitpid has been known to return</span>
+</span><span class='line'>        <span class="c"># 0 even without WNOHANG in odd situations.  issue14396.</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">pid</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_exitstatus</span><span class="p">(</span><span class="n">sts</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">returncode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As seen in the code, if <code>os.waitpid</code> on a child process fails with <code>ECHILD</code>, an exception is not raised. The reason for this is that <code>ECHILD</code> is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls <code>wait()</code> on it. In the interim, the process is a so-called &#8220;zombie&#8221;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.</p>
+
+<p>The above piece of code went into Python&#8217;s <code>subprocess</code> module as part of a fix for another problem, as documented in <a href="http://bugs.python.org/issue1731717">this Python bug report</a>.</p>
+
+<p>Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&#8217;s as good as any other. In the legitimate use case, namely when a process explicitly ignores <code>SIGCHLD</code> since it isn&#8217;t interested in the exit code of its child processes, it makes sense for <code>waitpid()</code> to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.</p>
+
+<h2>Back to the Code</h2>
+
+<p>Do we by any chance ignore <code>SIGCHLD</code> in our application? The chance we do is very small, since we run a lot of child processes and depend on their state all their time, and this fails only occasionally. A quick <code>git grep</code> on the code shows that we <em>do</em> ignore <code>SIGCHLD</code> in one specific standalone Python script, but that script is not part of the application and is run on a remote machine on which we indeed <em>should</em> ignore this signal.</p>
+
+<p>At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &#8220;Can&#8217;t reproduce&#8221;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.</p>
+
+<h2>A Week Later</h2>
+
+<p>Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague <a href="https://plus.google.com/107274679081446769903/">Erez Horev</a> called me over and we started looking at it together.</p>
+
+<p>We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored <code>SIGCHLD</code>. To check if this was the case, we ran the following in the debugger:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGCHLD</span><span class="p">)</span>
+</span><span class='line'><span class="mi">1</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span>
+</span><span class='line'><span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Indeed &#8211; <code>SIGCHLD</code> is being ignored by our application. How can this be? Nowhere in the code do we ignore <code>SIGCHLD</code>, except for that standalone script, which runs only on the remote machine. Or does it?</p>
+
+<h2>Checking our Assumptions</h2>
+
+<p>At this point, the only thing left to do was to look at that script. It includes the following line, right at the top.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGCHLD</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Could we, by any chance, have <code>imported</code> this script as a module in our application, therefore running the above code as a side effect?</p>
+
+<p>It turns out we were doing exactly that. In recently added code, under specific circumstances, our application imports the module in order to get its filename and to deploy it to the remote machine. While normally <code>import</code> should be clean of side effects, the above <code>signal</code> code appears at the module level and not inside a function, and is therefore run when imported. This contaminates our application and causes it to ignore <code>SIGCHLD</code> with the described consequences.</p>
+
+<p>Moving this line fixed the problem.</p>
+
+<h2>Question Everything</h2>
+
+<p><a href="http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html">Mark Dalrymple</a>, in his <a href="http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/">Thoughts on Debugging, Part 1</a>, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.</p>
+
+<p>The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this <em>could not happen</em> since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.</p>
+
+<h2>Conclusion</h2>
+
+<p>As a lesson from this, aside from some debugging ideas, please remember: Don&#8217;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python <code>if __name__ == '__main__'</code> construct.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavrie Philipson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true">Jul 1<span>st</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/" data-via="gavrieph" data-counturl="http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/06/18/buffers-will-fill-up-eventually/" title="Previous Post: Buffers will fill Up... Eventually">&laquo; Buffers will fill Up... Eventually</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <img src="http://gravatar.com/avatar/cff901a9060e2b4ee1fe095b9fde0679" alt="Gravatar image" title="Gravatar Image" />
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/01/a-subprocess-bug-nah/">A subprocess bug? Nah.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up... Eventually</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don't like RPC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/gavrie">@gavrie</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'gavrie',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("gavrieph", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/gavrieph" class="twitter-follow-button" data-show-count="false">Follow @gavrieph</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gavrie Philipson -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span> -
+
+<a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://philipson.co.il/" property="cc:attributionName" rel="cc:attributionURL">Gavrie Philipson</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.
+
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'gavriesbl';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/';
+        var disqus_url = 'http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

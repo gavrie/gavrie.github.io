@@ -9,7 +9,7 @@
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="(Updated version: Incorporates fixes from reader comments) A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs &hellip;">
+  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s subprocess module, no exception is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,68 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/01/a-subprocess-bug-nah/">A Subprocess Bug? Nah.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true">Jul 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
+
+<pre><code>&gt;&gt;&gt; import subprocess
+&gt;&gt;&gt; subprocess.check_call("false")
+0
+</code></pre>
+
+<p>The <code>false</code> command always exits with a nonzero exit code. The expected behavior, as confirmed on another machine, would be as follows:</p>
+
+<pre><code>&gt;&gt;&gt; subprocess.check_call("false")
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py", line 542, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
+</code></pre>
+
+<p>So, what happens is that <code>subprocess</code> thinks that the child process exited successfully, even though it did not.</p>
+
+<p>This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of <a href="http://en.wikipedia.org/wiki/Fail-fast">failing early</a>, as embodied by the way Python uses exceptions instead of error codes.</p>
+
+<p>So, what is going on here? You may want to think it through and see if you can find the problem.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/01/a-subprocess-bug-nah/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -590,6 +652,10 @@ techniques can be used to make the code clearer to read and maintain.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/07/01/a-subprocess-bug-nah/">A subprocess bug? Nah.</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
       </li>
     
@@ -603,10 +669,6 @@ techniques can be used to make the code clearer to read and maintain.</p>
     
       <li class="post">
         <a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/02/16/improving-readability-and-flow-control-in-python/">Improving readability and flow control in Python</a>
       </li>
     
   </ul>
