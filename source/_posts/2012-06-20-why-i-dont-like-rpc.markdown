@@ -3,7 +3,7 @@ layout: post
 title: "Why I don't like RPC"
 date: 2012-06-20 09:47
 comments: true
-categories: [code, rpc]
+categories: [code, rpc, python]
 ---
 
 Lately I've been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.
