@@ -1,0 +1,66 @@
+==================================================================
+https://keybase.io/gavrie
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://philipson.co.il
+  * I am gavrie (https://keybase.io/gavrie) on keybase.
+  * I have a public key with fingerprint 6B82 F023 43D1 F603 9023  ADC3 8BA1 C5BF C114 2B70
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "fingerprint": "6b82f02343d1f6039023adc38ba1c5bfc1142b70",
+            "host": "keybase.io",
+            "key_id": "8ba1c5bfc1142b70",
+            "uid": "84f691cf31af320a8720ee91dfcc4000",
+            "username": "gavrie"
+        },
+        "service": {
+            "hostname": "philipson.co.il",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1405361877,
+    "expire_in": 157680000,
+    "prev": "91348612ad3a3468f3ea5b3fed5f1eb1523bdba7dd6c75cec079a97158047a03",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v0.1.23
+Comment: https://keybase.io/crypto
+
+yMH3AnicbZFbSBxXGMd34wWzmqh5EESq7VCw4rLOmTO3XU1wH8RLIhQCyUMMu3M5
+sx5cZ9aZcVXW+KCNbxWtbUGEQG1ro6VJH1qNITU2asgF3ZTESIm9QQ1hi+1aSKhG
+jGeNeevTzPl/v///+z6+hSNpDpfzSXf1dg7/26Dz/ty/7Y7TC8UrMUo21C7KF6Na
+0P5Hw3oImRET6zblo3hZZDSagSxUgcbT0Ev+JVWBoiwBhZM1BQCWkQWaclPNhpVy
+kBhZspAHG0QjjwBWifo/fPvrAqvxXqBoEEgaZGhJFBgaIS9QNUVhaXoftJCpS62I
+0CEpamJEXXBTRItihWix/cYH9UgzDuOIZegexfDgMDFHTMM2FCNMis22HfGlvHZX
+JAV3IDlwEBOQsa6SxYkhikwLGzrlA4RUbJzKBSzNQR6IguCmUGcEmyiAUwQn8CKZ
+kU61QVES6QWQFXnASCqUIMuLGkQSJ0MNqZwGkAw4BsqqLAmqyisCpyCFFrySVwCc
+SLOCREPS30JtukH5IBlTCpFIC4d0yW43yda35prSHU6XIzPjUOp0DtfhvDcHXa/P
+cgyPms5f15nwX7P5GwOlcabon/m+3E/f9jfGEjufdyyd6Oj5pmDb83xmawfVDI9d
+B6U5YmzWX3nT7ffMfCnWNg1ezB3aGrHq3PitkuIPf44vP31Q86jEM5Qx/HX6R66G
+e/X/oZHWxXeflQe7r/ytl/UV9Y7fPht3FLYp840NiWXvwrV4cO7lWG1h9lorrGxa
+/CSzazzZmb1ZlvX9Ut3vExXBL5KNl4XZr+Ilqw+nX6wO3ACndluOjlUV/BQs2+7/
++Ltfzvw4+X419UfP5mj+SoFdrvxZkzhZdT7t8WT/e1ddo5/JUxXnst4p+uFYYvf4
+xsSdD6ZeXVrrne5Nflvhz0u6Z+7uAexzFv0=
+=yyHk
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/gavrie
+
+==================================================================
+
