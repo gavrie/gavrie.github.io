@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Improving readability and flow control in Python - Gavrie's Blog</title>
+  <title>Improving readability and flow control in Python - Gavrie&#8217;s Blog</title>
   <meta name="author" content="Gavrie Philipson">
 
   
@@ -19,7 +19,7 @@ behavior added to it. During the process, we managed to improve the &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/">
+  <link rel="canonical" href="http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -36,7 +36,7 @@ behavior added to it. During the process, we managed to improve the &hellip;">
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">Gavrie's Blog</a></h1>
+  <h1><a href="/">Gavrie&#8217;s Blog</a></h1>
   
     <h2>Whatever I find interesting.</h2>
   
@@ -48,9 +48,9 @@ behavior added to it. During the process, we managed to improve the &hellip;">
   
 </ul>
   
-<form action="http://google.com/search" method="get">
+<form action="https://www.google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:philipson.co.il" />
+    <input type="hidden" name="q" value="site:gavrie.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -84,7 +84,7 @@ behavior added to it. During the process, we managed to improve the &hellip;">
   
 
 
-<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -93,17 +93,17 @@ behavior added to it. During the process, we managed to improve the &hellip;">
 
 <div class="entry-content"><p>Recently, a colleague and I refactored a piece of existing code that had new
 behavior added to it. During the process, we managed to improve the readability of the
-code using several techniques that I&#8217;ll describe below.</p>
+code using several techniques that I&rsquo;ll describe below.</p>
 
 <h2>Where We Started</h2>
 
-<p>The original code was fairly simple: It decides whether certain &#8220;dead&#8221;
-components need to be &#8220;revived&#8221;, and presents the user with a prompt to choose
+<p>The original code was fairly simple: It decides whether certain &ldquo;dead&rdquo;
+components need to be &ldquo;revived&rdquo;, and presents the user with a prompt to choose
 from one of several actions.
-Depending on the user&#8217;s choice, the code then proceeds to take the appropriate action:</p>
+Depending on the user&rsquo;s choice, the code then proceeds to take the appropriate action:</p>
 
 <figure class='code'><figcaption><span>The original code (code0.py)</span> <a href='/downloads/code/flow_control/code0.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -146,7 +146,7 @@ would not proceed blindly but rather send the user back to the menu so that he c
 <p>The first version of the new code looked like this:</p>
 
 <figure class='code'><figcaption><span>New behavior, first version (code1.py)</span> <a href='/downloads/code/flow_control/code1.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -201,12 +201,12 @@ would not proceed blindly but rather send the user back to the menu so that he c
 
 <p>To get the required behavior, we used an infinite <code>while True</code> loop that terminates with an
 explicit <code>break</code> when a valid choice is made by the user and reiterates otherwise.
-This ensures that we don&#8217;t continue until a valid choice is made.</p>
+This ensures that we don&rsquo;t continue until a valid choice is made.</p>
 
 <h2>Can We Do Better?</h2>
 
 <p>The problem with the above method is that the flow control is not immediately
-apparent when looking at the code: It&#8217;s not obvious that the infinite loop
+apparent when looking at the code: It&rsquo;s not obvious that the infinite loop
 should actually terminate in all but one case. A future developer could easily
 break this behavior.</p>
 
@@ -216,7 +216,7 @@ comfortably.</p>
 <p>The second iteration was meant to make the flow control clearer:</p>
 
 <figure class='code'><figcaption><span>Refactoring, first try (code2.py)</span> <a href='/downloads/code/flow_control/code2.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -282,12 +282,12 @@ comfortably.</p>
 advantage of using internal functions is that it keeps the external namespace
 clean, and the naming of each function makes its purpose quite clear.</p></li>
 <li><p>We used a dictionary instead of the <code>if</code>/<code>elif</code> construct. Since Python
-doesn&#8217;t have a <code>switch</code> or <code>case</code> statement, this is a more readable replacement.</p></li>
-<li><p>We decided to use an exception to signify, well, <em>exceptional</em> flow control: If the user hasn&#8217;t
+doesn&rsquo;t have a <code>switch</code> or <code>case</code> statement, this is a more readable replacement.</p></li>
+<li><p>We decided to use an exception to signify, well, <em>exceptional</em> flow control: If the user hasn&rsquo;t
 selected any components, this warrants exceptional behavior. This technique is
 much debated, but we felt like it was appropriate in this case.</p></li>
 <li><p>The function name to be called is determined dynamically at runtime from the
-user&#8217;s selection. The idea was to avoid code duplication by needing to specify the names
+user&rsquo;s selection. The idea was to avoid code duplication by needing to specify the names
 of the functions yet again (but see below).</p></li>
 </ul>
 
@@ -298,7 +298,7 @@ of the functions yet again (but see below).</p></li>
 is not quite readable. I agreed, and was happy to accept his improved proposal:</p>
 
 <figure class='code'><figcaption><span>Refactoring, final version (code3.py)</span> <a href='/downloads/code/flow_control/code3.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -342,7 +342,7 @@ is not quite readable. I agreed, and was happy to accept his improved proposal:<
 <p>This version has several advantages:</p>
 
 <ul>
-<li><p>It doesn&#8217;t use &#8220;magic&#8221; to achieve the selection of the function. Duplication
+<li><p>It doesn&rsquo;t use &ldquo;magic&rdquo; to achieve the selection of the function. Duplication
 is better than magic in this case, since it makes the code more readable.</p></li>
 <li><p>The dictionary is created using the <code>dict()</code> syntax instead of the <code>{...}</code>
 syntax, which gets rid of a lot of punctuation and makes the code clearer.</p></li>
@@ -377,7 +377,7 @@ techniques can be used to make the code clearer to read and maintain.</p>
   
 
 
-<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true"></time>
       
 
 <span class="categories">
@@ -391,7 +391,7 @@ techniques can be used to make the code clearer to read and maintain.</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/" data-via="gavrieph" data-counturl="http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/" data-via="gavrieph" data-counturl="http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/" >Tweet</a>
   
   
   
@@ -430,11 +430,11 @@ techniques can be used to make the code clearer to read and maintain.</p>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up... Eventually</a>
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don't like RPC</a>
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
       </li>
     
       <li class="post">
@@ -451,7 +451,7 @@ techniques can be used to make the code clearer to read and maintain.</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   
   <a href="https://github.com/gavrie">@gavrie</a> on GitHub
@@ -481,7 +481,7 @@ techniques can be used to make the code clearer to read and maintain.</p>
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -520,8 +520,8 @@ techniques can be used to make the code clearer to read and maintain.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/';
-        var disqus_url = 'http://philipson.co.il/blog/2012/02/16/improving-readability-and-flow-control-in-python/';
+        var disqus_identifier = 'http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/';
+        var disqus_url = 'http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/';
         var disqus_script = 'embed.js';
       
     (function () {

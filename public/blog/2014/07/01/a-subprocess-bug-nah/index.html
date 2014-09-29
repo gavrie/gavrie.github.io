@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>A subprocess bug? Nah. - Gavrie's Blog</title>
+  <title>A subprocess bug? Nah. - Gavrie&#8217;s Blog</title>
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s subprocess module, no exception is &hellip;">
+  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s subprocess module, no exception is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/">
+  <link rel="canonical" href="http://gavrie.github.io/blog/2014/07/01/a-subprocess-bug-nah/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -35,7 +35,7 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">Gavrie's Blog</a></h1>
+  <h1><a href="/">Gavrie&#8217;s Blog</a></h1>
   
     <h2>Whatever I find interesting.</h2>
   
@@ -47,9 +47,9 @@
   
 </ul>
   
-<form action="http://google.com/search" method="get">
+<form action="https://www.google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:philipson.co.il" />
+    <input type="hidden" name="q" value="site:gavrie.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -83,14 +83,14 @@
   
 
 
-<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true">Jul 1<span>st</span>, 2014</time>
+<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
+<div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
 
 <pre><code>&gt;&gt;&gt; import subprocess
 &gt;&gt;&gt; subprocess.check_call("false")
@@ -159,17 +159,17 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>As seen in the code, if <code>os.waitpid</code> on a child process fails with <code>ECHILD</code>, an exception is not raised. The reason for this is that <code>ECHILD</code> is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls <code>wait()</code> on it. In the interim, the process is a so-called &#8220;zombie&#8221;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.</p>
+<p>As seen in the code, if <code>os.waitpid</code> on a child process fails with <code>ECHILD</code>, an exception is not raised. The reason for this is that <code>ECHILD</code> is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls <code>wait()</code> on it. In the interim, the process is a so-called &ldquo;zombie&rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.</p>
 
-<p>The above piece of code went into Python&#8217;s <code>subprocess</code> module as part of a fix for another problem, as documented in <a href="http://bugs.python.org/issue1731717">this Python bug report</a>.</p>
+<p>The above piece of code went into Python&rsquo;s <code>subprocess</code> module as part of a fix for another problem, as documented in <a href="http://bugs.python.org/issue1731717">this Python bug report</a>.</p>
 
-<p>Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&#8217;s as good as any other. In the legitimate use case, namely when a process explicitly ignores <code>SIGCHLD</code> since it isn&#8217;t interested in the exit code of its child processes, it makes sense for <code>waitpid()</code> to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.</p>
+<p>Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores <code>SIGCHLD</code> since it isn&rsquo;t interested in the exit code of its child processes, it makes sense for <code>waitpid()</code> to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.</p>
 
 <h2>Back to the Code</h2>
 
 <p>Do we by any chance ignore <code>SIGCHLD</code> in our application? The chance we do is very small, since we run a lot of child processes and depend on their state all their time, and this fails only occasionally. A quick <code>git grep</code> on the code shows that we <em>do</em> ignore <code>SIGCHLD</code> in one specific standalone Python script, but that script is not part of the application and is run on a remote machine on which we indeed <em>should</em> ignore this signal.</p>
 
-<p>At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &#8220;Can&#8217;t reproduce&#8221;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.</p>
+<p>At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &ldquo;Can&rsquo;t reproduce&rdquo;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.</p>
 
 <h2>A Week Later</h2>
 
@@ -188,7 +188,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Indeed &#8211; <code>SIGCHLD</code> is being ignored by our application. How can this be? Nowhere in the code do we ignore <code>SIGCHLD</code>, except for that standalone script, which runs only on the remote machine. Or does it?</p>
+<p>Indeed &ndash; <code>SIGCHLD</code> is being ignored by our application. How can this be? Nowhere in the code do we ignore <code>SIGCHLD</code>, except for that standalone script, which runs only on the remote machine. Or does it?</p>
 
 <h2>Checking our Assumptions</h2>
 
@@ -213,7 +213,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 
 <h2>Conclusion</h2>
 
-<p>As a lesson from this, aside from some debugging ideas, please remember: Don&#8217;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python <code>if __name__ == '__main__'</code> construct.</p>
+<p>As a lesson from this, aside from some debugging ideas, please remember: Don&rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python <code>if __name__ == '__main__'</code> construct.</p>
 </div>
 
 
@@ -236,7 +236,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
   
 
 
-<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true">Jul 1<span>st</span>, 2014</time>
+<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true"></time>
       
 
 <span class="categories">
@@ -250,7 +250,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/" data-via="gavrieph" data-counturl="http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gavrie.github.io/blog/2014/07/01/a-subprocess-bug-nah/" data-via="gavrieph" data-counturl="http://gavrie.github.io/blog/2014/07/01/a-subprocess-bug-nah/" >Tweet</a>
   
   
   
@@ -259,7 +259,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/06/18/buffers-will-fill-up-eventually/" title="Previous Post: Buffers will fill Up... Eventually">&laquo; Buffers will fill Up... Eventually</a>
+        <a class="basic-alignment left" href="/blog/2014/06/18/buffers-will-fill-up-eventually/" title="Previous Post: Buffers will fill Up... Eventually">&laquo; Buffers will fill Up&#8230; Eventually</a>
       
       
     </p>
@@ -289,11 +289,11 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
       </li>
     
       <li class="post">
-        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up... Eventually</a>
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don't like RPC</a>
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
       </li>
     
       <li class="post">
@@ -310,7 +310,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   
   <a href="https://github.com/gavrie">@gavrie</a> on GitHub
@@ -340,7 +340,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -379,8 +379,8 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/';
-        var disqus_url = 'http://philipson.co.il/blog/2014/07/01/a-subprocess-bug-nah/';
+        var disqus_identifier = 'http://gavrie.github.io/blog/2014/07/01/a-subprocess-bug-nah/';
+        var disqus_url = 'http://gavrie.github.io/blog/2014/07/01/a-subprocess-bug-nah/';
         var disqus_script = 'embed.js';
       
     (function () {

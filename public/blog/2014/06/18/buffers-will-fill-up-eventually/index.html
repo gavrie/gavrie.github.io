@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Buffers will fill Up... Eventually - Gavrie's Blog</title>
+  <title>Buffers will fill Up&#8230; Eventually - Gavrie&#8217;s Blog</title>
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="(Updated version: Incorporates fixes from reader comments) A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs &hellip;">
+  <meta name="description" content="(Updated version: Incorporates fixes from reader comments) A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/">
+  <link rel="canonical" href="http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -35,7 +35,7 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">Gavrie's Blog</a></h1>
+  <h1><a href="/">Gavrie&#8217;s Blog</a></h1>
   
     <h2>Whatever I find interesting.</h2>
   
@@ -47,9 +47,9 @@
   
 </ul>
   
-<form action="http://google.com/search" method="get">
+<form action="https://www.google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:philipson.co.il" />
+    <input type="hidden" name="q" value="site:gavrie.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -67,7 +67,7 @@
   
   <header>
     
-      <h1 class="entry-title">Buffers Will Fill Up... Eventually</h1>
+      <h1 class="entry-title">Buffers Will Fill Up&#8230; Eventually</h1>
     
     
       <p class="meta">
@@ -83,7 +83,7 @@
   
 
 
-<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true">Jun 18<span>th</span>, 2014</time>
+<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -92,7 +92,7 @@
 
 <div class="entry-content"><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
 
-<p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
 
 <p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
 
@@ -115,11 +115,11 @@ KeyboardInterrupt
 
 <h2>Investigating the Issue</h2>
 
-<p>Let&#8217;s look at the code history to see if anything has changed recently.</p>
+<p>Let&rsquo;s look at the code history to see if anything has changed recently.</p>
 
 <p>Nope. A quick <code>git blame</code> shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?</p>
 
-<p>Let&#8217;s see what is happening while waiting for the <code>git</code> child process to finish, by running <code>strace</code> on the process:</p>
+<p>Let&rsquo;s see what is happening while waiting for the <code>git</code> child process to finish, by running <code>strace</code> on the process:</p>
 
 <pre><code>$ strace -p 5774
 Process 5774 attached
@@ -128,14 +128,14 @@ write(1, "pull/624/merge\n2fe9da91f5a4b5ba3"..., 4096
 
 <p>OK. The process is trying to write to <code>stdout</code>, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.</p>
 
-<p>Let&#8217;s look at the size of the data returned by the child process:</p>
+<p>Let&rsquo;s look at the size of the data returned by the child process:</p>
 
 <pre><code>$ git ls-remote | wc -c
 From gitserver:/git/qa/tlib
    65572
 </code></pre>
 
-<p>Aha! This number looks suspiciously like &#8220;a bit more than 64k&#8221;. Which affirms our hypothesis. Let&#8217;s try to reduce its size by deleting some old remote branches:</p>
+<p>Aha! This number looks suspiciously like &ldquo;a bit more than 64k&rdquo;. Which affirms our hypothesis. Let&rsquo;s try to reduce its size by deleting some old remote branches:</p>
 
 <pre><code>$ git push origin :old_branch1
 $ git push origin :old_branch2
@@ -145,14 +145,14 @@ From gitserver:/git/qa/tlib
    65368
 </code></pre>
 
-<p>Now to run the program again&#8230; It worked! The program continues to run successfully.</p>
+<p>Now to run the program again&hellip; It worked! The program continues to run successfully.</p>
 
 <h2>The Code</h2>
 
 <p>Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?</p>
 
 <figure class='code'><figcaption><span>The original code (execute_wrong.py)</span> <a href='/downloads/code/buffers/execute_wrong.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -171,14 +171,14 @@ From gitserver:/git/qa/tlib
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&#8217;s buffer. Once it exceeded the buffer&#8217;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
+<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&rsquo;s buffer. Once it exceeded the buffer&rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
 
 <h2>Fixing the Problem</h2>
 
 <p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
 
 <figure class='code'><figcaption><span>The fixed code (execute_right.py)</span> <a href='/downloads/code/buffers/execute_right.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -201,13 +201,13 @@ From gitserver:/git/qa/tlib
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Unfortunately, as Alon Horev and Baruch Even pointed out in theirs comments, this is still not correct. Since we try to read from <code>stdout</code> until it gets an EOF and only then try to read from <code>stderr</code>, the <code>stderr</code> pipe&#8217;s buffer can fill up if the child process writes a lot of data to it.</p>
+<p>Unfortunately, as Alon Horev and Baruch Even pointed out in theirs comments, this is still not correct. Since we try to read from <code>stdout</code> until it gets an EOF and only then try to read from <code>stderr</code>, the <code>stderr</code> pipe&rsquo;s buffer can fill up if the child process writes a lot of data to it.</p>
 
 <p>The correct solution involves reading from both pipes in tandem. The <code>communicate()</code> method of the <code>Popen</code> class implements this using the <code>select()</code> system call on POSIX, and with threads on Windows platforms.</p>
 
 <h2>Conclusion</h2>
 
-<p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&#8217;t assume that it will be OK &#8211; because it will come back to bite you, or at least some future user of your code.</p>
+<p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&rsquo;t assume that it will be OK &ndash; because it will come back to bite you, or at least some future user of your code.</p>
 </div>
 
 
@@ -230,7 +230,7 @@ From gitserver:/git/qa/tlib
   
 
 
-<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true">Jun 18<span>th</span>, 2014</time>
+<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true"></time>
       
 
 <span class="categories">
@@ -244,7 +244,7 @@ From gitserver:/git/qa/tlib
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/" data-via="gavrieph" data-counturl="http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/" data-via="gavrieph" data-counturl="http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/" >Tweet</a>
   
   
   
@@ -253,7 +253,7 @@ From gitserver:/git/qa/tlib
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/06/20/why-i-dont-like-rpc/" title="Previous Post: Why I don't like RPC">&laquo; Why I don't like RPC</a>
+        <a class="basic-alignment left" href="/blog/2012/06/20/why-i-dont-like-rpc/" title="Previous Post: Why I don't like RPC">&laquo; Why I don&#8217;t like RPC</a>
       
       
         <a class="basic-alignment right" href="/blog/2014/07/01/a-subprocess-bug-nah/" title="Next Post: A subprocess bug? Nah.">A subprocess bug? Nah. &raquo;</a>
@@ -285,11 +285,11 @@ From gitserver:/git/qa/tlib
       </li>
     
       <li class="post">
-        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up... Eventually</a>
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don't like RPC</a>
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
       </li>
     
       <li class="post">
@@ -306,7 +306,7 @@ From gitserver:/git/qa/tlib
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   
   <a href="https://github.com/gavrie">@gavrie</a> on GitHub
@@ -336,7 +336,7 @@ From gitserver:/git/qa/tlib
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -375,8 +375,8 @@ From gitserver:/git/qa/tlib
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/';
-        var disqus_url = 'http://philipson.co.il/blog/2014/06/18/buffers-will-fill-up-eventually/';
+        var disqus_identifier = 'http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/';
+        var disqus_url = 'http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/';
         var disqus_script = 'embed.js';
       
     (function () {

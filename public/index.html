@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Gavrie's Blog</title>
+  <title>Gavrie&#8217;s Blog</title>
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s subprocess module, no exception is &hellip;">
+  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s subprocess module, no exception is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://philipson.co.il/">
+  <link rel="canonical" href="http://gavrie.github.io/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -35,7 +35,7 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">Gavrie's Blog</a></h1>
+  <h1><a href="/">Gavrie&#8217;s Blog</a></h1>
   
     <h2>Whatever I find interesting.</h2>
   
@@ -47,9 +47,9 @@
   
 </ul>
   
-<form action="http://google.com/search" method="get">
+<form action="https://www.google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:philipson.co.il" />
+    <input type="hidden" name="q" value="site:gavrie.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -86,14 +86,14 @@
   
 
 
-<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true">Jul 1<span>st</span>, 2014</time>
+<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&#8217;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
+  <div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
 
 <pre><code>&gt;&gt;&gt; import subprocess
 &gt;&gt;&gt; subprocess.check_call("false")
@@ -148,7 +148,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
   
 
 
-<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true">Jun 18<span>th</span>, 2014</time>
+<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -157,7 +157,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 
   <div class="entry-content"><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
 
-<p>A colleague asked me to look into a problem with him, mentioning that &#8220;Tlib hangs when we run it&#8221;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
 
 <p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
 
@@ -207,18 +207,18 @@ KeyboardInterrupt
   
 
 
-<time datetime="2012-06-20T09:47:00+03:00" pubdate data-updated="true">Jun 20<span>th</span>, 2012</time>
+<time datetime="2012-06-20T09:47:00+03:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Lately I&#8217;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
+  <div class="entry-content"><p>Lately I&rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
 
 <p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
 
-<p>Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &#8211; be it shell commands, Python code or anything else.</p>
+<p>Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &ndash; be it shell commands, Python code or anything else.</p>
 
 </div>
   
@@ -252,20 +252,20 @@ KeyboardInterrupt
   
 
 
-<time datetime="2012-06-15T10:38:00+03:00" pubdate data-updated="true">Jun 15<span>th</span>, 2012</time>
+<time datetime="2012-06-15T10:38:00+03:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&#8217;re not a software developer (or a technical person at all).</p>
+  <div class="entry-content"><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).</p>
 
-<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&#8217;re one of those people who are nodding your head now and smiling), so I&#8217;ll explain.</p>
+<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.</p>
 
-<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &#8220;You ain&#8217;t gonna need it&#8221;, and refers to a software development principle according to which you don&#8217;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
+<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &ldquo;You ain&rsquo;t gonna need it&rdquo;, and refers to a software development principle according to which you don&rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
 
-<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &#8220;Not Invented Here&#8221;, and refers to a reluctance among some software developers to base their work on code written by someone else: &#8220;Hey, I can do this myself, so why should I use this existing project&#8221;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
+<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &ldquo;Not Invented Here&rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &ldquo;Hey, I can do this myself, so why should I use this existing project&rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
 
 </div>
   
@@ -299,7 +299,7 @@ KeyboardInterrupt
   
 
 
-<time datetime="2012-02-16T16:30:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+<time datetime="2012-02-16T16:30:00+02:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -313,10 +313,10 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
 
 <h2>The Problem</h2>
 
-<p>WWPNs can&#8217;t just be pulled out of thin air. They are allocated &#8211; in chunks &#8211; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
+<p>WWPNs can&rsquo;t just be pulled out of thin air. They are allocated &ndash; in chunks &ndash; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
 
 <ol>
-<li>The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&#8217;t be using the same WWPN and thereby confuse the fabric.</li>
+<li>The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&rsquo;t be using the same WWPN and thereby confuse the fabric.</li>
 <li>The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.</li>
 </ol>
 
@@ -357,7 +357,7 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
   
 
 
-<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true"></time>
         
       </p>
     
@@ -366,17 +366,17 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
 
   <div class="entry-content"><p>Recently, a colleague and I refactored a piece of existing code that had new
 behavior added to it. During the process, we managed to improve the readability of the
-code using several techniques that I&#8217;ll describe below.</p>
+code using several techniques that I&rsquo;ll describe below.</p>
 
 <h2>Where We Started</h2>
 
-<p>The original code was fairly simple: It decides whether certain &#8220;dead&#8221;
-components need to be &#8220;revived&#8221;, and presents the user with a prompt to choose
+<p>The original code was fairly simple: It decides whether certain &ldquo;dead&rdquo;
+components need to be &ldquo;revived&rdquo;, and presents the user with a prompt to choose
 from one of several actions.
-Depending on the user&#8217;s choice, the code then proceeds to take the appropriate action:</p>
+Depending on the user&rsquo;s choice, the code then proceeds to take the appropriate action:</p>
 
 <figure class='code'><figcaption><span>The original code (code0.py)</span> <a href='/downloads/code/flow_control/code0.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -419,7 +419,7 @@ would not proceed blindly but rather send the user back to the menu so that he c
 <p>The first version of the new code looked like this:</p>
 
 <figure class='code'><figcaption><span>New behavior, first version (code1.py)</span> <a href='/downloads/code/flow_control/code1.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -474,12 +474,12 @@ would not proceed blindly but rather send the user back to the menu so that he c
 
 <p>To get the required behavior, we used an infinite <code>while True</code> loop that terminates with an
 explicit <code>break</code> when a valid choice is made by the user and reiterates otherwise.
-This ensures that we don&#8217;t continue until a valid choice is made.</p>
+This ensures that we don&rsquo;t continue until a valid choice is made.</p>
 
 <h2>Can We Do Better?</h2>
 
 <p>The problem with the above method is that the flow control is not immediately
-apparent when looking at the code: It&#8217;s not obvious that the infinite loop
+apparent when looking at the code: It&rsquo;s not obvious that the infinite loop
 should actually terminate in all but one case. A future developer could easily
 break this behavior.</p>
 
@@ -489,7 +489,7 @@ comfortably.</p>
 <p>The second iteration was meant to make the flow control clearer:</p>
 
 <figure class='code'><figcaption><span>Refactoring, first try (code2.py)</span> <a href='/downloads/code/flow_control/code2.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -555,12 +555,12 @@ comfortably.</p>
 advantage of using internal functions is that it keeps the external namespace
 clean, and the naming of each function makes its purpose quite clear.</p></li>
 <li><p>We used a dictionary instead of the <code>if</code>/<code>elif</code> construct. Since Python
-doesn&#8217;t have a <code>switch</code> or <code>case</code> statement, this is a more readable replacement.</p></li>
-<li><p>We decided to use an exception to signify, well, <em>exceptional</em> flow control: If the user hasn&#8217;t
+doesn&rsquo;t have a <code>switch</code> or <code>case</code> statement, this is a more readable replacement.</p></li>
+<li><p>We decided to use an exception to signify, well, <em>exceptional</em> flow control: If the user hasn&rsquo;t
 selected any components, this warrants exceptional behavior. This technique is
 much debated, but we felt like it was appropriate in this case.</p></li>
 <li><p>The function name to be called is determined dynamically at runtime from the
-user&#8217;s selection. The idea was to avoid code duplication by needing to specify the names
+user&rsquo;s selection. The idea was to avoid code duplication by needing to specify the names
 of the functions yet again (but see below).</p></li>
 </ul>
 
@@ -571,7 +571,7 @@ of the functions yet again (but see below).</p></li>
 is not quite readable. I agreed, and was happy to accept his improved proposal:</p>
 
 <figure class='code'><figcaption><span>Refactoring, final version (code3.py)</span> <a href='/downloads/code/flow_control/code3.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -615,7 +615,7 @@ is not quite readable. I agreed, and was happy to accept his improved proposal:<
 <p>This version has several advantages:</p>
 
 <ul>
-<li><p>It doesn&#8217;t use &#8220;magic&#8221; to achieve the selection of the function. Duplication
+<li><p>It doesn&rsquo;t use &ldquo;magic&rdquo; to achieve the selection of the function. Duplication
 is better than magic in this case, since it makes the code more readable.</p></li>
 <li><p>The dictionary is created using the <code>dict()</code> syntax instead of the <code>{...}</code>
 syntax, which gets rid of a lot of punctuation and makes the code clearer.</p></li>
