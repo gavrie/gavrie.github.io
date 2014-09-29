@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The YAGNI/NIH Conundrum - Gavrie&#8217;s Blog</title>
+  <meta name="author" content="Gavrie Philipson">
+
+  
+  <meta name="description" content="Disclaimer: This post is about software development, but it is more about the human side of it than about the technical side. This means you may &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://gavrie.github.io/blog/2012/06/15/the-yagni-slash-nih-conundrum/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Gavrie's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Gavrie&#8217;s Blog</a></h1>
+  
+    <h2>Whatever I find interesting.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:gavrie.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">The YAGNI/NIH Conundrum</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-15T10:38:00+03:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).</p>
+
+<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &ldquo;You ain&rsquo;t gonna need it&rdquo;, and refers to a software development principle according to which you don&rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &ldquo;Not Invented Here&rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &ldquo;Hey, I can do this myself, so why should I use this existing project&rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
+
+<!-- more -->
+
+
+<h2>The Conundrum</h2>
+
+<p>I consider myself a firm believer in the YAGNI principle, and a staunch opponent of the NIH syndrome: I try to avoid writing code that could stay unwritten, since I consider a large codebase a liability rather than an asset. Writing more code means having to expend more resources on maintaining it. In many corporate cultures, it also decreases the ability to respond to change, due to a reluctance to throw away existing code (which is often due to sentimental reasons rather than objective ones).</p>
+
+<p>Now, as software developers, many of us would much rather write new code than maintain a bunch of old code.</p>
+
+<p>One reason for this is that old code bases tend to have accumulated a lot of baggage over the years, and we love the idea of getting rid of all that and starting with a fresh, blank page: All those old bugs can be forgotten, all those workarounds and little tricks can be left behind.</p>
+
+<p>Another reason is that good developers love to learn new ideas and techniques and are itching to try them out. Seeing our own old code after a few months or years make us cringe with the feeling, &ldquo;who was the idiot that wrote this?!&rdquo;. We are sure that the code we&rsquo;re going to write now, with our new and shiny tools, will be better by leaps and bounds. And then the cycle starts all over again.</p>
+
+<h2>Coding in the Corporate World</h2>
+
+<p>I&rsquo;d like to argue that in the corporate world, as opposed to the Open Source world, writing new code can be an irresponsible thing to do. In the corporate world, we write code not just to scratch our own itches. We&rsquo;re creating something that may very well continue to exist long after we have moved on to greener pastures. Other people will have to maintain what we created. Adhering to good software engineering principles means that not only our own lives will be easier down the road, but also those of other people.</p>
+
+<p>Now, those who profess not to care about the experience of other people, or who think that at the very least it is less important that their own experience, may want to consider a few points:</p>
+
+<p>First of all, those &ldquo;other people&rdquo; may be yourselves a few months or years from now, trying to adapt your own code to new requirements. Suddenly, all this code is no longer new nor fun, and you&rsquo;ll have to dig in to adapt it to the required changes.</p>
+
+<p>Second, those other people may be your future co-workers, managers or employees. They will remember what you left them with.</p>
+
+<p>Third, people will appreciate your efforts to make their lives easier (or at least won&rsquo;t hate you for making it harder). This increases the likelihood that they will want to work with you in the future.</p>
+
+<p>So all this makes sense even from a perfectly selfish point of view.</p>
+
+<h2>Conclusion</h2>
+
+<p>When faced with a new software problem to solve, I always spend a significant amount of energy in investigating existing solutions and see if they can work for me. I will resort to writing code only if I fail to find a solution that has enough similarity or has a good enough quality. Of course, as my friend Eli claims, this may very well mean that I often pass on the chance to be creative by deferring to existing solutions. But that&rsquo;s something I can live with: I feel the need to reach the right balance between creativity and responsibility.</p>
+
+<p>I can find creativity in ways other than writing a lot of new code: I&rsquo;d rather leverage existing code that I like and that is maintained by a third party (which becomes more and more commong with the huge Open Source ecosystem). It is more important to me to feel happy with a solution than it is to prove to myself that I can solve a problem that has been solved before by others. That just seems so wasteful.</p>
+
+<p>In an upcoming post, I will analyze a specific case that I encountered in light of the above thoughts.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavrie Philipson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-15T10:38:00+03:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/code/'>code</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gavrie.github.io/blog/2012/06/15/the-yagni-slash-nih-conundrum/" data-via="gavrieph" data-counturl="http://gavrie.github.io/blog/2012/06/15/the-yagni-slash-nih-conundrum/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/" title="Previous Post: Generating Virtual FC WWPNs for a Storage Lab">&laquo; Generating Virtual FC WWPNs for a Storage Lab</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/06/20/why-i-dont-like-rpc/" title="Next Post: Why I don't like RPC">Why I don&#8217;t like RPC &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <img src="http://gravatar.com/avatar/cff901a9060e2b4ee1fe095b9fde0679" alt="Gravatar image" title="Gravatar Image" />
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/01/a-subprocess-bug-nah/">A subprocess bug? Nah.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/gavrie">@gavrie</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'gavrie',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("gavrieph", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/gavrieph" class="twitter-follow-button" data-show-count="false">Follow @gavrieph</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gavrie Philipson -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span> -
+
+<a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://philipson.co.il/" property="cc:attributionName" rel="cc:attributionURL">Gavrie Philipson</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.
+
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'gavriesbl';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://gavrie.github.io/blog/2012/06/15/the-yagni-slash-nih-conundrum/';
+        var disqus_url = 'http://gavrie.github.io/blog/2012/06/15/the-yagni-slash-nih-conundrum/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

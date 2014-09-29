@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Buffers will fill Up&#8230; Eventually - Gavrie&#8217;s Blog</title>
+  <meta name="author" content="Gavrie Philipson">
+
+  
+  <meta name="description" content="(Updated version: Incorporates fixes from reader comments) A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Gavrie's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Gavrie&#8217;s Blog</a></h1>
+  
+    <h2>Whatever I find interesting.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:gavrie.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Buffers Will Fill Up&#8230; Eventually</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
+
+<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+
+<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
+
+<pre><code>^CTraceback (most recent call last):
+  File "./execute_wrong.py", line 8, in &lt;module&gt;
+    retval, out, err = execute("git ls-remote")
+  File "./execute_wrong.py", line 5, in execute
+    retval = p.wait()
+  File "/usr/lib/python2.7/subprocess.py", line 1376, in wait
+    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+  File "/usr/lib/python2.7/subprocess.py", line 476, in _eintr_retry_call
+    return func(*args)
+KeyboardInterrupt
+</code></pre>
+
+<p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
+
+<!-- more -->
+
+
+<h2>Investigating the Issue</h2>
+
+<p>Let&rsquo;s look at the code history to see if anything has changed recently.</p>
+
+<p>Nope. A quick <code>git blame</code> shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?</p>
+
+<p>Let&rsquo;s see what is happening while waiting for the <code>git</code> child process to finish, by running <code>strace</code> on the process:</p>
+
+<pre><code>$ strace -p 5774
+Process 5774 attached
+write(1, "pull/624/merge\n2fe9da91f5a4b5ba3"..., 4096
+</code></pre>
+
+<p>OK. The process is trying to write to <code>stdout</code>, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.</p>
+
+<p>Let&rsquo;s look at the size of the data returned by the child process:</p>
+
+<pre><code>$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65572
+</code></pre>
+
+<p>Aha! This number looks suspiciously like &ldquo;a bit more than 64k&rdquo;. Which affirms our hypothesis. Let&rsquo;s try to reduce its size by deleting some old remote branches:</p>
+
+<pre><code>$ git push origin :old_branch1
+$ git push origin :old_branch2
+...
+$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65368
+</code></pre>
+
+<p>Now to run the program again&hellip; It worked! The program continues to run successfully.</p>
+
+<h2>The Code</h2>
+
+<p>Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?</p>
+
+<figure class='code'><figcaption><span>The original code (execute_wrong.py)</span> <a href='/downloads/code/buffers/execute_wrong.py'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">subprocess</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">retval</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">retval</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">p</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="s">&quot;git ls-remote&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&rsquo;s buffer. Once it exceeded the buffer&rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
+
+<h2>Fixing the Problem</h2>
+
+<p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
+
+<figure class='code'><figcaption><span>The fixed code (execute_right.py)</span> <a href='/downloads/code/buffers/execute_right.py'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">subprocess</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">out</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">err</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">retval</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">retval</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="s">&quot;git ls-remote&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Unfortunately, as Alon Horev and Baruch Even pointed out in theirs comments, this is still not correct. Since we try to read from <code>stdout</code> until it gets an EOF and only then try to read from <code>stderr</code>, the <code>stderr</code> pipe&rsquo;s buffer can fill up if the child process writes a lot of data to it.</p>
+
+<p>The correct solution involves reading from both pipes in tandem. The <code>communicate()</code> method of the <code>Popen</code> class implements this using the <code>select()</code> system call on POSIX, and with threads on Windows platforms.</p>
+
+<h2>Conclusion</h2>
+
+<p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&rsquo;t assume that it will be OK &ndash; because it will come back to bite you, or at least some future user of your code.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavrie Philipson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/" data-via="gavrieph" data-counturl="http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/06/20/why-i-dont-like-rpc/" title="Previous Post: Why I don't like RPC">&laquo; Why I don&#8217;t like RPC</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/01/a-subprocess-bug-nah/" title="Next Post: A subprocess bug? Nah.">A subprocess bug? Nah. &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <img src="http://gravatar.com/avatar/cff901a9060e2b4ee1fe095b9fde0679" alt="Gravatar image" title="Gravatar Image" />
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/01/a-subprocess-bug-nah/">A subprocess bug? Nah.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers will fill Up&#8230; Eventually</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I don&#8217;t like RPC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/gavrie">@gavrie</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'gavrie',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("gavrieph", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/gavrieph" class="twitter-follow-button" data-show-count="false">Follow @gavrieph</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gavrie Philipson -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span> -
+
+<a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://philipson.co.il/" property="cc:attributionName" rel="cc:attributionURL">Gavrie Philipson</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.
+
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'gavriesbl';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/';
+        var disqus_url = 'http://gavrie.github.io/blog/2014/06/18/buffers-will-fill-up-eventually/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

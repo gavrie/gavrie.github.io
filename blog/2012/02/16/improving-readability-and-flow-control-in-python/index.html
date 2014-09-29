@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Gavrie&#8217;s Blog</title>
+  <title>Improving readability and flow control in Python - Gavrie&#8217;s Blog</title>
   <meta name="author" content="Gavrie Philipson">
 
   
-  <meta name="description" content="A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s subprocess module, no exception is &hellip;">
+  <meta name="description" content="Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://gavrie.github.io/">
+  <link rel="canonical" href="http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -62,286 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/07/01/a-subprocess-bug-nah/">A Subprocess Bug? Nah.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-01T16:57:00+03:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
-
-<pre><code>&gt;&gt;&gt; import subprocess
-&gt;&gt;&gt; subprocess.check_call("false")
-0
-</code></pre>
-
-<p>The <code>false</code> command always exits with a nonzero exit code. The expected behavior, as confirmed on another machine, would be as follows:</p>
-
-<pre><code>&gt;&gt;&gt; subprocess.check_call("false")
-Traceback (most recent call last):
-  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
-  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py", line 542, in check_call
-    raise CalledProcessError(retcode, cmd)
-subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
-</code></pre>
-
-<p>So, what happens is that <code>subprocess</code> thinks that the child process exited successfully, even though it did not.</p>
-
-<p>This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of <a href="http://en.wikipedia.org/wiki/Fail-fast">failing early</a>, as embodied by the way Python uses exceptions instead of error codes.</p>
-
-<p>So, what is going on here? You may want to think it through and see if you can find the problem.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/01/a-subprocess-bug-nah/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Buffers Will Fill Up&#8230; Eventually</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-06-18T18:42:00+03:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
-
-<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
-
-<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
-
-<pre><code>^CTraceback (most recent call last):
-  File "./execute_wrong.py", line 8, in &lt;module&gt;
-    retval, out, err = execute("git ls-remote")
-  File "./execute_wrong.py", line 5, in execute
-    retval = p.wait()
-  File "/usr/lib/python2.7/subprocess.py", line 1376, in wait
-    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
-  File "/usr/lib/python2.7/subprocess.py", line 476, in _eintr_retry_call
-    return func(*args)
-KeyboardInterrupt
-</code></pre>
-
-<p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/06/18/buffers-will-fill-up-eventually/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/06/20/why-i-dont-like-rpc/">Why I Don&#8217;t Like RPC</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-20T09:47:00+03:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Lately I&rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
-
-<p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
-
-<p>Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &ndash; be it shell commands, Python code or anything else.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/06/20/why-i-dont-like-rpc/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">The YAGNI/NIH Conundrum</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-15T10:38:00+03:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).</p>
-
-<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.</p>
-
-<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &ldquo;You ain&rsquo;t gonna need it&rdquo;, and refers to a software development principle according to which you don&rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
-
-<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &ldquo;Not Invented Here&rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &ldquo;Hey, I can do this myself, so why should I use this existing project&rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/06/15/the-yagni-slash-nih-conundrum/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating Virtual FC WWPNs for a Storage Lab</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-16T16:30:00+02:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
-scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
-
-<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
-
-<h2>The Problem</h2>
-
-<p>WWPNs can&rsquo;t just be pulled out of thin air. They are allocated &ndash; in chunks &ndash; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
-
-<ol>
-<li>The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&rsquo;t be using the same WWPN and thereby confuse the fabric.</li>
-<li>The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.</li>
-</ol>
-
-
-<p>With physical (as opposed to virtual) HBAs, this is managed by allocating a OUI (Organizationally Unique Identifier) to every vendor, who in turns tacks on his own vendor-specific serial number to come up with a unique WWPN. This is similar to the MAC address allocation of Ethernet, Wi-Fi and Bluetooth devices.</p>
-
-<p>The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/16/improving-readability-and-flow-control-in-python/">Improving Readability and Flow Control in Python</a></h1>
+      <h1 class="entry-title">Improving Readability and Flow Control in Python</h1>
     
     
       <p class="meta">
@@ -364,7 +91,7 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
   </header>
 
 
-  <div class="entry-content"><p>Recently, a colleague and I refactored a piece of existing code that had new
+<div class="entry-content"><p>Recently, a colleague and I refactored a piece of existing code that had new
 behavior added to it. During the process, we managed to improve the readability of the
 code using several techniques that I&rsquo;ll describe below.</p>
 
@@ -629,18 +356,65 @@ techniques can be used to make the code clearer to read and maintain.</p>
 
 <p>See you next time!</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Gavrie Philipson</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2012-02-16T00:31:00+02:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/" data-via="gavrieph" data-counturl="http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/16/generating-virtual-fc-wwpns-for-a-storage-lab/" title="Next Post: Generating Virtual FC WWPNs for a Storage Lab">Generating Virtual FC WWPNs for a Storage Lab &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     
@@ -727,6 +501,7 @@ techniques can be used to make the code clearer to read and maintain.</p>
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -744,7 +519,10 @@ techniques can be used to make the code clearer to read and maintain.</p>
       var disqus_shortname = 'gavriesbl';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/';
+        var disqus_url = 'http://gavrie.github.io/blog/2012/02/16/improving-readability-and-flow-control-in-python/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
