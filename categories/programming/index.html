@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans|Marcellus+SC'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/styles.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/custom.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://philipson.co.il//index.xml">
+
+    
+    <title>Programming - Gavrie&#39;s Blog</title>
+    <meta property='og:title' content="Programming - Gavrie&#39;s Blog">
+    <meta property="og:type" content="article">
+    
+
+    <meta property="og:url" content="http://philipson.co.il/categories/programming/">
+    
+    
+
+  </head>
+
+  <body>
+
+    <header class="site">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://philipson.co.il/">Gavrie&#39;s Blog</a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse">
+            
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="site">
+      <div class="container">
+
+
+<div class="list">
+
+  <div class="row">
+    <div class="col-md-8">
+      <header class="page-title">Programming</header>
+
+      
+      <article class="li">
+  <header>
+    <div class="date">Wed, May 13, 2015</div>
+    <div class="title"><a href="http://philipson.co.il/post/goodbye-python-hello-go/">From Python to Go</a></div>
+  </header>
+  <div class="body"><p>I have been programming in Python in one capacity or another since around 2000. That&rsquo;s almost 15 years. Over those years, I&rsquo;ve come to know the language fairly well. I originally came to Python from C and Perl, and it was quite refreshing to come to a language that is simple to use, with a consistent syntax and library, while being quite powerful. I&rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible.</p>
+
+<p>Ultimately, this led me to Go. Below, I&rsquo;ll describe the process that led me there.</p>
+</div>
+
+  
+  <footer>
+    <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="btn btn-default">Read More…</a>
+  </footer>
+  
+</article>
+<hr>
+
+      
+      <article class="li">
+  <header>
+    <div class="date">Tue, Jul 1, 2014</div>
+    <div class="title"><a href="http://philipson.co.il/post/a-subprocess-bug-nah/">A subprocess bug? Nah.</a></div>
+  </header>
+  <div class="body"><p>A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&rsquo;s <code>subprocess</code> module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):</p>
+</div>
+
+  
+  <footer>
+    <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="btn btn-default">Read More…</a>
+  </footer>
+  
+</article>
+<hr>
+
+      
+      <article class="li">
+  <header>
+    <div class="date">Wed, Jun 18, 2014</div>
+    <div class="title"><a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/">Buffers will fill up... eventually</a></div>
+  </header>
+  <div class="body"><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
+
+<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+
+<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
+</div>
+
+  
+  <footer>
+    <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="btn btn-default">Read More…</a>
+  </footer>
+  
+</article>
+<hr>
+
+      
+      <article class="li">
+  <header>
+    <div class="date">Wed, Jun 20, 2012</div>
+    <div class="title"><a href="http://philipson.co.il/post/why-i-dont-like-rpc/">Why I don&#39;t like &#39;transparent&#39; RPC</a></div>
+  </header>
+  <div class="body"><p>Lately I&rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
+
+<p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
+</div>
+
+  
+  <footer>
+    <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="btn btn-default">Read More…</a>
+  </footer>
+  
+</article>
+<hr>
+
+      
+      <article class="li">
+  <header>
+    <div class="date">Fri, Jun 15, 2012</div>
+    <div class="title"><a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/">The YAGNI/NIH conundrum</a></div>
+  </header>
+  <div class="body"><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).</p>
+
+<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.</p>
+</div>
+
+  
+  <footer>
+    <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="btn btn-default">Read More…</a>
+  </footer>
+  
+</article>
+<hr>
+
+      
+      <article class="li">
+  <header>
+    <div class="date">Thu, Feb 16, 2012</div>
+    <div class="title"><a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating virtual FC WWPNs for a storage lab</a></div>
+  </header>
+  <div class="body"><p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
+scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
+
+<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
+</div>
+
+  
+  <footer>
+    <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="btn btn-default">Read More…</a>
+  </footer>
+  
+</article>
+<hr>
+
+      
+      
+
+
+    </div>
+    <div class="col-md-4">
+      
+<aside class="site">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">LatestPosts</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="list-group-item">From Python to Go</a>
+      
+      <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="list-group-item">A subprocess bug? Nah.</a>
+      
+      <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="list-group-item">Buffers will fill up... eventually</a>
+      
+      <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="list-group-item">Why I don&#39;t like &#39;transparent&#39; RPC</a>
+      
+      <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="list-group-item">The YAGNI/NIH conundrum</a>
+      
+      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="list-group-item">Generating virtual FC WWPNs for a storage lab</a>
+      
+      <a href="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/" class="list-group-item">Improving readability and flow control in Python</a>
+      
+    </div>
+  </div>
+
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">category</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/categories/programming" class="list-group-item">programming</a>
+      
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">tag</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/tags/python" class="list-group-item">python</a>
+      
+      <a href="http://philipson.co.il/tags/rpc" class="list-group-item">rpc</a>
+      
+      <a href="http://philipson.co.il/tags/go" class="list-group-item">go</a>
+      
+    </div>
+  </div>
+  
+
+</aside>
+
+
+    </div>
+  </div>
+
+</div>
+      </div>
+    </div>
+
+    <footer class="site">
+      <div class="container">
+        <p>&copy; 2015 Gavrie Philipson</p>
+        <p>Powered by <a href="http://gohugo.io" target="_blank" rel="nofollow">Hugo</a>, Theme <a href="https://github.com/dim0627/hugo_theme_beg" target="_blank" rel="nofollow">beg</a> designed by <a href="http://yet.unresolved.xyz" target="_blank" rel="nofollow">Daisuke Tsuji</a></p>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+  </body>
+</html>
+

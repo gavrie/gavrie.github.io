@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans|Marcellus+SC'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/styles.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/custom.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://philipson.co.il//index.xml">
+
+    
+    <title>Improving readability and flow control in Python - Gavrie&#39;s Blog</title>
+    <meta property='og:title' content="Improving readability and flow control in Python - Gavrie&#39;s Blog">
+    <meta property="og:type" content="article">
+    
+
+    <meta property="og:url" content="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/">
+    
+    
+
+  </head>
+
+  <body>
+
+    <header class="site">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://philipson.co.il/">Gavrie&#39;s Blog</a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse">
+            
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="site">
+      <div class="container">
+
+
+
+<div class="single">
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <article class="single" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+        <meta itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" content="http://philipson.co.il/"/>
+        <meta itemprop="dateModified" content="2012-02-16T00:00:00&#43;00:00">
+        <meta itemprop="headline" content="Improving readability and flow control in Python">
+        <meta itemprop="description" content="Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the readability of the
+code using several techniques that I&rsquo;ll describe below.
+">
+        <meta itemprop="url" content="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/">
+        <div itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+          <meta itemprop="url" content="http://philipson.co.il/images/default.jpg" />
+          <meta itemprop="width" content="800">
+          <meta itemprop="height" content="800">
+        </div>
+        <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <meta itemprop="url" content="http://philipson.co.il/images/logo.jpg">
+            <meta itemprop="width" content="100">
+            <meta itemprop="height" content="100">
+          </div>
+          <meta itemprop="name" content="Gavrie&#39;s Blog">
+        </div>
+        <div itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <meta itemprop="name" content="Gavrie Philipson">
+        </div>
+
+        <header class="article-header">
+          <time itemprop="datePublished" pubdate="pubdate" datetime="2012-02-16T00:00:00&#43;00:00">Thu, Feb 16, 2012</time>
+          <h1 class="article-title">Improving readability and flow control in Python</h1>
+        </header>
+
+        <div class="article-body" itemprop="articleBody">
+          
+
+<p>Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the readability of the
+code using several techniques that I&rsquo;ll describe below.</p>
+
+<h2 id="where-we-started:1df4a958259f970048d6d810a05899d5">Where We Started</h2>
+
+<p>The original code was fairly simple: It decides whether certain &ldquo;dead&rdquo;
+components need to be &ldquo;revived&rdquo;, and presents the user with a prompt to choose
+from one of several actions.
+Depending on the user&rsquo;s choice, the code then proceeds to take the appropriate action:</p>
+
+<pre><code>def revive_dead_components():
+    choice = choose('&quot;I see dead components...&quot;\n'
+       &quot;Do you wish to (r)evive them, (c)ontinue without reviving, or (q)uit?&quot;,
+       { &quot;r&quot;: &quot;revive&quot;, 
+         &quot;c&quot;: &quot;continue&quot;, 
+         &quot;Q&quot;: &quot;quit&quot;}, 
+       default = &quot;quit&quot;)
+
+    if choice == &quot;revive&quot;:
+        revive_components()
+    elif choice == &quot;quit&quot;:
+        raise TestCannotRunException(&quot;Dead components exist&quot;)
+    elif choice == &quot;continue&quot;:
+        pass
+</code></pre>
+
+<h2 id="adding-new-behavior:1df4a958259f970048d6d810a05899d5">Adding New Behavior</h2>
+
+<p>We now wanted to add some new functionality to the above code, namely the ability to
+allow the user to select a <em>subset</em> of the components that he wants to revive.</p>
+
+<p>To make things more foolproof, in case the user chose to revive selected
+components but then neglected to select any components from the list, the code
+would not proceed blindly but rather send the user back to the menu so that he could try again.</p>
+
+<p>The first version of the new code looked like this:</p>
+
+<pre><code>def revive_dead_components():
+    while True:
+        choice = choose('&quot;I see dead components...&quot;\n'
+            &quot;Do you wish to (r)evive them all, (s)elect components to revive, &quot;
+            &quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&quot;,
+            { &quot;r&quot;: &quot;revive&quot;,
+              &quot;s&quot;: &quot;select&quot;, 
+              &quot;c&quot;: &quot;continue&quot;, 
+              &quot;Q&quot;: &quot;quit&quot;},
+            default = &quot;quit&quot;)
+
+        if choice == &quot;revive&quot;:
+            revive_components()
+            break
+        elif choice == &quot;quit&quot;:
+            raise TestCannotRunException(&quot;Dead components exist&quot;)
+        elif choice == &quot;continue&quot;:
+            break
+        elif choice == &quot;select&quot;:
+            selected = show_menu(&quot;Which components would you like to revive?&quot;)
+            if selected:
+                revive_components(selected)
+                break
+            else:
+                logger.info(&quot;Nothing selected...&quot;)
+</code></pre>
+
+<p>To get the required behavior, we used an infinite <code>while True</code> loop that terminates with an
+explicit <code>break</code> when a valid choice is made by the user and reiterates otherwise.
+This ensures that we don&rsquo;t continue until a valid choice is made.</p>
+
+<h2 id="can-we-do-better:1df4a958259f970048d6d810a05899d5">Can We Do Better?</h2>
+
+<p>The problem with the above method is that the flow control is not immediately
+apparent when looking at the code: It&rsquo;s not obvious that the infinite loop
+should actually terminate in all but one case. A future developer could easily
+break this behavior.</p>
+
+<p>In addition, the <code>if</code>/<code>elif</code> ladder becomes a bit too long to read
+comfortably.</p>
+
+<p>The second iteration was meant to make the flow control clearer:</p>
+
+<pre><code>def revive_dead_components():
+    class InvalidChoiceError(Exception): pass
+
+    def choice_revive():    revive_components()
+    def choice_quit():      raise TestCannotRunException(&quot;Dead components exist&quot;)
+    def choice_continue_(): pass
+    def choice_select():
+        selected = show_menu(&quot;Which components would you like to revive?&quot;)
+        if not selected:
+            logger.info(&quot;Nothing selected...&quot;)
+            raise InvalidChoiceError
+
+        revive_components(selected)
+
+    while True:
+        choice = choose('&quot;I see dead components...&quot;\n'
+            &quot;Do you wish to (r)evive them all, (s)elect components to revive, &quot;
+            &quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&quot;,
+            { &quot;r&quot;: &quot;revive&quot;,
+              &quot;s&quot;: &quot;select&quot;, 
+              &quot;c&quot;: &quot;continue&quot;, 
+              &quot;Q&quot;: &quot;quit&quot;},
+            default = &quot;quit&quot;)
+        try:
+            locals().get('choice_%s' % choice)()
+            break
+        except InvalidChoiceError:
+            continue
+</code></pre>
+
+<p>We use several techniques here to improve the clarity of the code:</p>
+
+<ul>
+<li><p>We used internal functions to encapsulate the possible actions to take. The
+advantage of using internal functions is that it keeps the external namespace
+clean, and the naming of each function makes its purpose quite clear.</p></li>
+
+<li><p>We used a dictionary instead of the <code>if</code>/<code>elif</code> construct. Since Python
+doesn&rsquo;t have a <code>switch</code> or <code>case</code> statement, this is a more readable replacement.</p></li>
+
+<li><p>We decided to use an exception to signify, well, <em>exceptional</em> flow control: If the user hasn&rsquo;t
+selected any components, this warrants exceptional behavior. This technique is
+much debated, but we felt like it was appropriate in this case.</p></li>
+
+<li><p>The function name to be called is determined dynamically at runtime from the
+user&rsquo;s selection. The idea was to avoid code duplication by needing to specify the names
+of the functions yet again (but see below).</p></li>
+</ul>
+
+<h2 id="removing-some-coolness-for-readability:1df4a958259f970048d6d810a05899d5">Removing Some Coolness For Readability</h2>
+
+<p>My colleague pointed out that the <code>locals().get('choice_%s' % choice)()</code> trick
+is not quite readable. I agreed, and was happy to accept his improved proposal:</p>
+
+<pre><code>def revive_dead_components():
+
+    # ...
+
+    while True:
+        choice_func = choose('&quot;I see dead components...&quot;\n'
+            &quot;Do you wish to (r)evive them all, (s)elect components to revive, &quot;
+            &quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&quot;,
+            dict(r = choice_revive,
+                 s = choice_select, 
+                 c = choice_continue,
+                 Q = choice_quit
+                 ),
+            default = &quot;quit&quot;)
+        try:
+            choice_func()
+            break
+        except InvalidChoiceError:
+            continue
+</code></pre>
+
+<p>This version has several advantages:</p>
+
+<ul>
+<li><p>It doesn&rsquo;t use &ldquo;magic&rdquo; to achieve the selection of the function. Duplication
+is better than magic in this case, since it makes the code more readable.</p></li>
+
+<li><p>The dictionary is created using the <code>dict()</code> syntax instead of the <code>{...}</code>
+syntax, which gets rid of a lot of punctuation and makes the code clearer.</p></li>
+</ul>
+
+<h2 id="conclusion:1df4a958259f970048d6d810a05899d5">Conclusion</h2>
+
+<p>It turns out that even in such a simple piece of code, several programming
+techniques can be used to make the code clearer to read and maintain.</p>
+
+<p>See you next time!</p>
+
+        </div>
+
+
+        <aside>
+          <div class="section"><a href="http://philipson.co.il/tags/python" class="tag">python</a> </div>
+
+          <div class="section share">
+            <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fphilipson.co.il%2fpost%2fimproving-readability-and-flow-control-in-python%2f&t=Improving%20readability%20and%20flow%20control%20in%20Python" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+            <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fphilipson.co.il%2fpost%2fimproving-readability-and-flow-control-in-python%2f&text=Improving%20readability%20and%20flow%20control%20in%20Python&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+            <a href="https://plus.google.com/share?url=http%3a%2f%2fphilipson.co.il%2fpost%2fimproving-readability-and-flow-control-in-python%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+            <a href="http://getpocket.com/edit?url=http%3a%2f%2fphilipson.co.il%2fpost%2fimproving-readability-and-flow-control-in-python%2f&title=Improving%20readability%20and%20flow%20control%20in%20Python" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+          </div>
+
+          
+          
+          
+        </aside>
+
+      </article>
+
+    </div>
+    <div class="col-md-4">
+      
+<aside class="site">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">LatestPosts</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="list-group-item">From Python to Go</a>
+      
+      <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="list-group-item">A subprocess bug? Nah.</a>
+      
+      <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="list-group-item">Buffers will fill up... eventually</a>
+      
+      <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="list-group-item">Why I don&#39;t like &#39;transparent&#39; RPC</a>
+      
+      <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="list-group-item">The YAGNI/NIH conundrum</a>
+      
+      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="list-group-item">Generating virtual FC WWPNs for a storage lab</a>
+      
+      <a href="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/" class="list-group-item">Improving readability and flow control in Python</a>
+      
+    </div>
+  </div>
+
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">category</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/categories/programming" class="list-group-item">programming</a>
+      
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">tag</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/tags/python" class="list-group-item">python</a>
+      
+      <a href="http://philipson.co.il/tags/go" class="list-group-item">go</a>
+      
+      <a href="http://philipson.co.il/tags/rpc" class="list-group-item">rpc</a>
+      
+    </div>
+  </div>
+  
+
+</aside>
+
+
+    </div>
+  </div>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site">
+      <div class="container">
+        <p>&copy; 2015 Gavrie Philipson</p>
+        <p>Powered by <a href="http://gohugo.io" target="_blank" rel="nofollow">Hugo</a>, Theme <a href="https://github.com/dim0627/hugo_theme_beg" target="_blank" rel="nofollow">beg</a> designed by <a href="http://yet.unresolved.xyz" target="_blank" rel="nofollow">Daisuke Tsuji</a></p>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+  </body>
+</html>
+

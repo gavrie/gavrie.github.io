@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Gavrie&#39;s Blog</title>
+    <link>http://philipson.co.il/post/</link>
+    <description>Recent content in Posts on Gavrie&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 13 May 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://philipson.co.il/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>From Python to Go</title>
+      <link>http://philipson.co.il/post/goodbye-python-hello-go/</link>
+      <pubDate>Wed, 13 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/goodbye-python-hello-go/</guid>
+      <description>
+
+&lt;p&gt;I have been programming in Python in one capacity or another since around 2000. That&amp;rsquo;s almost 15 years. Over those years, I&amp;rsquo;ve come to know the language fairly well. I originally came to Python from C and Perl, and it was quite refreshing to come to a language that is simple to use, with a consistent syntax and library, while being quite powerful. I&amp;rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible.&lt;/p&gt;
+
+&lt;p&gt;Ultimately, this led me to Go. Below, I&amp;rsquo;ll describe the process that led me there.&lt;/p&gt;
+
+&lt;h1 id=&#34;goodbye-python:b7213dc879a25f4a1845feb667d36b1d&#34;&gt;Goodbye, Python&lt;/h1&gt;
+
+&lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
+
+&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target.&lt;/p&gt;
+
+&lt;p&gt;Another pain point is concurrency: A modern application need to do several things concurrently. Raw multithreading with mutexes and semaphores is an old and rusty programming model, which in any case is not very suitable to Python with its GIL limitation. And Gevent is very nice, but not a standard part of the language and very hard to debug.&lt;/p&gt;
+
+&lt;p&gt;Yet another one is deployment: Python, and any other dynamic language, has a lot of baggage when deploying. It needs a runtime environment with all dependencies present. Yes, we have virtualenv and it&amp;rsquo;s great, but things could be made simpler.&lt;/p&gt;
+
+&lt;p&gt;So, we&amp;rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?&lt;/p&gt;
+
+&lt;h1 id=&#34;hello-go:b7213dc879a25f4a1845feb667d36b1d&#34;&gt;Hello, Go&lt;/h1&gt;
+
+&lt;p&gt;At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?&lt;/p&gt;
+
+&lt;p&gt;I got the challenge to convince my colleagues to give Go a try. Several alternatives were suggested. To begin with, several other languages were already in use at out company, including C, Java, Haskell, and Ruby. It would make sense to see if one of those would fit before adding yet another language to the pack. In addition, some colleagues suggested Scala and C++.&lt;/p&gt;
+
+&lt;p&gt;For me, the matter was simple: Ruby is too similar to Python with its advantages and disadvantages. C, while being great for a high performance software core, is too low level for developing a whole automation solution. C++ is much too complicated a beast, and I don&amp;rsquo;t like it. Java sounds like an obvious contender, but it&amp;rsquo;s getting long in the tooth and I wanted something more modern and less &amp;ldquo;enterprisey&amp;rdquo;. Haskell sounds wonderful, but has a reputation of being hard to get right. Its acceptance in the industry is also less than I would hope for. Scala sounds nice, but would mainly benefit projects that already use the JVM.&lt;/p&gt;
+
+&lt;p&gt;Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.&lt;/p&gt;
+
+&lt;h1 id=&#34;what-i-liked-about-go:b7213dc879a25f4a1845feb667d36b1d&#34;&gt;What I liked about Go&lt;/h1&gt;
+
+&lt;p&gt;So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with &lt;code&gt;var&lt;/code&gt;, the &lt;code&gt;:=&lt;/code&gt; operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&amp;rsquo;s Turbo Pascal (yes, I&amp;rsquo;m disclosing my age here).&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;High level constructs such as slices and maps are built into the language with their own syntax.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;High order functions and closures are supported.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: &lt;code&gt;godoc&lt;/code&gt; handles documentation; &lt;code&gt;gofmt&lt;/code&gt; formats code consistently; &lt;code&gt;gocode&lt;/code&gt; autocompletes your code by analysis of actually built code so its results are precise; &lt;code&gt;gorename&lt;/code&gt; handles renames in a type-safe way; &lt;code&gt;godef&lt;/code&gt; find the definition of every construct you point it at; &lt;code&gt;oracle&lt;/code&gt; does amazing code analysis that gives you insight into the flow of your code. Combine all those with &lt;code&gt;vim-go&lt;/code&gt; which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Concurrency! Channels are Go&amp;rsquo;s way of handling concurrency and they&amp;rsquo;re marvelous. Go is the only language I&amp;rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&amp;rsquo;s &lt;code&gt;gevent&lt;/code&gt;, but in Go it&amp;rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;what-took-time-to-get-used-to:b7213dc879a25f4a1845feb667d36b1d&#34;&gt;What took time to get used to&lt;/h1&gt;
+
+&lt;p&gt;Some things in Go took time to get used to, and I&amp;rsquo;m not sure yet whether I like them or not:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Error handling is explicit. Errors are returned as values from functions (using a special &lt;code&gt;error&lt;/code&gt; type). Together with multi-valued returns, this is much better than C&amp;rsquo;s error handling, but much less intuitive than Python&amp;rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like &lt;code&gt;errcheck&lt;/code&gt; help ensure that you don&amp;rsquo;t miss any. While it&amp;rsquo;s much easier to write code using exceptions, it&amp;rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &amp;ldquo;end user&amp;rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use &lt;code&gt;panic&lt;/code&gt;/&lt;code&gt;recover&lt;/code&gt; for such code.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A subprocess bug? Nah.</title>
+      <link>http://philipson.co.il/post/a-subprocess-bug-nah/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/a-subprocess-bug-nah/</guid>
+      <description>
+
+&lt;p&gt;A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import subprocess
+&amp;gt;&amp;gt;&amp;gt; subprocess.check_call(&amp;quot;false&amp;quot;)
+0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;false&lt;/code&gt; command always exits with a nonzero exit code. The expected behavior, as confirmed on another machine, would be as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; subprocess.check_call(&amp;quot;false&amp;quot;)
+Traceback (most recent call last):
+  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;
+  File &amp;quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py&amp;quot;, line 542, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit status 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, what happens is that &lt;code&gt;subprocess&lt;/code&gt; thinks that the child process exited successfully, even though it did not.&lt;/p&gt;
+
+&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
+
+&lt;p&gt;So, what is going on here? You may want to think it through and see if you can find the problem.&lt;/p&gt;
+
+&lt;h2 id=&#34;diving-in:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Diving In&lt;/h2&gt;
+
+&lt;p&gt;At first sight, this looks like a problem with either Python itself or with the OS (Linux, in our case). How could this happen?  The colleague who first encountered this issue looked at it through the Python debugger, and got as far as the &lt;code&gt;wait()&lt;/code&gt; function of &lt;code&gt;subprocess&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def wait(self):
+    &amp;quot;&amp;quot;&amp;quot;Wait for child process to terminate.  Returns returncode attribute.&amp;quot;&amp;quot;&amp;quot;
+    while self.returncode is None:
+        try:
+            pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+        except OSError as e:
+            if e.errno != errno.ECHILD:
+                raise
+            # This happens if SIGCLD is set to be ignored or waiting
+            # for child processes has otherwise been disabled for our
+            # process.  This child is dead, we can&#39;t get the status.
+            pid = self.pid
+            sts = 0
+        # Check the pid and loop as waitpid has been known to return
+        # 0 even without WNOHANG in odd situations.  issue14396.
+        if pid == self.pid:
+            self._handle_exitstatus(sts)
+    return self.returncode
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As seen in the code, if &lt;code&gt;os.waitpid&lt;/code&gt; on a child process fails with &lt;code&gt;ECHILD&lt;/code&gt;, an exception is not raised. The reason for this is that &lt;code&gt;ECHILD&lt;/code&gt; is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls &lt;code&gt;wait()&lt;/code&gt; on it. In the interim, the process is a so-called &amp;ldquo;zombie&amp;rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.&lt;/p&gt;
+
+&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&amp;rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores &lt;code&gt;SIGCHLD&lt;/code&gt; since it isn&amp;rsquo;t interested in the exit code of its child processes, it makes sense for &lt;code&gt;waitpid()&lt;/code&gt; to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.&lt;/p&gt;
+
+&lt;h2 id=&#34;back-to-the-code:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Back to the Code&lt;/h2&gt;
+
+&lt;p&gt;Do we by any chance ignore &lt;code&gt;SIGCHLD&lt;/code&gt; in our application? The chance we do is very small, since we run a lot of child processes and depend on their state all their time, and this fails only occasionally. A quick &lt;code&gt;git grep&lt;/code&gt; on the code shows that we &lt;em&gt;do&lt;/em&gt; ignore &lt;code&gt;SIGCHLD&lt;/code&gt; in one specific standalone Python script, but that script is not part of the application and is run on a remote machine on which we indeed &lt;em&gt;should&lt;/em&gt; ignore this signal.&lt;/p&gt;
+
+&lt;p&gt;At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &amp;ldquo;Can&amp;rsquo;t reproduce&amp;rdquo;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.&lt;/p&gt;
+
+&lt;h2 id=&#34;a-week-later:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;A Week Later&lt;/h2&gt;
+
+&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
+
+&lt;p&gt;We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored &lt;code&gt;SIGCHLD&lt;/code&gt;. To check if this was the case, we ran the following in the debugger:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; signal.getsignal(signal.SIGCHLD)
+1
+&amp;gt;&amp;gt;&amp;gt; signal.SIG_IGN
+1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Indeed &amp;ndash; &lt;code&gt;SIGCHLD&lt;/code&gt; is being ignored by our application. How can this be? Nowhere in the code do we ignore &lt;code&gt;SIGCHLD&lt;/code&gt;, except for that standalone script, which runs only on the remote machine. Or does it?&lt;/p&gt;
+
+&lt;h2 id=&#34;checking-our-assumptions:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Checking our Assumptions&lt;/h2&gt;
+
+&lt;p&gt;At this point, the only thing left to do was to look at that script. It includes the following line, right at the top.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Could we, by any chance, have &lt;code&gt;imported&lt;/code&gt; this script as a module in our application, therefore running the above code as a side effect?&lt;/p&gt;
+
+&lt;p&gt;It turns out we were doing exactly that. In recently added code, under specific circumstances, our application imports the module in order to get its filename and to deploy it to the remote machine. While normally &lt;code&gt;import&lt;/code&gt; should be clean of side effects, the above &lt;code&gt;signal&lt;/code&gt; code appears at the module level and not inside a function, and is therefore run when imported. This contaminates our application and causes it to ignore &lt;code&gt;SIGCHLD&lt;/code&gt; with the described consequences.&lt;/p&gt;
+
+&lt;p&gt;Moving this line fixed the problem.&lt;/p&gt;
+
+&lt;h2 id=&#34;question-everything:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Question Everything&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
+
+&lt;p&gt;The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this &lt;em&gt;could not happen&lt;/em&gt; since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;As a lesson from this, aside from some debugging ideas, please remember: Don&amp;rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python &lt;code&gt;if __name__ == &#39;__main__&#39;&lt;/code&gt; construct.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Buffers will fill up... eventually</title>
+      <link>http://philipson.co.il/post/buffers-will-fill-up-eventually/</link>
+      <pubDate>Wed, 18 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/buffers-will-fill-up-eventually/</guid>
+      <description>
+
+&lt;p&gt;&lt;em&gt;(Updated version: Incorporates fixes from reader comments)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;A colleague asked me to look into a problem with him, mentioning that &amp;ldquo;Tlib hangs when we run it&amp;rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.&lt;/p&gt;
+
+&lt;p&gt;Running the code, and interrupting it with &lt;code&gt;^C&lt;/code&gt; when it hangs, turned up a result similar to the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;^CTraceback (most recent call last):
+  File &amp;quot;./execute_wrong.py&amp;quot;, line 8, in &amp;lt;module&amp;gt;
+    retval, out, err = execute(&amp;quot;git ls-remote&amp;quot;)
+  File &amp;quot;./execute_wrong.py&amp;quot;, line 5, in execute
+    retval = p.wait()
+  File &amp;quot;/usr/lib/python2.7/subprocess.py&amp;quot;, line 1376, in wait
+    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+  File &amp;quot;/usr/lib/python2.7/subprocess.py&amp;quot;, line 476, in _eintr_retry_call
+    return func(*args)
+KeyboardInterrupt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Interesting. The code seems to hang while waiting for the &lt;code&gt;git&lt;/code&gt; child process to terminate. However, running &lt;code&gt;git ls-remote&lt;/code&gt; from the command line works fine, so why does it hang when run from the code?&lt;/p&gt;
+
+&lt;h2 id=&#34;investigating-the-issue:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;Investigating the Issue&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at the code history to see if anything has changed recently.&lt;/p&gt;
+
+&lt;p&gt;Nope. A quick &lt;code&gt;git blame&lt;/code&gt; shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see what is happening while waiting for the &lt;code&gt;git&lt;/code&gt; child process to finish, by running &lt;code&gt;strace&lt;/code&gt; on the process:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ strace -p 5774
+Process 5774 attached
+write(1, &amp;quot;pull/624/merge\n2fe9da91f5a4b5ba3&amp;quot;..., 4096
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;OK. The process is trying to write to &lt;code&gt;stdout&lt;/code&gt;, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at the size of the data returned by the child process:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65572
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Aha! This number looks suspiciously like &amp;ldquo;a bit more than 64k&amp;rdquo;. Which affirms our hypothesis. Let&amp;rsquo;s try to reduce its size by deleting some old remote branches:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git push origin :old_branch1
+$ git push origin :old_branch2
+...
+$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65368
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now to run the program again&amp;hellip; It worked! The program continues to run successfully.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-code:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;The Code&lt;/h2&gt;
+
+&lt;p&gt;Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+import subprocess
+
+def execute(command):
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    retval = p.wait()
+    return retval, p.stdout.read(), p.stderr.read()
+
+retval, out, err = execute(&#34;git ls-remote&#34;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The problem is that we &lt;code&gt;wait()&lt;/code&gt; for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&amp;rsquo;s buffer. Once it exceeded the buffer&amp;rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.&lt;/p&gt;
+
+&lt;h2 id=&#34;fixing-the-problem:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;Fixing the Problem&lt;/h2&gt;
+
+&lt;p&gt;Now that we see the problem, fixing it is simple: First read, then wait.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+import subprocess
+
+def execute(command):
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out = p.stdout.read()
+    err = p.stderr.read()
+    retval = p.wait()
+    return retval, out, err
+
+retval, out, err = execute(&#34;git ls-remote&#34;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unfortunately, as Alon Horev and Baruch Even pointed out in their comments, this is still not correct. Since we try to read from &lt;code&gt;stdout&lt;/code&gt; until it gets an EOF and only then try to read from &lt;code&gt;stderr&lt;/code&gt;, the &lt;code&gt;stderr&lt;/code&gt; pipe&amp;rsquo;s buffer can fill up if the child process writes a lot of data to it.&lt;/p&gt;
+
+&lt;p&gt;The correct solution involves reading from both pipes in tandem. The &lt;code&gt;communicate()&lt;/code&gt; method of the &lt;code&gt;Popen&lt;/code&gt; class implements this using the &lt;code&gt;select()&lt;/code&gt; system call on POSIX, and with threads on Windows platforms.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&amp;rsquo;t assume that it will be OK &amp;ndash; because it will come back to bite you, or at least some future user of your code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Why I don&#39;t like &#39;transparent&#39; RPC</title>
+      <link>http://philipson.co.il/post/why-i-dont-like-rpc/</link>
+      <pubDate>Wed, 20 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/why-i-dont-like-rpc/</guid>
+      <description>
+
+&lt;p&gt;Lately I&amp;rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.&lt;/p&gt;
+
+&lt;p&gt;One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.&lt;/p&gt;
+
+&lt;p&gt;Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &amp;ndash; be it shell commands, Python code or anything else.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-problem-with-rpc:742f6a9ac7b9ea24732f29c36589628e&#34;&gt;The Problem With RPC&lt;/h2&gt;
+
+&lt;p&gt;Our existing codebase makes heavy use of &lt;a href=&#34;http://rpyc.sourceforge.net/&#34;&gt;RPyC&lt;/a&gt;, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.&lt;/p&gt;
+
+&lt;p&gt;Using a variant of RPC sounds like a great solution. RPyC is also a very nice and seamless tool. Code that is running remotely looks just like code that is running locally. Which is the exact reason for why I &lt;em&gt;don&amp;rsquo;t&lt;/em&gt; like using it: I don&amp;rsquo;t want transparent RPC! I want it to be immediately clear which code runs locally and which code runs remotely. &amp;ldquo;Seamless&amp;rdquo; RPC encourages the writing of spaghetti code, because it&amp;rsquo;s so easy to mix local and remote code. This makes it deceptively easy to write distributed code without thinking about the design of the API and about which parts should reside on each side of the connection. Code can quickly become an intermix of RPC calls with local calls, causing it to be an opaque blob that is impossible to test or debug. In addition, its performance can quickly deteriorate: Objects are being serialized back and forth all the time, and tens of implicit network round-trips introduce latency all around the code.&lt;/p&gt;
+
+&lt;p&gt;Of course, the tool is not necessarily at blame here. The problem may lie with those developers who use it incorrectly, instead of designing a clean distributed model around it &amp;ndash; which is certainly possible. But I tend to find that the thoughts and practices of developers become molded to the tools they have at hand. A tool that encourages calling remote code without a conscious effort makes it too easy to avoid thinking about the distributed design.&lt;/p&gt;
+
+&lt;p&gt;So, yes, I don&amp;rsquo;t like RPC, especially not &lt;em&gt;stateful RPC&lt;/em&gt; that supports access of remote objects by reference. I can live with simple designs like XML-RPC, supporting value-based RPC with native data types, which are fairly easy to understand and debug: There are no remote objects, just data that is passing back and forth. But I dislike tools that try to hide everything under a shiny exterior, and try to act as if remote code were just the same as local code, and as if remote objects actually exist locally with magic proxies doing all the work behind the scenes.&lt;/p&gt;
+
+&lt;p&gt;The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&amp;rsquo;re at all interested in this debate, I heartily recommend reading some of the &lt;a href=&#34;http://steve.vinoski.net/blog/category/rpc/&#34;&gt;articles by Steve Vinoski&lt;/a&gt;, who is a leading expert on the matter and writes on it very eloquently. &lt;a href=&#34;http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf&#34;&gt;This presentation&lt;/a&gt; summarizes his viewpoint quite nicely, and I quite agree with many of his points.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-now:742f6a9ac7b9ea24732f29c36589628e&#34;&gt;What Now?&lt;/h2&gt;
+
+&lt;p&gt;So, I&amp;rsquo;m looking for a good tool to create a distributed architecture that is based on explicit message passing. It should be able to send and receive native Python data types by value. It should be nicely designed, clearly documented, and should make the distinction between local code and remote code crystal clear to the developer.&lt;/p&gt;
+
+&lt;p&gt;I am currently investigating and evaluating several solutions. Most of them are based on the excellent ZeroMQ messaging library, along with some kind of serialization tool such as MsgPack. There are several good candidates. I&amp;rsquo;ll write more about it as I make progress.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The YAGNI/NIH conundrum</title>
+      <link>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</link>
+      <pubDate>Fri, 15 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</guid>
+      <description>
+
+&lt;p&gt;&lt;em&gt;Disclaimer:&lt;/em&gt; This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&amp;rsquo;re not a software developer (or a technical person at all).&lt;/p&gt;
+
+&lt;p&gt;One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&amp;rsquo;re one of those people who are nodding your head now and smiling), so I&amp;rsquo;ll explain.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/YAGNI&#34;&gt;YAGNI&lt;/a&gt; stands for &amp;ldquo;You ain&amp;rsquo;t gonna need it&amp;rdquo;, and refers to a software development principle according to which you don&amp;rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Not_invented_here&#34;&gt;NIH&lt;/a&gt; stands for &amp;ldquo;Not Invented Here&amp;rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &amp;ldquo;Hey, I can do this myself, so why should I use this existing project&amp;rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-conundrum:a32192c9e9e715335e0f3e4db49aae16&#34;&gt;The Conundrum&lt;/h2&gt;
+
+&lt;p&gt;I consider myself a firm believer in the YAGNI principle, and a staunch opponent of the NIH syndrome: I try to avoid writing code that could stay unwritten, since I consider a large codebase a liability rather than an asset. Writing more code means having to expend more resources on maintaining it. In many corporate cultures, it also decreases the ability to respond to change, due to a reluctance to throw away existing code (which is often due to sentimental reasons rather than objective ones).&lt;/p&gt;
+
+&lt;p&gt;Now, as software developers, many of us would much rather write new code than maintain a bunch of old code.&lt;/p&gt;
+
+&lt;p&gt;One reason for this is that old code bases tend to have accumulated a lot of baggage over the years, and we love the idea of getting rid of all that and starting with a fresh, blank page: All those old bugs can be forgotten, all those workarounds and little tricks can be left behind.&lt;/p&gt;
+
+&lt;p&gt;Another reason is that good developers love to learn new ideas and techniques and are itching to try them out. Seeing our own old code after a few months or years make us cringe with the feeling, &amp;ldquo;who was the idiot that wrote this?!&amp;rdquo;. We are sure that the code we&amp;rsquo;re going to write now, with our new and shiny tools, will be better by leaps and bounds. And then the cycle starts all over again.&lt;/p&gt;
+
+&lt;h2 id=&#34;coding-in-the-corporate-world:a32192c9e9e715335e0f3e4db49aae16&#34;&gt;Coding in the Corporate World&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;d like to argue that in the corporate world, as opposed to the Open Source world, writing new code can be an irresponsible thing to do. In the corporate world, we write code not just to scratch our own itches. We&amp;rsquo;re creating something that may very well continue to exist long after we have moved on to greener pastures. Other people will have to maintain what we created. Adhering to good software engineering principles means that not only our own lives will be easier down the road, but also those of other people.&lt;/p&gt;
+
+&lt;p&gt;Now, those who profess not to care about the experience of other people, or who think that at the very least it is less important that their own experience, may want to consider a few points:&lt;/p&gt;
+
+&lt;p&gt;First of all, those &amp;ldquo;other people&amp;rdquo; may be yourselves a few months or years from now, trying to adapt your own code to new requirements. Suddenly, all this code is no longer new nor fun, and you&amp;rsquo;ll have to dig in to adapt it to the required changes.&lt;/p&gt;
+
+&lt;p&gt;Second, those other people may be your future co-workers, managers or employees. They will remember what you left them with.&lt;/p&gt;
+
+&lt;p&gt;Third, people will appreciate your efforts to make their lives easier (or at least won&amp;rsquo;t hate you for making it harder). This increases the likelihood that they will want to work with you in the future.&lt;/p&gt;
+
+&lt;p&gt;So all this makes sense even from a perfectly selfish point of view.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:a32192c9e9e715335e0f3e4db49aae16&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;When faced with a new software problem to solve, I always spend a significant amount of energy in investigating existing solutions and see if they can work for me. I will resort to writing code only if I fail to find a solution that has enough similarity or has a good enough quality. Of course, as my friend Eli claims, this may very well mean that I often pass on the chance to be creative by deferring to existing solutions. But that&amp;rsquo;s something I can live with: I feel the need to reach the right balance between creativity and responsibility.&lt;/p&gt;
+
+&lt;p&gt;I can find creativity in ways other than writing a lot of new code: I&amp;rsquo;d rather leverage existing code that I like and that is maintained by a third party (which becomes more and more commong with the huge Open Source ecosystem). It is more important to me to feel happy with a solution than it is to prove to myself that I can solve a problem that has been solved before by others. That just seems so wasteful.&lt;/p&gt;
+
+&lt;p&gt;In an upcoming post, I will analyze a specific case that I encountered in light of the above thoughts.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Generating virtual FC WWPNs for a storage lab</title>
+      <link>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</link>
+      <pubDate>Thu, 16 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</guid>
+      <description>
+
+&lt;p&gt;At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
+scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-problem:80145b1be4d0162d01385de709b1581f&#34;&gt;The Problem&lt;/h2&gt;
+
+&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&amp;rsquo;t be using the same WWPN and thereby confuse the fabric.&lt;/li&gt;
+&lt;li&gt;The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;With physical (as opposed to virtual) HBAs, this is managed by allocating a OUI (Organizationally Unique Identifier) to every vendor, who in turns tacks on his own vendor-specific serial number to come up with a unique WWPN. This is similar to the MAC address allocation of Ethernet, Wi-Fi and Bluetooth devices.&lt;/p&gt;
+
+&lt;p&gt;The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.&lt;/p&gt;
+
+&lt;h2 id=&#34;some-background:80145b1be4d0162d01385de709b1581f&#34;&gt;Some Background&lt;/h2&gt;
+
+&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s assume that we have an FC HBA with a WWPN of &lt;code&gt;10:00:00:00:c9:93:53:6d&lt;/code&gt;.
+We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;10:00:vv:vv:vv:ss:ss:ss
+\___/ \______/ \______/
+  |      |        |
+  |      |        |
+  |      |         \__ Vendor-specific part (24 bits)
+  |      |
+  |       \__ Vendor OUI (24 bits)
+  |
+   \__ This WWPN uses the Original WWN format
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;According to this diagram, our sample WWPN contains the following information:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;10:00&lt;/code&gt; prefix means that it uses the original WWN format (a.k.a. &amp;ldquo;NAA IEEE 48-bit address format&amp;rdquo;), as opposed to newer formats that starting with another sequence&lt;/li&gt;
+&lt;li&gt;The vendor is &lt;code&gt;00:00:c9&lt;/code&gt;, which is an OUI belonging to Emulex Corporation
+(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;The vendor-specific part is &lt;code&gt;93:53:6d&lt;/code&gt;, which is 24 bits long&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;using-one-wwpn-to-generate-many-new-ones:80145b1be4d0162d01385de709b1581f&#34;&gt;Using One WWPN to Generate Many New Ones&lt;/h2&gt;
+
+&lt;p&gt;For every physical WWPN, we need to be able to generate up to 256 virtual WWPNs to be used with NPIV (assuming that each HBA port supports up to 256 virtual ports). The trick lies in reusing the vendor-specific part to generate multiple WWPNs per physical port, each of which would be guaranteed to be unique throughout the lab.&lt;/p&gt;
+
+&lt;p&gt;For that, we rely on the existence of a newer WWN format (&amp;ldquo;NAA IEEE Registered&amp;rdquo;) that has more space for the vendor-specific part:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;5v:vv:vv:vs:ss:ss:ss:ss
+|\_______/\___________/
+|   |        |
+|   |        |
+|   |         \__ Vendor-specific part (extended to 36 bits)
+|   |
+|    \__ Vendor OUI (still 24 bits)
+|
+ \__ Newer WWN format (NAA IEEE Registered)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Good, we now have 36 bits for the vendor-specific part!&lt;/p&gt;
+
+&lt;p&gt;We will use the larger vendor-specific field to include &lt;em&gt;both&lt;/em&gt; the vendor-specific part of the physical ports WWPN (which is just 24 bits), &lt;em&gt;and&lt;/em&gt; our own 12-bit custom part. This will let us generate up to 2&lt;sup&gt;12&lt;/sup&gt; = 4096 virtual ports per physical port, which is more than enough.&lt;/p&gt;
+
+&lt;p&gt;Just to be safe, and to avoid a future clash with HBAs from the same vendor who might use the new numbering scheme as well, we&amp;rsquo;ll modify the OUI to a currently unused one (&lt;code&gt;0000c8&lt;/code&gt; instead of &lt;code&gt;0000c9&lt;/code&gt;). This is of course not 100% future-proof, but is good enough for our purposes.&lt;/p&gt;
+
+&lt;p&gt;This leads us to the following range of generated WWPNs:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Original WWPN:
+
+    10:00:00:00:c9:93:53:6d, semantically represented as:
+
+    1000 0000c9 93536d
+         \____/ \____/
+           |      |
+         vendor   |
+                serial
+
+Generated WWPN range:
+
+    5 0000c8 93536d 000
+    5 0000c8 93536d 001
+    5 0000c8 93536d 002
+    ...
+    5 0000c8 93536d fff
+      \____/ \____/ \_/
+        |      |     |
+      vendor   |    custom
+             serial
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;conclusion:80145b1be4d0162d01385de709b1581f&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;While still being a hack, the above scheme allows us to generate as many WWPNs as we need.&lt;/p&gt;
+
+&lt;p&gt;It has the advantage of being intuitive, since it is easy to determine just by looking at the WWPNs which ones of them are physical (starting with &lt;code&gt;1000 0000c9&lt;/code&gt;) and which are virtual (starting with &lt;code&gt;5 0000c8&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;It also makes it easy to see which virtual WWPNs belong to each physical port, which is important for debugging purposes: The serial number of the physical port (&lt;code&gt;93536d&lt;/code&gt;) is part of the virtual port&amp;rsquo;s WWPN as well.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Improving readability and flow control in Python</title>
+      <link>http://philipson.co.il/post/improving-readability-and-flow-control-in-python/</link>
+      <pubDate>Thu, 16 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/improving-readability-and-flow-control-in-python/</guid>
+      <description>
+
+&lt;p&gt;Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the readability of the
+code using several techniques that I&amp;rsquo;ll describe below.&lt;/p&gt;
+
+&lt;h2 id=&#34;where-we-started:1df4a958259f970048d6d810a05899d5&#34;&gt;Where We Started&lt;/h2&gt;
+
+&lt;p&gt;The original code was fairly simple: It decides whether certain &amp;ldquo;dead&amp;rdquo;
+components need to be &amp;ldquo;revived&amp;rdquo;, and presents the user with a prompt to choose
+from one of several actions.
+Depending on the user&amp;rsquo;s choice, the code then proceeds to take the appropriate action:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+    choice = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+       &amp;quot;Do you wish to (r)evive them, (c)ontinue without reviving, or (q)uit?&amp;quot;,
+       { &amp;quot;r&amp;quot;: &amp;quot;revive&amp;quot;, 
+         &amp;quot;c&amp;quot;: &amp;quot;continue&amp;quot;, 
+         &amp;quot;Q&amp;quot;: &amp;quot;quit&amp;quot;}, 
+       default = &amp;quot;quit&amp;quot;)
+
+    if choice == &amp;quot;revive&amp;quot;:
+        revive_components()
+    elif choice == &amp;quot;quit&amp;quot;:
+        raise TestCannotRunException(&amp;quot;Dead components exist&amp;quot;)
+    elif choice == &amp;quot;continue&amp;quot;:
+        pass
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;adding-new-behavior:1df4a958259f970048d6d810a05899d5&#34;&gt;Adding New Behavior&lt;/h2&gt;
+
+&lt;p&gt;We now wanted to add some new functionality to the above code, namely the ability to
+allow the user to select a &lt;em&gt;subset&lt;/em&gt; of the components that he wants to revive.&lt;/p&gt;
+
+&lt;p&gt;To make things more foolproof, in case the user chose to revive selected
+components but then neglected to select any components from the list, the code
+would not proceed blindly but rather send the user back to the menu so that he could try again.&lt;/p&gt;
+
+&lt;p&gt;The first version of the new code looked like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+    while True:
+        choice = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+            &amp;quot;Do you wish to (r)evive them all, (s)elect components to revive, &amp;quot;
+            &amp;quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&amp;quot;,
+            { &amp;quot;r&amp;quot;: &amp;quot;revive&amp;quot;,
+              &amp;quot;s&amp;quot;: &amp;quot;select&amp;quot;, 
+              &amp;quot;c&amp;quot;: &amp;quot;continue&amp;quot;, 
+              &amp;quot;Q&amp;quot;: &amp;quot;quit&amp;quot;},
+            default = &amp;quot;quit&amp;quot;)
+
+        if choice == &amp;quot;revive&amp;quot;:
+            revive_components()
+            break
+        elif choice == &amp;quot;quit&amp;quot;:
+            raise TestCannotRunException(&amp;quot;Dead components exist&amp;quot;)
+        elif choice == &amp;quot;continue&amp;quot;:
+            break
+        elif choice == &amp;quot;select&amp;quot;:
+            selected = show_menu(&amp;quot;Which components would you like to revive?&amp;quot;)
+            if selected:
+                revive_components(selected)
+                break
+            else:
+                logger.info(&amp;quot;Nothing selected...&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To get the required behavior, we used an infinite &lt;code&gt;while True&lt;/code&gt; loop that terminates with an
+explicit &lt;code&gt;break&lt;/code&gt; when a valid choice is made by the user and reiterates otherwise.
+This ensures that we don&amp;rsquo;t continue until a valid choice is made.&lt;/p&gt;
+
+&lt;h2 id=&#34;can-we-do-better:1df4a958259f970048d6d810a05899d5&#34;&gt;Can We Do Better?&lt;/h2&gt;
+
+&lt;p&gt;The problem with the above method is that the flow control is not immediately
+apparent when looking at the code: It&amp;rsquo;s not obvious that the infinite loop
+should actually terminate in all but one case. A future developer could easily
+break this behavior.&lt;/p&gt;
+
+&lt;p&gt;In addition, the &lt;code&gt;if&lt;/code&gt;/&lt;code&gt;elif&lt;/code&gt; ladder becomes a bit too long to read
+comfortably.&lt;/p&gt;
+
+&lt;p&gt;The second iteration was meant to make the flow control clearer:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+    class InvalidChoiceError(Exception): pass
+
+    def choice_revive():    revive_components()
+    def choice_quit():      raise TestCannotRunException(&amp;quot;Dead components exist&amp;quot;)
+    def choice_continue_(): pass
+    def choice_select():
+        selected = show_menu(&amp;quot;Which components would you like to revive?&amp;quot;)
+        if not selected:
+            logger.info(&amp;quot;Nothing selected...&amp;quot;)
+            raise InvalidChoiceError
+
+        revive_components(selected)
+
+    while True:
+        choice = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+            &amp;quot;Do you wish to (r)evive them all, (s)elect components to revive, &amp;quot;
+            &amp;quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&amp;quot;,
+            { &amp;quot;r&amp;quot;: &amp;quot;revive&amp;quot;,
+              &amp;quot;s&amp;quot;: &amp;quot;select&amp;quot;, 
+              &amp;quot;c&amp;quot;: &amp;quot;continue&amp;quot;, 
+              &amp;quot;Q&amp;quot;: &amp;quot;quit&amp;quot;},
+            default = &amp;quot;quit&amp;quot;)
+        try:
+            locals().get(&#39;choice_%s&#39; % choice)()
+            break
+        except InvalidChoiceError:
+            continue
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We use several techniques here to improve the clarity of the code:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;We used internal functions to encapsulate the possible actions to take. The
+advantage of using internal functions is that it keeps the external namespace
+clean, and the naming of each function makes its purpose quite clear.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We used a dictionary instead of the &lt;code&gt;if&lt;/code&gt;/&lt;code&gt;elif&lt;/code&gt; construct. Since Python
+doesn&amp;rsquo;t have a &lt;code&gt;switch&lt;/code&gt; or &lt;code&gt;case&lt;/code&gt; statement, this is a more readable replacement.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We decided to use an exception to signify, well, &lt;em&gt;exceptional&lt;/em&gt; flow control: If the user hasn&amp;rsquo;t
+selected any components, this warrants exceptional behavior. This technique is
+much debated, but we felt like it was appropriate in this case.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The function name to be called is determined dynamically at runtime from the
+user&amp;rsquo;s selection. The idea was to avoid code duplication by needing to specify the names
+of the functions yet again (but see below).&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;removing-some-coolness-for-readability:1df4a958259f970048d6d810a05899d5&#34;&gt;Removing Some Coolness For Readability&lt;/h2&gt;
+
+&lt;p&gt;My colleague pointed out that the &lt;code&gt;locals().get(&#39;choice_%s&#39; % choice)()&lt;/code&gt; trick
+is not quite readable. I agreed, and was happy to accept his improved proposal:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+
+    # ...
+
+    while True:
+        choice_func = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+            &amp;quot;Do you wish to (r)evive them all, (s)elect components to revive, &amp;quot;
+            &amp;quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&amp;quot;,
+            dict(r = choice_revive,
+                 s = choice_select, 
+                 c = choice_continue,
+                 Q = choice_quit
+                 ),
+            default = &amp;quot;quit&amp;quot;)
+        try:
+            choice_func()
+            break
+        except InvalidChoiceError:
+            continue
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This version has several advantages:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;It doesn&amp;rsquo;t use &amp;ldquo;magic&amp;rdquo; to achieve the selection of the function. Duplication
+is better than magic in this case, since it makes the code more readable.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The dictionary is created using the &lt;code&gt;dict()&lt;/code&gt; syntax instead of the &lt;code&gt;{...}&lt;/code&gt;
+syntax, which gets rid of a lot of punctuation and makes the code clearer.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:1df4a958259f970048d6d810a05899d5&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;It turns out that even in such a simple piece of code, several programming
+techniques can be used to make the code clearer to read and maintain.&lt;/p&gt;
+
+&lt;p&gt;See you next time!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

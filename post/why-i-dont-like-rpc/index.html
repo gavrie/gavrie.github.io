@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans|Marcellus+SC'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/styles.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/custom.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://philipson.co.il//index.xml">
+
+    
+    <title>Why I don&#39;t like &#39;transparent&#39; RPC - Gavrie&#39;s Blog</title>
+    <meta property='og:title' content="Why I don&#39;t like &#39;transparent&#39; RPC - Gavrie&#39;s Blog">
+    <meta property="og:type" content="article">
+    
+
+    <meta property="og:url" content="http://philipson.co.il/post/why-i-dont-like-rpc/">
+    
+    
+
+  </head>
+
+  <body>
+
+    <header class="site">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://philipson.co.il/">Gavrie&#39;s Blog</a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse">
+            
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="site">
+      <div class="container">
+
+
+
+<div class="single">
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <article class="single" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+        <meta itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" content="http://philipson.co.il/"/>
+        <meta itemprop="dateModified" content="2012-06-20T00:00:00&#43;00:00">
+        <meta itemprop="headline" content="Why I don&#39;t like &#39;transparent&#39; RPC">
+        <meta itemprop="description" content="Lately I&rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.
+
+One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.
+">
+        <meta itemprop="url" content="http://philipson.co.il/post/why-i-dont-like-rpc/">
+        <div itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+          <meta itemprop="url" content="http://philipson.co.il/images/default.jpg" />
+          <meta itemprop="width" content="800">
+          <meta itemprop="height" content="800">
+        </div>
+        <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <meta itemprop="url" content="http://philipson.co.il/images/logo.jpg">
+            <meta itemprop="width" content="100">
+            <meta itemprop="height" content="100">
+          </div>
+          <meta itemprop="name" content="Gavrie&#39;s Blog">
+        </div>
+        <div itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <meta itemprop="name" content="Gavrie Philipson">
+        </div>
+
+        <header class="article-header">
+          <time itemprop="datePublished" pubdate="pubdate" datetime="2012-06-20T00:00:00&#43;00:00">Wed, Jun 20, 2012</time>
+          <h1 class="article-title">Why I don&#39;t like &#39;transparent&#39; RPC</h1>
+        </header>
+
+        <div class="article-body" itemprop="articleBody">
+          
+
+<p>Lately I&rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
+
+<p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
+
+<p>Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &ndash; be it shell commands, Python code or anything else.</p>
+
+<h2 id="the-problem-with-rpc:742f6a9ac7b9ea24732f29c36589628e">The Problem With RPC</h2>
+
+<p>Our existing codebase makes heavy use of <a href="http://rpyc.sourceforge.net/">RPyC</a>, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.</p>
+
+<p>Using a variant of RPC sounds like a great solution. RPyC is also a very nice and seamless tool. Code that is running remotely looks just like code that is running locally. Which is the exact reason for why I <em>don&rsquo;t</em> like using it: I don&rsquo;t want transparent RPC! I want it to be immediately clear which code runs locally and which code runs remotely. &ldquo;Seamless&rdquo; RPC encourages the writing of spaghetti code, because it&rsquo;s so easy to mix local and remote code. This makes it deceptively easy to write distributed code without thinking about the design of the API and about which parts should reside on each side of the connection. Code can quickly become an intermix of RPC calls with local calls, causing it to be an opaque blob that is impossible to test or debug. In addition, its performance can quickly deteriorate: Objects are being serialized back and forth all the time, and tens of implicit network round-trips introduce latency all around the code.</p>
+
+<p>Of course, the tool is not necessarily at blame here. The problem may lie with those developers who use it incorrectly, instead of designing a clean distributed model around it &ndash; which is certainly possible. But I tend to find that the thoughts and practices of developers become molded to the tools they have at hand. A tool that encourages calling remote code without a conscious effort makes it too easy to avoid thinking about the distributed design.</p>
+
+<p>So, yes, I don&rsquo;t like RPC, especially not <em>stateful RPC</em> that supports access of remote objects by reference. I can live with simple designs like XML-RPC, supporting value-based RPC with native data types, which are fairly easy to understand and debug: There are no remote objects, just data that is passing back and forth. But I dislike tools that try to hide everything under a shiny exterior, and try to act as if remote code were just the same as local code, and as if remote objects actually exist locally with magic proxies doing all the work behind the scenes.</p>
+
+<p>The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&rsquo;re at all interested in this debate, I heartily recommend reading some of the <a href="http://steve.vinoski.net/blog/category/rpc/">articles by Steve Vinoski</a>, who is a leading expert on the matter and writes on it very eloquently. <a href="http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf">This presentation</a> summarizes his viewpoint quite nicely, and I quite agree with many of his points.</p>
+
+<h2 id="what-now:742f6a9ac7b9ea24732f29c36589628e">What Now?</h2>
+
+<p>So, I&rsquo;m looking for a good tool to create a distributed architecture that is based on explicit message passing. It should be able to send and receive native Python data types by value. It should be nicely designed, clearly documented, and should make the distinction between local code and remote code crystal clear to the developer.</p>
+
+<p>I am currently investigating and evaluating several solutions. Most of them are based on the excellent ZeroMQ messaging library, along with some kind of serialization tool such as MsgPack. There are several good candidates. I&rsquo;ll write more about it as I make progress.</p>
+
+        </div>
+
+
+        <aside>
+          <div class="section"><a href="http://philipson.co.il/tags/rpc" class="tag">rpc</a> </div>
+
+          <div class="section share">
+            <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fphilipson.co.il%2fpost%2fwhy-i-dont-like-rpc%2f&t=Why%20I%20don%27t%20like%20%27transparent%27%20RPC" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+            <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fphilipson.co.il%2fpost%2fwhy-i-dont-like-rpc%2f&text=Why%20I%20don%27t%20like%20%27transparent%27%20RPC&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+            <a href="https://plus.google.com/share?url=http%3a%2f%2fphilipson.co.il%2fpost%2fwhy-i-dont-like-rpc%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+            <a href="http://getpocket.com/edit?url=http%3a%2f%2fphilipson.co.il%2fpost%2fwhy-i-dont-like-rpc%2f&title=Why%20I%20don%27t%20like%20%27transparent%27%20RPC" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+          </div>
+
+          
+          
+          
+        </aside>
+
+      </article>
+
+    </div>
+    <div class="col-md-4">
+      
+<aside class="site">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">LatestPosts</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="list-group-item">From Python to Go</a>
+      
+      <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="list-group-item">A subprocess bug? Nah.</a>
+      
+      <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="list-group-item">Buffers will fill up... eventually</a>
+      
+      <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="list-group-item">Why I don&#39;t like &#39;transparent&#39; RPC</a>
+      
+      <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="list-group-item">The YAGNI/NIH conundrum</a>
+      
+      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="list-group-item">Generating virtual FC WWPNs for a storage lab</a>
+      
+      <a href="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/" class="list-group-item">Improving readability and flow control in Python</a>
+      
+    </div>
+  </div>
+
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">category</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/categories/programming" class="list-group-item">programming</a>
+      
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">tag</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/tags/python" class="list-group-item">python</a>
+      
+      <a href="http://philipson.co.il/tags/go" class="list-group-item">go</a>
+      
+      <a href="http://philipson.co.il/tags/rpc" class="list-group-item">rpc</a>
+      
+    </div>
+  </div>
+  
+
+</aside>
+
+
+    </div>
+  </div>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site">
+      <div class="container">
+        <p>&copy; 2015 Gavrie Philipson</p>
+        <p>Powered by <a href="http://gohugo.io" target="_blank" rel="nofollow">Hugo</a>, Theme <a href="https://github.com/dim0627/hugo_theme_beg" target="_blank" rel="nofollow">beg</a> designed by <a href="http://yet.unresolved.xyz" target="_blank" rel="nofollow">Daisuke Tsuji</a></p>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+  </body>
+</html>
+

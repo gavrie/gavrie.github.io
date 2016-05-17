@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans|Marcellus+SC'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/styles.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/custom.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://philipson.co.il//index.xml">
+
+    
+    <title>Buffers will fill up... eventually - Gavrie&#39;s Blog</title>
+    <meta property='og:title' content="Buffers will fill up... eventually - Gavrie&#39;s Blog">
+    <meta property="og:type" content="article">
+    
+
+    <meta property="og:url" content="http://philipson.co.il/post/buffers-will-fill-up-eventually/">
+    
+    
+
+  </head>
+
+  <body>
+
+    <header class="site">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://philipson.co.il/">Gavrie&#39;s Blog</a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse">
+            
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="site">
+      <div class="container">
+
+
+
+<div class="single">
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <article class="single" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+        <meta itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" content="http://philipson.co.il/"/>
+        <meta itemprop="dateModified" content="2014-06-18T00:00:00&#43;00:00">
+        <meta itemprop="headline" content="Buffers will fill up... eventually">
+        <meta itemprop="description" content="(Updated version: Incorporates fixes from reader comments)
+
+A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.
+
+Running the code, and interrupting it with ^C when it hangs, turned up a result similar to the following:
+">
+        <meta itemprop="url" content="http://philipson.co.il/post/buffers-will-fill-up-eventually/">
+        <div itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+          <meta itemprop="url" content="http://philipson.co.il/images/default.jpg" />
+          <meta itemprop="width" content="800">
+          <meta itemprop="height" content="800">
+        </div>
+        <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <meta itemprop="url" content="http://philipson.co.il/images/logo.jpg">
+            <meta itemprop="width" content="100">
+            <meta itemprop="height" content="100">
+          </div>
+          <meta itemprop="name" content="Gavrie&#39;s Blog">
+        </div>
+        <div itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <meta itemprop="name" content="Gavrie Philipson">
+        </div>
+
+        <header class="article-header">
+          <time itemprop="datePublished" pubdate="pubdate" datetime="2014-06-18T00:00:00&#43;00:00">Wed, Jun 18, 2014</time>
+          <h1 class="article-title">Buffers will fill up... eventually</h1>
+        </header>
+
+        <div class="article-body" itemprop="articleBody">
+          
+
+<p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
+
+<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
+
+<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
+
+<pre><code>^CTraceback (most recent call last):
+  File &quot;./execute_wrong.py&quot;, line 8, in &lt;module&gt;
+    retval, out, err = execute(&quot;git ls-remote&quot;)
+  File &quot;./execute_wrong.py&quot;, line 5, in execute
+    retval = p.wait()
+  File &quot;/usr/lib/python2.7/subprocess.py&quot;, line 1376, in wait
+    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+  File &quot;/usr/lib/python2.7/subprocess.py&quot;, line 476, in _eintr_retry_call
+    return func(*args)
+KeyboardInterrupt
+</code></pre>
+
+<p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
+
+<h2 id="investigating-the-issue:90e5ce7b5eafc0575d5466ecd1dc93a8">Investigating the Issue</h2>
+
+<p>Let&rsquo;s look at the code history to see if anything has changed recently.</p>
+
+<p>Nope. A quick <code>git blame</code> shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?</p>
+
+<p>Let&rsquo;s see what is happening while waiting for the <code>git</code> child process to finish, by running <code>strace</code> on the process:</p>
+
+<pre><code>$ strace -p 5774
+Process 5774 attached
+write(1, &quot;pull/624/merge\n2fe9da91f5a4b5ba3&quot;..., 4096
+</code></pre>
+
+<p>OK. The process is trying to write to <code>stdout</code>, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.</p>
+
+<p>Let&rsquo;s look at the size of the data returned by the child process:</p>
+
+<pre><code>$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65572
+</code></pre>
+
+<p>Aha! This number looks suspiciously like &ldquo;a bit more than 64k&rdquo;. Which affirms our hypothesis. Let&rsquo;s try to reduce its size by deleting some old remote branches:</p>
+
+<pre><code>$ git push origin :old_branch1
+$ git push origin :old_branch2
+...
+$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65368
+</code></pre>
+
+<p>Now to run the program again&hellip; It worked! The program continues to run successfully.</p>
+
+<h2 id="the-code:90e5ce7b5eafc0575d5466ecd1dc93a8">The Code</h2>
+
+<p>Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?</p>
+
+<pre><code>
+import subprocess
+
+def execute(command):
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    retval = p.wait()
+    return retval, p.stdout.read(), p.stderr.read()
+
+retval, out, err = execute("git ls-remote")
+</code></pre>
+
+<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&rsquo;s buffer. Once it exceeded the buffer&rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
+
+<h2 id="fixing-the-problem:90e5ce7b5eafc0575d5466ecd1dc93a8">Fixing the Problem</h2>
+
+<p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
+
+<pre><code>
+import subprocess
+
+def execute(command):
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out = p.stdout.read()
+    err = p.stderr.read()
+    retval = p.wait()
+    return retval, out, err
+
+retval, out, err = execute("git ls-remote")
+</code></pre>
+
+<p>Unfortunately, as Alon Horev and Baruch Even pointed out in their comments, this is still not correct. Since we try to read from <code>stdout</code> until it gets an EOF and only then try to read from <code>stderr</code>, the <code>stderr</code> pipe&rsquo;s buffer can fill up if the child process writes a lot of data to it.</p>
+
+<p>The correct solution involves reading from both pipes in tandem. The <code>communicate()</code> method of the <code>Popen</code> class implements this using the <code>select()</code> system call on POSIX, and with threads on Windows platforms.</p>
+
+<h2 id="conclusion:90e5ce7b5eafc0575d5466ecd1dc93a8">Conclusion</h2>
+
+<p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&rsquo;t assume that it will be OK &ndash; because it will come back to bite you, or at least some future user of your code.</p>
+
+        </div>
+
+
+        <aside>
+          <div class="section"><a href="http://philipson.co.il/tags/python" class="tag">python</a> </div>
+
+          <div class="section share">
+            <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fphilipson.co.il%2fpost%2fbuffers-will-fill-up-eventually%2f&t=Buffers%20will%20fill%20up...%20eventually" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+            <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fphilipson.co.il%2fpost%2fbuffers-will-fill-up-eventually%2f&text=Buffers%20will%20fill%20up...%20eventually&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+            <a href="https://plus.google.com/share?url=http%3a%2f%2fphilipson.co.il%2fpost%2fbuffers-will-fill-up-eventually%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+            <a href="http://getpocket.com/edit?url=http%3a%2f%2fphilipson.co.il%2fpost%2fbuffers-will-fill-up-eventually%2f&title=Buffers%20will%20fill%20up...%20eventually" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+          </div>
+
+          
+          
+          
+        </aside>
+
+      </article>
+
+    </div>
+    <div class="col-md-4">
+      
+<aside class="site">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">LatestPosts</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="list-group-item">From Python to Go</a>
+      
+      <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="list-group-item">A subprocess bug? Nah.</a>
+      
+      <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="list-group-item">Buffers will fill up... eventually</a>
+      
+      <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="list-group-item">Why I don&#39;t like &#39;transparent&#39; RPC</a>
+      
+      <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="list-group-item">The YAGNI/NIH conundrum</a>
+      
+      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="list-group-item">Generating virtual FC WWPNs for a storage lab</a>
+      
+      <a href="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/" class="list-group-item">Improving readability and flow control in Python</a>
+      
+    </div>
+  </div>
+
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">category</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/categories/programming" class="list-group-item">programming</a>
+      
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">tag</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/tags/python" class="list-group-item">python</a>
+      
+      <a href="http://philipson.co.il/tags/go" class="list-group-item">go</a>
+      
+      <a href="http://philipson.co.il/tags/rpc" class="list-group-item">rpc</a>
+      
+    </div>
+  </div>
+  
+
+</aside>
+
+
+    </div>
+  </div>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site">
+      <div class="container">
+        <p>&copy; 2015 Gavrie Philipson</p>
+        <p>Powered by <a href="http://gohugo.io" target="_blank" rel="nofollow">Hugo</a>, Theme <a href="https://github.com/dim0627/hugo_theme_beg" target="_blank" rel="nofollow">beg</a> designed by <a href="http://yet.unresolved.xyz" target="_blank" rel="nofollow">Daisuke Tsuji</a></p>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+  </body>
+</html>
+

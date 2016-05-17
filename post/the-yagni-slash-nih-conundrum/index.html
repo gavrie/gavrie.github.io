@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans|Marcellus+SC'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/styles.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/custom.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://philipson.co.il//index.xml">
+
+    
+    <title>The YAGNI/NIH conundrum - Gavrie&#39;s Blog</title>
+    <meta property='og:title' content="The YAGNI/NIH conundrum - Gavrie&#39;s Blog">
+    <meta property="og:type" content="article">
+    
+
+    <meta property="og:url" content="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/">
+    
+    
+
+  </head>
+
+  <body>
+
+    <header class="site">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://philipson.co.il/">Gavrie&#39;s Blog</a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse">
+            
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="site">
+      <div class="container">
+
+
+
+<div class="single">
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <article class="single" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+        <meta itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" content="http://philipson.co.il/"/>
+        <meta itemprop="dateModified" content="2012-06-15T00:00:00&#43;00:00">
+        <meta itemprop="headline" content="The YAGNI/NIH conundrum">
+        <meta itemprop="description" content="Disclaimer: This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).
+
+One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.
+">
+        <meta itemprop="url" content="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/">
+        <div itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+          <meta itemprop="url" content="http://philipson.co.il/images/default.jpg" />
+          <meta itemprop="width" content="800">
+          <meta itemprop="height" content="800">
+        </div>
+        <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <meta itemprop="url" content="http://philipson.co.il/images/logo.jpg">
+            <meta itemprop="width" content="100">
+            <meta itemprop="height" content="100">
+          </div>
+          <meta itemprop="name" content="Gavrie&#39;s Blog">
+        </div>
+        <div itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <meta itemprop="name" content="Gavrie Philipson">
+        </div>
+
+        <header class="article-header">
+          <time itemprop="datePublished" pubdate="pubdate" datetime="2012-06-15T00:00:00&#43;00:00">Fri, Jun 15, 2012</time>
+          <h1 class="article-title">The YAGNI/NIH conundrum</h1>
+        </header>
+
+        <div class="article-body" itemprop="articleBody">
+          
+
+<p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).</p>
+
+<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/YAGNI">YAGNI</a> stands for &ldquo;You ain&rsquo;t gonna need it&rdquo;, and refers to a software development principle according to which you don&rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Not_invented_here">NIH</a> stands for &ldquo;Not Invented Here&rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &ldquo;Hey, I can do this myself, so why should I use this existing project&rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.</p>
+
+<h2 id="the-conundrum:a32192c9e9e715335e0f3e4db49aae16">The Conundrum</h2>
+
+<p>I consider myself a firm believer in the YAGNI principle, and a staunch opponent of the NIH syndrome: I try to avoid writing code that could stay unwritten, since I consider a large codebase a liability rather than an asset. Writing more code means having to expend more resources on maintaining it. In many corporate cultures, it also decreases the ability to respond to change, due to a reluctance to throw away existing code (which is often due to sentimental reasons rather than objective ones).</p>
+
+<p>Now, as software developers, many of us would much rather write new code than maintain a bunch of old code.</p>
+
+<p>One reason for this is that old code bases tend to have accumulated a lot of baggage over the years, and we love the idea of getting rid of all that and starting with a fresh, blank page: All those old bugs can be forgotten, all those workarounds and little tricks can be left behind.</p>
+
+<p>Another reason is that good developers love to learn new ideas and techniques and are itching to try them out. Seeing our own old code after a few months or years make us cringe with the feeling, &ldquo;who was the idiot that wrote this?!&rdquo;. We are sure that the code we&rsquo;re going to write now, with our new and shiny tools, will be better by leaps and bounds. And then the cycle starts all over again.</p>
+
+<h2 id="coding-in-the-corporate-world:a32192c9e9e715335e0f3e4db49aae16">Coding in the Corporate World</h2>
+
+<p>I&rsquo;d like to argue that in the corporate world, as opposed to the Open Source world, writing new code can be an irresponsible thing to do. In the corporate world, we write code not just to scratch our own itches. We&rsquo;re creating something that may very well continue to exist long after we have moved on to greener pastures. Other people will have to maintain what we created. Adhering to good software engineering principles means that not only our own lives will be easier down the road, but also those of other people.</p>
+
+<p>Now, those who profess not to care about the experience of other people, or who think that at the very least it is less important that their own experience, may want to consider a few points:</p>
+
+<p>First of all, those &ldquo;other people&rdquo; may be yourselves a few months or years from now, trying to adapt your own code to new requirements. Suddenly, all this code is no longer new nor fun, and you&rsquo;ll have to dig in to adapt it to the required changes.</p>
+
+<p>Second, those other people may be your future co-workers, managers or employees. They will remember what you left them with.</p>
+
+<p>Third, people will appreciate your efforts to make their lives easier (or at least won&rsquo;t hate you for making it harder). This increases the likelihood that they will want to work with you in the future.</p>
+
+<p>So all this makes sense even from a perfectly selfish point of view.</p>
+
+<h2 id="conclusion:a32192c9e9e715335e0f3e4db49aae16">Conclusion</h2>
+
+<p>When faced with a new software problem to solve, I always spend a significant amount of energy in investigating existing solutions and see if they can work for me. I will resort to writing code only if I fail to find a solution that has enough similarity or has a good enough quality. Of course, as my friend Eli claims, this may very well mean that I often pass on the chance to be creative by deferring to existing solutions. But that&rsquo;s something I can live with: I feel the need to reach the right balance between creativity and responsibility.</p>
+
+<p>I can find creativity in ways other than writing a lot of new code: I&rsquo;d rather leverage existing code that I like and that is maintained by a third party (which becomes more and more commong with the huge Open Source ecosystem). It is more important to me to feel happy with a solution than it is to prove to myself that I can solve a problem that has been solved before by others. That just seems so wasteful.</p>
+
+<p>In an upcoming post, I will analyze a specific case that I encountered in light of the above thoughts.</p>
+
+        </div>
+
+
+        <aside>
+          
+
+          <div class="section share">
+            <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fphilipson.co.il%2fpost%2fthe-yagni-slash-nih-conundrum%2f&t=The%20YAGNI%2fNIH%20conundrum" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+            <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fphilipson.co.il%2fpost%2fthe-yagni-slash-nih-conundrum%2f&text=The%20YAGNI%2fNIH%20conundrum&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+            <a href="https://plus.google.com/share?url=http%3a%2f%2fphilipson.co.il%2fpost%2fthe-yagni-slash-nih-conundrum%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+            <a href="http://getpocket.com/edit?url=http%3a%2f%2fphilipson.co.il%2fpost%2fthe-yagni-slash-nih-conundrum%2f&title=The%20YAGNI%2fNIH%20conundrum" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+          </div>
+
+          
+          
+          
+        </aside>
+
+      </article>
+
+    </div>
+    <div class="col-md-4">
+      
+<aside class="site">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">LatestPosts</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="list-group-item">From Python to Go</a>
+      
+      <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="list-group-item">A subprocess bug? Nah.</a>
+      
+      <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="list-group-item">Buffers will fill up... eventually</a>
+      
+      <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="list-group-item">Why I don&#39;t like &#39;transparent&#39; RPC</a>
+      
+      <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="list-group-item">The YAGNI/NIH conundrum</a>
+      
+      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="list-group-item">Generating virtual FC WWPNs for a storage lab</a>
+      
+      <a href="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/" class="list-group-item">Improving readability and flow control in Python</a>
+      
+    </div>
+  </div>
+
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">category</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/categories/programming" class="list-group-item">programming</a>
+      
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">tag</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/tags/python" class="list-group-item">python</a>
+      
+      <a href="http://philipson.co.il/tags/go" class="list-group-item">go</a>
+      
+      <a href="http://philipson.co.il/tags/rpc" class="list-group-item">rpc</a>
+      
+    </div>
+  </div>
+  
+
+</aside>
+
+
+    </div>
+  </div>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site">
+      <div class="container">
+        <p>&copy; 2015 Gavrie Philipson</p>
+        <p>Powered by <a href="http://gohugo.io" target="_blank" rel="nofollow">Hugo</a>, Theme <a href="https://github.com/dim0627/hugo_theme_beg" target="_blank" rel="nofollow">beg</a> designed by <a href="http://yet.unresolved.xyz" target="_blank" rel="nofollow">Daisuke Tsuji</a></p>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+  </body>
+</html>
+

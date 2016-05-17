@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.15" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans|Marcellus+SC'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/styles.css">
+    <link rel="stylesheet" href="http://philipson.co.il/css/custom.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://philipson.co.il//index.xml">
+
+    
+    <title>From Python to Go - Gavrie&#39;s Blog</title>
+    <meta property='og:title' content="From Python to Go - Gavrie&#39;s Blog">
+    <meta property="og:type" content="article">
+    
+
+    <meta property="og:url" content="http://philipson.co.il/post/goodbye-python-hello-go/">
+    
+    
+
+  </head>
+
+  <body>
+
+    <header class="site">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://philipson.co.il/">Gavrie&#39;s Blog</a>
+          </div>
+
+          <div id="navbar" class="collapse navbar-collapse">
+            
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="site">
+      <div class="container">
+
+
+
+<div class="single">
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <article class="single" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+        <meta itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" content="http://philipson.co.il/"/>
+        <meta itemprop="dateModified" content="2015-05-13T00:00:00&#43;00:00">
+        <meta itemprop="headline" content="From Python to Go">
+        <meta itemprop="description" content="I have been programming in Python in one capacity or another since around 2000. That&rsquo;s almost 15 years. Over those years, I&rsquo;ve come to know the language fairly well. I originally came to Python from C and Perl, and it was quite refreshing to come to a language that is simple to use, with a consistent syntax and library, while being quite powerful. I&rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible.
+
+Ultimately, this led me to Go. Below, I&rsquo;ll describe the process that led me there.
+">
+        <meta itemprop="url" content="http://philipson.co.il/post/goodbye-python-hello-go/">
+        <div itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+          <meta itemprop="url" content="http://philipson.co.il/images/default.jpg" />
+          <meta itemprop="width" content="800">
+          <meta itemprop="height" content="800">
+        </div>
+        <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <meta itemprop="url" content="http://philipson.co.il/images/logo.jpg">
+            <meta itemprop="width" content="100">
+            <meta itemprop="height" content="100">
+          </div>
+          <meta itemprop="name" content="Gavrie&#39;s Blog">
+        </div>
+        <div itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <meta itemprop="name" content="Gavrie Philipson">
+        </div>
+
+        <header class="article-header">
+          <time itemprop="datePublished" pubdate="pubdate" datetime="2015-05-13T00:00:00&#43;00:00">Wed, May 13, 2015</time>
+          <h1 class="article-title">From Python to Go</h1>
+        </header>
+
+        <div class="article-body" itemprop="articleBody">
+          
+
+<p>I have been programming in Python in one capacity or another since around 2000. That&rsquo;s almost 15 years. Over those years, I&rsquo;ve come to know the language fairly well. I originally came to Python from C and Perl, and it was quite refreshing to come to a language that is simple to use, with a consistent syntax and library, while being quite powerful. I&rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible.</p>
+
+<p>Ultimately, this led me to Go. Below, I&rsquo;ll describe the process that led me there.</p>
+
+<h1 id="goodbye-python:b7213dc879a25f4a1845feb667d36b1d">Goodbye, Python</h1>
+
+<p>At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.</p>
+
+<p>Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &ldquo;magic&rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&rsquo;s simply impossible to tell your editor to &ldquo;go to definition&rdquo; of a function or method and be sure that it reaches the correct target.</p>
+
+<p>Another pain point is concurrency: A modern application need to do several things concurrently. Raw multithreading with mutexes and semaphores is an old and rusty programming model, which in any case is not very suitable to Python with its GIL limitation. And Gevent is very nice, but not a standard part of the language and very hard to debug.</p>
+
+<p>Yet another one is deployment: Python, and any other dynamic language, has a lot of baggage when deploying. It needs a runtime environment with all dependencies present. Yes, we have virtualenv and it&rsquo;s great, but things could be made simpler.</p>
+
+<p>So, we&rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?</p>
+
+<h1 id="hello-go:b7213dc879a25f4a1845feb667d36b1d">Hello, Go</h1>
+
+<p>At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?</p>
+
+<p>I got the challenge to convince my colleagues to give Go a try. Several alternatives were suggested. To begin with, several other languages were already in use at out company, including C, Java, Haskell, and Ruby. It would make sense to see if one of those would fit before adding yet another language to the pack. In addition, some colleagues suggested Scala and C++.</p>
+
+<p>For me, the matter was simple: Ruby is too similar to Python with its advantages and disadvantages. C, while being great for a high performance software core, is too low level for developing a whole automation solution. C++ is much too complicated a beast, and I don&rsquo;t like it. Java sounds like an obvious contender, but it&rsquo;s getting long in the tooth and I wanted something more modern and less &ldquo;enterprisey&rdquo;. Haskell sounds wonderful, but has a reputation of being hard to get right. Its acceptance in the industry is also less than I would hope for. Scala sounds nice, but would mainly benefit projects that already use the JVM.</p>
+
+<p>Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.</p>
+
+<h1 id="what-i-liked-about-go:b7213dc879a25f4a1845feb667d36b1d">What I liked about Go</h1>
+
+<p>So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:</p>
+
+<ul>
+<li><p>Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with <code>var</code>, the <code>:=</code> operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&rsquo;s Turbo Pascal (yes, I&rsquo;m disclosing my age here).</p></li>
+
+<li><p>High level constructs such as slices and maps are built into the language with their own syntax.</p></li>
+
+<li><p>High order functions and closures are supported.</p></li>
+
+<li><p>Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.</p></li>
+
+<li><p>The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: <code>godoc</code> handles documentation; <code>gofmt</code> formats code consistently; <code>gocode</code> autocompletes your code by analysis of actually built code so its results are precise; <code>gorename</code> handles renames in a type-safe way; <code>godef</code> find the definition of every construct you point it at; <code>oracle</code> does amazing code analysis that gives you insight into the flow of your code. Combine all those with <code>vim-go</code> which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.</p></li>
+
+<li><p>Concurrency! Channels are Go&rsquo;s way of handling concurrency and they&rsquo;re marvelous. Go is the only language I&rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&rsquo;s <code>gevent</code>, but in Go it&rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.</p></li>
+</ul>
+
+<h1 id="what-took-time-to-get-used-to:b7213dc879a25f4a1845feb667d36b1d">What took time to get used to</h1>
+
+<p>Some things in Go took time to get used to, and I&rsquo;m not sure yet whether I like them or not:</p>
+
+<ul>
+<li><p>Error handling is explicit. Errors are returned as values from functions (using a special <code>error</code> type). Together with multi-valued returns, this is much better than C&rsquo;s error handling, but much less intuitive than Python&rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like <code>errcheck</code> help ensure that you don&rsquo;t miss any. While it&rsquo;s much easier to write code using exceptions, it&rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &ldquo;end user&rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use <code>panic</code>/<code>recover</code> for such code.</p></li>
+
+<li><p>Yes, everyone says it so I will too: Go doesn&rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&rsquo;t write your own <code>set</code> type and have it support sets of <code>int</code> or of <code>string</code> without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of <code>Max</code> or <code>Shuffle</code> functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.</p></li>
+</ul>
+
+        </div>
+
+
+        <aside>
+          <div class="section"><a href="http://philipson.co.il/tags/python" class="tag">python</a> <a href="http://philipson.co.il/tags/go" class="tag">go</a> </div>
+
+          <div class="section share">
+            <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fphilipson.co.il%2fpost%2fgoodbye-python-hello-go%2f&t=From%20Python%20to%20Go" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+            <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fphilipson.co.il%2fpost%2fgoodbye-python-hello-go%2f&text=From%20Python%20to%20Go&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+            <a href="https://plus.google.com/share?url=http%3a%2f%2fphilipson.co.il%2fpost%2fgoodbye-python-hello-go%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+            <a href="http://getpocket.com/edit?url=http%3a%2f%2fphilipson.co.il%2fpost%2fgoodbye-python-hello-go%2f&title=From%20Python%20to%20Go" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+          </div>
+
+          
+          
+          
+        </aside>
+
+      </article>
+
+    </div>
+    <div class="col-md-4">
+      
+<aside class="site">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">LatestPosts</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/post/goodbye-python-hello-go/" class="list-group-item">From Python to Go</a>
+      
+      <a href="http://philipson.co.il/post/a-subprocess-bug-nah/" class="list-group-item">A subprocess bug? Nah.</a>
+      
+      <a href="http://philipson.co.il/post/buffers-will-fill-up-eventually/" class="list-group-item">Buffers will fill up... eventually</a>
+      
+      <a href="http://philipson.co.il/post/why-i-dont-like-rpc/" class="list-group-item">Why I don&#39;t like &#39;transparent&#39; RPC</a>
+      
+      <a href="http://philipson.co.il/post/the-yagni-slash-nih-conundrum/" class="list-group-item">The YAGNI/NIH conundrum</a>
+      
+      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="list-group-item">Generating virtual FC WWPNs for a storage lab</a>
+      
+      <a href="http://philipson.co.il/post/improving-readability-and-flow-control-in-python/" class="list-group-item">Improving readability and flow control in Python</a>
+      
+    </div>
+  </div>
+
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">category</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/categories/programming" class="list-group-item">programming</a>
+      
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">tag</h2>
+    </div>
+    <div class="list-group">
+      
+      <a href="http://philipson.co.il/tags/python" class="list-group-item">python</a>
+      
+      <a href="http://philipson.co.il/tags/go" class="list-group-item">go</a>
+      
+      <a href="http://philipson.co.il/tags/rpc" class="list-group-item">rpc</a>
+      
+    </div>
+  </div>
+  
+
+</aside>
+
+
+    </div>
+  </div>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site">
+      <div class="container">
+        <p>&copy; 2015 Gavrie Philipson</p>
+        <p>Powered by <a href="http://gohugo.io" target="_blank" rel="nofollow">Hugo</a>, Theme <a href="https://github.com/dim0627/hugo_theme_beg" target="_blank" rel="nofollow">beg</a> designed by <a href="http://yet.unresolved.xyz" target="_blank" rel="nofollow">Daisuke Tsuji</a></p>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+  </body>
+</html>
+

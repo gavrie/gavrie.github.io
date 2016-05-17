@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://philipson.co.il/</loc>
+    <lastmod>2015-05-13T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/goodbye-python-hello-go/</loc>
+    <lastmod>2015-05-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/a-subprocess-bug-nah/</loc>
+    <lastmod>2014-07-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/buffers-will-fill-up-eventually/</loc>
+    <lastmod>2014-06-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/why-i-dont-like-rpc/</loc>
+    <lastmod>2012-06-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</loc>
+    <lastmod>2012-06-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</loc>
+    <lastmod>2012-02-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://philipson.co.il/post/improving-readability-and-flow-control-in-python/</loc>
+    <lastmod>2012-02-16T00:00:00+00:00</lastmod>
+  </url>
+  
+</urlset>
