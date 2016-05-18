@@ -106,11 +106,7 @@
       <p>
        
       </p>
-      <p><p><em>(Updated version: Incorporates fixes from reader comments)</em></p>
-
-<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
-
-<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
+      <p><p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.</p>
 </p>
       <p>
       18 Jun 2014
@@ -134,8 +130,6 @@
        
       </p>
       <p><p>Lately I&rsquo;ve been working on modifying an architectural aspect of an existing software project. This project makes heavy use of remote execution of code on several hosts. To accomplish this feat, it uses several different methods for remote execution: SSH for running general shell commands, RPyC for executing arbitrary Python code remotely, as well as a couple of proprietary interfaces.</p>
-
-<p>One issue I encountered with the current design is that it is quite difficult to make a clean separation between code running locally and code running remotely. This turns debugging any problem involving execution of remote code into an incredibly complicated endeavor.</p>
 </p>
       <p>
       20 Jun 2012
@@ -157,7 +151,7 @@
       </p>
       <p><p><em>Disclaimer:</em> This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&rsquo;re not a software developer (or a technical person at all).</p>
 
-<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&rsquo;re one of those people who are nodding your head now and smiling), so I&rsquo;ll explain.</p>
+<p>One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about</p>
 </p>
       <p>
       15 Jun 2012
@@ -175,8 +169,6 @@
       </p>
       <p><p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
 scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
-
-<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
 </p>
       <p>
       16 Feb 2012

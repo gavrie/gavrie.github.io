@@ -194,8 +194,6 @@ subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit st
       <guid>http://philipson.co.il/post/buffers-will-fill-up-eventually/</guid>
       <description>
 
-&lt;p&gt;&lt;em&gt;(Updated version: Incorporates fixes from reader comments)&lt;/em&gt;&lt;/p&gt;
-
 &lt;p&gt;A colleague asked me to look into a problem with him, mentioning that &amp;ldquo;Tlib hangs when we run it&amp;rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.&lt;/p&gt;
 
 &lt;p&gt;Running the code, and interrupting it with &lt;code&gt;^C&lt;/code&gt; when it hangs, turned up a result similar to the following:&lt;/p&gt;
@@ -336,7 +334,7 @@ retval, out, err = execute(&#34;git ls-remote&#34;)
 
 &lt;p&gt;&lt;em&gt;Disclaimer:&lt;/em&gt; This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&amp;rsquo;re not a software developer (or a technical person at all).&lt;/p&gt;
 
-&lt;p&gt;One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about (unless you&amp;rsquo;re one of those people who are nodding your head now and smiling), so I&amp;rsquo;ll explain.&lt;/p&gt;
+&lt;p&gt;One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about  (unless you&amp;rsquo;re one of those people who are nodding your head now and smiling), so I&amp;rsquo;ll explain.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/YAGNI&#34;&gt;YAGNI&lt;/a&gt; stands for &amp;ldquo;You ain&amp;rsquo;t gonna need it&amp;rdquo;, and refers to a software development principle according to which you don&amp;rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.&lt;/p&gt;
 
