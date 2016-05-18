@@ -8,6 +8,11 @@ p {
   line-height: 2rem;
 }
 
+code, kbd, pre, samp {
+  font-family: 'Inconsolata', 'Monaco', 'Consolas', 'Andale Mono', monospace;
+  font-size: 1em;
+}
+
 .button-collapse {
   color: #26a69a;
 }
