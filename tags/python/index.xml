@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on Gavrie&#39;s Blog</title>
+    <link>http://philipson.co.il/tags/python/</link>
+    <description>Recent content in Python on Gavrie&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© 2016 by Gavrie Philipson</copyright>
+    <lastBuildDate>Wed, 13 May 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://philipson.co.il/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>From Python to Go</title>
+      <link>http://philipson.co.il/post/from-python-to-go/</link>
+      <pubDate>Wed, 13 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/from-python-to-go/</guid>
+      <description>
+
+&lt;p&gt;I have been programming in Python in one capacity or another since around 2000. That&amp;rsquo;s almost 15 years. Over those years, I&amp;rsquo;ve come to know the language fairly well. I originally came to Python from C and Perl, and it was quite refreshing to come to a language that is simple to use, has a consistent syntax and library, and is quite powerful.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible. Ultimately this led me to Go. Below I&amp;rsquo;ll describe the process that led me there.&lt;/p&gt;
+
+&lt;h4 id=&#34;goodbye-for-now-python:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Goodbye for now, Python&lt;/h4&gt;
+
+&lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
+
+&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
+
+&lt;p&gt;Another pain point is concurrency: A modern application need to do several things concurrently. Raw multithreading with mutexes and semaphores is an old and rusty programming model, which in any case is not very suitable to Python with its GIL limitation. And Gevent is very nice, but not a standard part of the language and very hard to debug.&lt;/p&gt;
+
+&lt;p&gt;Yet another one is deployment: Python, and any other dynamic language, has a lot of baggage when deploying. It needs a runtime environment with all dependencies present. Yes, we have virtualenv and it&amp;rsquo;s great, but things could be made simpler.&lt;/p&gt;
+
+&lt;p&gt;So, we&amp;rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?&lt;/p&gt;
+
+&lt;h4 id=&#34;hello-go:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Hello, Go&lt;/h4&gt;
+
+&lt;p&gt;At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?&lt;/p&gt;
+
+&lt;p&gt;I accepted the challenge to convince my colleagues to give Go a try. Several alternatives were suggested. To begin with, several other languages were already in use at out company, including C, Java, Haskell, and Ruby. It would make sense to see if one of those would fit before adding yet another language to the pack. In addition, some colleagues suggested Scala and C++.&lt;/p&gt;
+
+&lt;p&gt;For me, the matter was simple: Ruby is too similar to Python with its advantages and disadvantages. C, while being great for a high performance software core, is too low level for developing a whole automation solution. C++ is much too complicated a beast, and I don&amp;rsquo;t like it. Java sounds like an obvious contender, but it&amp;rsquo;s getting long in the tooth and I wanted something more modern and less &amp;ldquo;enterprisey&amp;rdquo;. Haskell sounds wonderful, but has a reputation of being hard to get right. Its acceptance in the industry is also less than I would hope for. Scala sounds nice, but would mainly benefit projects that already use the JVM.&lt;/p&gt;
+
+&lt;p&gt;Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.&lt;/p&gt;
+
+&lt;h4 id=&#34;what-i-liked-about-go:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;What I liked about Go&lt;/h4&gt;
+
+&lt;p&gt;So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:&lt;/p&gt;
+
+&lt;h5 id=&#34;syntax:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Syntax&lt;/h5&gt;
+
+&lt;p&gt;Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with &lt;code&gt;var&lt;/code&gt;, the &lt;code&gt;:=&lt;/code&gt; operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&amp;rsquo;s Turbo Pascal (yes, I&amp;rsquo;m disclosing my age here).&lt;/p&gt;
+
+&lt;p&gt;High level constructs such as slices and maps are built into the language with their own syntax.&lt;/p&gt;
+
+&lt;p&gt;High order functions and closures are supported.&lt;/p&gt;
+
+&lt;p&gt;Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.&lt;/p&gt;
+
+&lt;h5 id=&#34;toolset:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Toolset&lt;/h5&gt;
+
+&lt;p&gt;The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: &lt;code&gt;godoc&lt;/code&gt; handles documentation; &lt;code&gt;gofmt&lt;/code&gt; formats code consistently; &lt;code&gt;gocode&lt;/code&gt; autocompletes your code by analysis of actually built code so its results are precise; &lt;code&gt;gorename&lt;/code&gt; handles renames in a type-safe way; &lt;code&gt;godef&lt;/code&gt; find the definition of every construct you point it at; &lt;code&gt;oracle&lt;/code&gt; does amazing code analysis that gives you insight into the flow of your code. Combine all those with &lt;code&gt;vim-go&lt;/code&gt; which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.&lt;/p&gt;
+
+&lt;h5 id=&#34;concurrency:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Concurrency&lt;/h5&gt;
+
+&lt;p&gt;Concurrency! Channels are Go&amp;rsquo;s way of handling concurrency and they&amp;rsquo;re marvelous. Go is the only language I&amp;rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&amp;rsquo;s &lt;code&gt;gevent&lt;/code&gt;, but in Go it&amp;rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.&lt;/p&gt;
+
+&lt;h4 id=&#34;what-took-time-to-get-used-to:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;What took time to get used to&lt;/h4&gt;
+
+&lt;p&gt;Some things in Go took time to get used to, and I&amp;rsquo;m not sure yet whether I like them or not:&lt;/p&gt;
+
+&lt;h5 id=&#34;error-handling:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Error Handling&lt;/h5&gt;
+
+&lt;p&gt;Error handling is explicit. Errors are returned as values from functions (using a special &lt;code&gt;error&lt;/code&gt; type). Together with multi-valued returns, this is much better than C&amp;rsquo;s error handling, but much less intuitive than Python&amp;rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like &lt;code&gt;errcheck&lt;/code&gt; help ensure that you don&amp;rsquo;t miss any. While it&amp;rsquo;s much easier to write code using exceptions, it&amp;rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &amp;ldquo;end user&amp;rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use &lt;code&gt;panic&lt;/code&gt;/&lt;code&gt;recover&lt;/code&gt; for such code.&lt;/p&gt;
+
+&lt;h5 id=&#34;generics:2ecf25abdb570cf9d35eafb7134d2b49&#34;&gt;Generics?&lt;/h5&gt;
+
+&lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A subprocess bug? Nah.</title>
+      <link>http://philipson.co.il/post/a-subprocess-bug-nah/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/a-subprocess-bug-nah/</guid>
+      <description>
+
+&lt;p&gt;A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import subprocess
+&amp;gt;&amp;gt;&amp;gt; subprocess.check_call(&amp;quot;false&amp;quot;)
+0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;false&lt;/code&gt; command always exits with a nonzero exit code. The expected behavior, as confirmed on another machine, would be as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; subprocess.check_call(&amp;quot;false&amp;quot;)
+Traceback (most recent call last):
+  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;
+  File &amp;quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py&amp;quot;, line 542, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit status 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, what happens is that &lt;code&gt;subprocess&lt;/code&gt; thinks that the child process exited successfully, even though it did not.&lt;/p&gt;
+
+&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
+
+&lt;p&gt;So, what is going on here? You may want to think it through and see if you can find the problem.&lt;/p&gt;
+
+&lt;h4 id=&#34;diving-in:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Diving In&lt;/h4&gt;
+
+&lt;p&gt;At first sight, this looks like a problem with either Python itself or with the OS (Linux, in our case). How could this happen?  The colleague who first encountered this issue looked at it through the Python debugger, and got as far as the &lt;code&gt;wait()&lt;/code&gt; function of &lt;code&gt;subprocess&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def wait(self):
+    &amp;quot;&amp;quot;&amp;quot;Wait for child process to terminate.  Returns returncode attribute.&amp;quot;&amp;quot;&amp;quot;
+    while self.returncode is None:
+        try:
+            pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+        except OSError as e:
+            if e.errno != errno.ECHILD:
+                raise
+            # This happens if SIGCLD is set to be ignored or waiting
+            # for child processes has otherwise been disabled for our
+            # process.  This child is dead, we can&#39;t get the status.
+            pid = self.pid
+            sts = 0
+        # Check the pid and loop as waitpid has been known to return
+        # 0 even without WNOHANG in odd situations.  issue14396.
+        if pid == self.pid:
+            self._handle_exitstatus(sts)
+    return self.returncode
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As seen in the code, if &lt;code&gt;os.waitpid&lt;/code&gt; on a child process fails with &lt;code&gt;ECHILD&lt;/code&gt;, an exception is not raised. The reason for this is that &lt;code&gt;ECHILD&lt;/code&gt; is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls &lt;code&gt;wait()&lt;/code&gt; on it. In the interim, the process is a so-called &amp;ldquo;zombie&amp;rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.&lt;/p&gt;
+
+&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&amp;rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores &lt;code&gt;SIGCHLD&lt;/code&gt; since it isn&amp;rsquo;t interested in the exit code of its child processes, it makes sense for &lt;code&gt;waitpid()&lt;/code&gt; to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.&lt;/p&gt;
+
+&lt;h4 id=&#34;back-to-the-code:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Back to the Code&lt;/h4&gt;
+
+&lt;p&gt;Do we by any chance ignore &lt;code&gt;SIGCHLD&lt;/code&gt; in our application? The chance we do is very small, since we run a lot of child processes and depend on their state all their time, and this fails only occasionally. A quick &lt;code&gt;git grep&lt;/code&gt; on the code shows that we &lt;em&gt;do&lt;/em&gt; ignore &lt;code&gt;SIGCHLD&lt;/code&gt; in one specific standalone Python script, but that script is not part of the application and is run on a remote machine on which we indeed &lt;em&gt;should&lt;/em&gt; ignore this signal.&lt;/p&gt;
+
+&lt;p&gt;At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &amp;ldquo;Can&amp;rsquo;t reproduce&amp;rdquo;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.&lt;/p&gt;
+
+&lt;h4 id=&#34;a-week-later:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;A Week Later&lt;/h4&gt;
+
+&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
+
+&lt;p&gt;We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored &lt;code&gt;SIGCHLD&lt;/code&gt;. To check if this was the case, we ran the following in the debugger:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; signal.getsignal(signal.SIGCHLD)
+1
+&amp;gt;&amp;gt;&amp;gt; signal.SIG_IGN
+1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Indeed &amp;ndash; &lt;code&gt;SIGCHLD&lt;/code&gt; is being ignored by our application. How can this be? Nowhere in the code do we ignore &lt;code&gt;SIGCHLD&lt;/code&gt;, except for that standalone script, which runs only on the remote machine. Or does it?&lt;/p&gt;
+
+&lt;h4 id=&#34;checking-our-assumptions:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Checking our Assumptions&lt;/h4&gt;
+
+&lt;p&gt;At this point, the only thing left to do was to look at that script. It includes the following line, right at the top.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Could we, by any chance, have &lt;code&gt;imported&lt;/code&gt; this script as a module in our application, therefore running the above code as a side effect?&lt;/p&gt;
+
+&lt;p&gt;It turns out we were doing exactly that. In recently added code, under specific circumstances, our application imports the module in order to get its filename and to deploy it to the remote machine. While normally &lt;code&gt;import&lt;/code&gt; should be clean of side effects, the above &lt;code&gt;signal&lt;/code&gt; code appears at the module level and not inside a function, and is therefore run when imported. This contaminates our application and causes it to ignore &lt;code&gt;SIGCHLD&lt;/code&gt; with the described consequences.&lt;/p&gt;
+
+&lt;p&gt;Moving this line fixed the problem.&lt;/p&gt;
+
+&lt;h4 id=&#34;question-everything:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Question Everything&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
+
+&lt;p&gt;The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this &lt;em&gt;could not happen&lt;/em&gt; since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.&lt;/p&gt;
+
+&lt;h4 id=&#34;conclusion:99cb9f24f3ea4237a647e70c92ab88eb&#34;&gt;Conclusion&lt;/h4&gt;
+
+&lt;p&gt;As a lesson from this, aside from some debugging ideas, please remember: Don&amp;rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python &lt;code&gt;if __name__ == &#39;__main__&#39;&lt;/code&gt; construct.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Buffers will fill up... eventually</title>
+      <link>http://philipson.co.il/post/buffers-will-fill-up-eventually/</link>
+      <pubDate>Wed, 18 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/buffers-will-fill-up-eventually/</guid>
+      <description>
+
+&lt;p&gt;A colleague asked me to look into a problem with him, mentioning that &amp;ldquo;Tlib hangs when we run it&amp;rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.&lt;/p&gt;
+
+&lt;p&gt;Running the code, and interrupting it with &lt;code&gt;^C&lt;/code&gt; when it hangs, turned up a result similar to the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;^CTraceback (most recent call last):
+  File &amp;quot;./execute_wrong.py&amp;quot;, line 8, in &amp;lt;module&amp;gt;
+    retval, out, err = execute(&amp;quot;git ls-remote&amp;quot;)
+  File &amp;quot;./execute_wrong.py&amp;quot;, line 5, in execute
+    retval = p.wait()
+  File &amp;quot;/usr/lib/python2.7/subprocess.py&amp;quot;, line 1376, in wait
+    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+  File &amp;quot;/usr/lib/python2.7/subprocess.py&amp;quot;, line 476, in _eintr_retry_call
+    return func(*args)
+KeyboardInterrupt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Interesting. The code seems to hang while waiting for the &lt;code&gt;git&lt;/code&gt; child process to terminate. However, running &lt;code&gt;git ls-remote&lt;/code&gt; from the command line works fine, so why does it hang when run from the code?&lt;/p&gt;
+
+&lt;h2 id=&#34;investigating-the-issue:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;Investigating the Issue&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at the code history to see if anything has changed recently.&lt;/p&gt;
+
+&lt;p&gt;Nope. A quick &lt;code&gt;git blame&lt;/code&gt; shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see what is happening while waiting for the &lt;code&gt;git&lt;/code&gt; child process to finish, by running &lt;code&gt;strace&lt;/code&gt; on the process:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ strace -p 5774
+Process 5774 attached
+write(1, &amp;quot;pull/624/merge\n2fe9da91f5a4b5ba3&amp;quot;..., 4096
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;OK. The process is trying to write to &lt;code&gt;stdout&lt;/code&gt;, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at the size of the data returned by the child process:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65572
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Aha! This number looks suspiciously like &amp;ldquo;a bit more than 64k&amp;rdquo;. Which affirms our hypothesis. Let&amp;rsquo;s try to reduce its size by deleting some old remote branches:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git push origin :old_branch1
+$ git push origin :old_branch2
+...
+$ git ls-remote | wc -c
+From gitserver:/git/qa/tlib
+   65368
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now to run the program again&amp;hellip; It worked! The program continues to run successfully.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-code:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;The Code&lt;/h2&gt;
+
+&lt;p&gt;Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+import subprocess
+
+def execute(command):
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    retval = p.wait()
+    return retval, p.stdout.read(), p.stderr.read()
+
+retval, out, err = execute(&#34;git ls-remote&#34;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The problem is that we &lt;code&gt;wait()&lt;/code&gt; for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&amp;rsquo;s buffer. Once it exceeded the buffer&amp;rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.&lt;/p&gt;
+
+&lt;h2 id=&#34;fixing-the-problem:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;Fixing the Problem&lt;/h2&gt;
+
+&lt;p&gt;Now that we see the problem, fixing it is simple: First read, then wait.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+import subprocess
+
+def execute(command):
+    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out = p.stdout.read()
+    err = p.stderr.read()
+    retval = p.wait()
+    return retval, out, err
+
+retval, out, err = execute(&#34;git ls-remote&#34;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unfortunately, as Alon Horev and Baruch Even pointed out in their comments, this is still not correct. Since we try to read from &lt;code&gt;stdout&lt;/code&gt; until it gets an EOF and only then try to read from &lt;code&gt;stderr&lt;/code&gt;, the &lt;code&gt;stderr&lt;/code&gt; pipe&amp;rsquo;s buffer can fill up if the child process writes a lot of data to it.&lt;/p&gt;
+
+&lt;p&gt;The correct solution involves reading from both pipes in tandem. The &lt;code&gt;communicate()&lt;/code&gt; method of the &lt;code&gt;Popen&lt;/code&gt; class implements this using the &lt;code&gt;select()&lt;/code&gt; system call on POSIX, and with threads on Windows platforms.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:90e5ce7b5eafc0575d5466ecd1dc93a8&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&amp;rsquo;t assume that it will be OK &amp;ndash; because it will come back to bite you, or at least some future user of your code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Improving readability and flow control in Python</title>
+      <link>http://philipson.co.il/post/improving-readability-and-flow-control-in-python/</link>
+      <pubDate>Thu, 16 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/improving-readability-and-flow-control-in-python/</guid>
+      <description>
+
+&lt;p&gt;Recently, a colleague and I refactored a piece of existing code that had new
+behavior added to it. During the process, we managed to improve the readability of the
+code using several techniques that I&amp;rsquo;ll describe below.&lt;/p&gt;
+
+&lt;h2 id=&#34;where-we-started:1df4a958259f970048d6d810a05899d5&#34;&gt;Where We Started&lt;/h2&gt;
+
+&lt;p&gt;The original code was fairly simple: It decides whether certain &amp;ldquo;dead&amp;rdquo;
+components need to be &amp;ldquo;revived&amp;rdquo;, and presents the user with a prompt to choose
+from one of several actions.
+Depending on the user&amp;rsquo;s choice, the code then proceeds to take the appropriate action:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+    choice = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+       &amp;quot;Do you wish to (r)evive them, (c)ontinue without reviving, or (q)uit?&amp;quot;,
+       { &amp;quot;r&amp;quot;: &amp;quot;revive&amp;quot;, 
+         &amp;quot;c&amp;quot;: &amp;quot;continue&amp;quot;, 
+         &amp;quot;Q&amp;quot;: &amp;quot;quit&amp;quot;}, 
+       default = &amp;quot;quit&amp;quot;)
+
+    if choice == &amp;quot;revive&amp;quot;:
+        revive_components()
+    elif choice == &amp;quot;quit&amp;quot;:
+        raise TestCannotRunException(&amp;quot;Dead components exist&amp;quot;)
+    elif choice == &amp;quot;continue&amp;quot;:
+        pass
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;adding-new-behavior:1df4a958259f970048d6d810a05899d5&#34;&gt;Adding New Behavior&lt;/h2&gt;
+
+&lt;p&gt;We now wanted to add some new functionality to the above code, namely the ability to
+allow the user to select a &lt;em&gt;subset&lt;/em&gt; of the components that he wants to revive.&lt;/p&gt;
+
+&lt;p&gt;To make things more foolproof, in case the user chose to revive selected
+components but then neglected to select any components from the list, the code
+would not proceed blindly but rather send the user back to the menu so that he could try again.&lt;/p&gt;
+
+&lt;p&gt;The first version of the new code looked like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+    while True:
+        choice = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+            &amp;quot;Do you wish to (r)evive them all, (s)elect components to revive, &amp;quot;
+            &amp;quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&amp;quot;,
+            { &amp;quot;r&amp;quot;: &amp;quot;revive&amp;quot;,
+              &amp;quot;s&amp;quot;: &amp;quot;select&amp;quot;, 
+              &amp;quot;c&amp;quot;: &amp;quot;continue&amp;quot;, 
+              &amp;quot;Q&amp;quot;: &amp;quot;quit&amp;quot;},
+            default = &amp;quot;quit&amp;quot;)
+
+        if choice == &amp;quot;revive&amp;quot;:
+            revive_components()
+            break
+        elif choice == &amp;quot;quit&amp;quot;:
+            raise TestCannotRunException(&amp;quot;Dead components exist&amp;quot;)
+        elif choice == &amp;quot;continue&amp;quot;:
+            break
+        elif choice == &amp;quot;select&amp;quot;:
+            selected = show_menu(&amp;quot;Which components would you like to revive?&amp;quot;)
+            if selected:
+                revive_components(selected)
+                break
+            else:
+                logger.info(&amp;quot;Nothing selected...&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To get the required behavior, we used an infinite &lt;code&gt;while True&lt;/code&gt; loop that terminates with an
+explicit &lt;code&gt;break&lt;/code&gt; when a valid choice is made by the user and reiterates otherwise.
+This ensures that we don&amp;rsquo;t continue until a valid choice is made.&lt;/p&gt;
+
+&lt;h2 id=&#34;can-we-do-better:1df4a958259f970048d6d810a05899d5&#34;&gt;Can We Do Better?&lt;/h2&gt;
+
+&lt;p&gt;The problem with the above method is that the flow control is not immediately
+apparent when looking at the code: It&amp;rsquo;s not obvious that the infinite loop
+should actually terminate in all but one case. A future developer could easily
+break this behavior.&lt;/p&gt;
+
+&lt;p&gt;In addition, the &lt;code&gt;if&lt;/code&gt;/&lt;code&gt;elif&lt;/code&gt; ladder becomes a bit too long to read
+comfortably.&lt;/p&gt;
+
+&lt;p&gt;The second iteration was meant to make the flow control clearer:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+    class InvalidChoiceError(Exception): pass
+
+    def choice_revive():    revive_components()
+    def choice_quit():      raise TestCannotRunException(&amp;quot;Dead components exist&amp;quot;)
+    def choice_continue_(): pass
+    def choice_select():
+        selected = show_menu(&amp;quot;Which components would you like to revive?&amp;quot;)
+        if not selected:
+            logger.info(&amp;quot;Nothing selected...&amp;quot;)
+            raise InvalidChoiceError
+
+        revive_components(selected)
+
+    while True:
+        choice = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+            &amp;quot;Do you wish to (r)evive them all, (s)elect components to revive, &amp;quot;
+            &amp;quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&amp;quot;,
+            { &amp;quot;r&amp;quot;: &amp;quot;revive&amp;quot;,
+              &amp;quot;s&amp;quot;: &amp;quot;select&amp;quot;, 
+              &amp;quot;c&amp;quot;: &amp;quot;continue&amp;quot;, 
+              &amp;quot;Q&amp;quot;: &amp;quot;quit&amp;quot;},
+            default = &amp;quot;quit&amp;quot;)
+        try:
+            locals().get(&#39;choice_%s&#39; % choice)()
+            break
+        except InvalidChoiceError:
+            continue
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We use several techniques here to improve the clarity of the code:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;We used internal functions to encapsulate the possible actions to take. The
+advantage of using internal functions is that it keeps the external namespace
+clean, and the naming of each function makes its purpose quite clear.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We used a dictionary instead of the &lt;code&gt;if&lt;/code&gt;/&lt;code&gt;elif&lt;/code&gt; construct. Since Python
+doesn&amp;rsquo;t have a &lt;code&gt;switch&lt;/code&gt; or &lt;code&gt;case&lt;/code&gt; statement, this is a more readable replacement.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We decided to use an exception to signify, well, &lt;em&gt;exceptional&lt;/em&gt; flow control: If the user hasn&amp;rsquo;t
+selected any components, this warrants exceptional behavior. This technique is
+much debated, but we felt like it was appropriate in this case.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The function name to be called is determined dynamically at runtime from the
+user&amp;rsquo;s selection. The idea was to avoid code duplication by needing to specify the names
+of the functions yet again (but see below).&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;removing-some-coolness-for-readability:1df4a958259f970048d6d810a05899d5&#34;&gt;Removing Some Coolness For Readability&lt;/h2&gt;
+
+&lt;p&gt;My colleague pointed out that the &lt;code&gt;locals().get(&#39;choice_%s&#39; % choice)()&lt;/code&gt; trick
+is not quite readable. I agreed, and was happy to accept his improved proposal:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def revive_dead_components():
+
+    # ...
+
+    while True:
+        choice_func = choose(&#39;&amp;quot;I see dead components...&amp;quot;\n&#39;
+            &amp;quot;Do you wish to (r)evive them all, (s)elect components to revive, &amp;quot;
+            &amp;quot;(c)ontinue without reviving, d(i)sable reviver, or (q)uit?&amp;quot;,
+            dict(r = choice_revive,
+                 s = choice_select, 
+                 c = choice_continue,
+                 Q = choice_quit
+                 ),
+            default = &amp;quot;quit&amp;quot;)
+        try:
+            choice_func()
+            break
+        except InvalidChoiceError:
+            continue
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This version has several advantages:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;It doesn&amp;rsquo;t use &amp;ldquo;magic&amp;rdquo; to achieve the selection of the function. Duplication
+is better than magic in this case, since it makes the code more readable.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The dictionary is created using the &lt;code&gt;dict()&lt;/code&gt; syntax instead of the &lt;code&gt;{...}&lt;/code&gt;
+syntax, which gets rid of a lot of punctuation and makes the code clearer.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:1df4a958259f970048d6d810a05899d5&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;It turns out that even in such a simple piece of code, several programming
+techniques can be used to make the code clearer to read and maintain.&lt;/p&gt;
+
+&lt;p&gt;See you next time!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
