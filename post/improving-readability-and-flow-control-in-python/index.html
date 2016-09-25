@@ -25,7 +25,7 @@
       <div class="container">
         <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
         <div class="row center">
-          <h5 class="header col s12 light">Musings on programming in Python and Go</h5>
+          <h5 class="header col s12 light">Musings on software and technology</h5>
         </div>
         <div class="row center">
         
@@ -68,7 +68,7 @@
 behavior added to it. During the process, we managed to improve the readability of the
 code using several techniques that I&rsquo;ll describe below.</p>
 
-<h2 id="where-we-started:1df4a958259f970048d6d810a05899d5">Where We Started</h2>
+<h2 id="where-we-started">Where We Started</h2>
 
 <p>The original code was fairly simple: It decides whether certain &ldquo;dead&rdquo;
 components need to be &ldquo;revived&rdquo;, and presents the user with a prompt to choose
@@ -91,7 +91,7 @@ Depending on the user&rsquo;s choice, the code then proceeds to take the appropr
         pass
 </code></pre>
 
-<h2 id="adding-new-behavior:1df4a958259f970048d6d810a05899d5">Adding New Behavior</h2>
+<h2 id="adding-new-behavior">Adding New Behavior</h2>
 
 <p>We now wanted to add some new functionality to the above code, namely the ability to
 allow the user to select a <em>subset</em> of the components that he wants to revive.</p>
@@ -133,7 +133,7 @@ would not proceed blindly but rather send the user back to the menu so that he c
 explicit <code>break</code> when a valid choice is made by the user and reiterates otherwise.
 This ensures that we don&rsquo;t continue until a valid choice is made.</p>
 
-<h2 id="can-we-do-better:1df4a958259f970048d6d810a05899d5">Can We Do Better?</h2>
+<h2 id="can-we-do-better">Can We Do Better?</h2>
 
 <p>The problem with the above method is that the flow control is not immediately
 apparent when looking at the code: It&rsquo;s not obvious that the infinite loop
@@ -194,7 +194,7 @@ user&rsquo;s selection. The idea was to avoid code duplication by needing to spe
 of the functions yet again (but see below).</p></li>
 </ul>
 
-<h2 id="removing-some-coolness-for-readability:1df4a958259f970048d6d810a05899d5">Removing Some Coolness For Readability</h2>
+<h2 id="removing-some-coolness-for-readability">Removing Some Coolness For Readability</h2>
 
 <p>My colleague pointed out that the <code>locals().get('choice_%s' % choice)()</code> trick
 is not quite readable. I agreed, and was happy to accept his improved proposal:</p>
@@ -230,7 +230,7 @@ is better than magic in this case, since it makes the code more readable.</p></l
 syntax, which gets rid of a lot of punctuation and makes the code clearer.</p></li>
 </ul>
 
-<h2 id="conclusion:1df4a958259f970048d6d810a05899d5">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>It turns out that even in such a simple piece of code, several programming
 techniques can be used to make the code clearer to read and maintain.</p>

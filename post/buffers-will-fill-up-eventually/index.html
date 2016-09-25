@@ -25,7 +25,7 @@
       <div class="container">
         <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
         <div class="row center">
-          <h5 class="header col s12 light">Musings on programming in Python and Go</h5>
+          <h5 class="header col s12 light">Musings on software and technology</h5>
         </div>
         <div class="row center">
         
@@ -82,7 +82,7 @@ KeyboardInterrupt
 
 <p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
 
-<h2 id="investigating-the-issue:90e5ce7b5eafc0575d5466ecd1dc93a8">Investigating the Issue</h2>
+<h2 id="investigating-the-issue">Investigating the Issue</h2>
 
 <p>Let&rsquo;s look at the code history to see if anything has changed recently.</p>
 
@@ -116,7 +116,7 @@ From gitserver:/git/qa/tlib
 
 <p>Now to run the program again&hellip; It worked! The program continues to run successfully.</p>
 
-<h2 id="the-code:90e5ce7b5eafc0575d5466ecd1dc93a8">The Code</h2>
+<h2 id="the-code">The Code</h2>
 
 <p>Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?</p>
 
@@ -133,7 +133,7 @@ retval, out, err = execute("git ls-remote")
 
 <p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&rsquo;s buffer. Once it exceeded the buffer&rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
 
-<h2 id="fixing-the-problem:90e5ce7b5eafc0575d5466ecd1dc93a8">Fixing the Problem</h2>
+<h2 id="fixing-the-problem">Fixing the Problem</h2>
 
 <p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
 
@@ -154,7 +154,7 @@ retval, out, err = execute("git ls-remote")
 
 <p>The correct solution involves reading from both pipes in tandem. The <code>communicate()</code> method of the <code>Popen</code> class implements this using the <code>select()</code> system call on POSIX, and with threads on Windows platforms.</p>
 
-<h2 id="conclusion:90e5ce7b5eafc0575d5466ecd1dc93a8">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&rsquo;t assume that it will be OK &ndash; because it will come back to bite you, or at least some future user of your code.</p>
 </p>

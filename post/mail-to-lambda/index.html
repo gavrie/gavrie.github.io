@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+  <title>Mail to Lambda, Part 1</title>
+  <link href="http://philipson.co.il/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="http://philipson.co.il/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css">
+  <style type="text/css">
+  
+    footer.page-footer{background-image: url(http://philipson.co.il/images/default.png);}
+  
+  </style>
+</head>
+<body>
+  <ul id="slide-out" class="side-nav">
+    <li><a href="http://philipson.co.il"><i class="mdi-action-home left"></i>Home<i class="mdi-hardware-keyboard-arrow-right right"></i></a></li>
+    <li><a href="http://philipson.co.il/categories"><i class="mdi-action-perm-media left"></i>Categories<i class="mdi-hardware-keyboard-arrow-right right"></i></a></li>
+    <li><a href="http://philipson.co.il/tags"><i class="mdi-action-loyalty left"></i>Tags<i class="mdi-hardware-keyboard-arrow-right right"></i></a></li>
+  </ul>
+  <div id="index-banner" class="parallax-container">
+  <a data-activates="slide-out" class="btn-floating button-collapse" style="top: 5px; left: 5px;"><i class="mdi-navigation-menu"></i></a>
+    <div class="section no-pad-bot">
+      <div class="container">
+        <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
+        <div class="row center">
+          <h5 class="header col s12 light">Musings on software and technology</h5>
+        </div>
+        <div class="row center">
+        
+          <a href="https://github.com/gavrie"><img src="http://philipson.co.il/images/github2-dreamstale35.png"></a>
+        
+        
+        
+          <a href="https://twitter.com/gavrieph"><img src="http://philipson.co.il/images/twitter-dreamstale71.png"></a>
+        
+        
+        
+          <a href="https://www.linkedin.com/in/gavrie"><img src="http://philipson.co.il/images/linkedin-dreamstale45.png"></a>
+        
+          <a href="http://philipson.co.il/index.xml"><img src="http://philipson.co.il/images/feed-dreamstale27.png"></a>
+        </div>
+      </div>
+    </div>
+    <div class="parallax">
+    
+      <img src="http://philipson.co.il/images/default.png">
+    
+    </div>
+  </div>
+
+
+
+<div class="container">
+  <div class="section">
+
+    <div class="row">
+      <div class="col s12">
+        <div class="card-panel">
+          <h4>Mail to Lambda, Part 1</h4>
+          <p>
+           
+          </p>
+          <p>
+
+<p>For a while now, I&rsquo;ve been interested in experimenting with the new <a href="http://martinfowler.com/articles/serverless.html">Serverless</a> fad and see what it is all about. The idea is that you don&rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function. The hype is all about being able to scale your code without pain and being able to upgrade it easily, but of course this technology also makes it very easy to experiment without having to worry about the deployment method <em>du jour</em> &ndash; do I need to create a VM? A container? A pod? Nope, just a function.</p>
+
+<h4 id="serverless-alternatives">Serverless Alternatives</h4>
+
+<p>In the past I&rsquo;ve used services such as Heroku and Google App Engine (which is now part of the Google Cloud Platform) that allow doing something similar, though the abstraction layer there is different. The classic App Engine (now called Standard Environment) has a special limited runtime, which requires adapting your code to use its specific APIs. Google has a newer version (called Flexible Environment) which is based on containers and allows writing more standard code. Unfortunately, it currently lacks the ability to receive email, which the older environment did support and which was needed for this experiment.</p>
+
+<h4 id="going-serverless">Going Serverless</h4>
+
+<p>The leading Serverless offerings include <a href="https://aws.amazon.com/lambda/">AWS Lambda</a> and <a href="https://cloud.google.com/functions/">Google Cloud Functions</a>. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is <a href="https://azure.microsoft.com/en-us/services/functions/">Azure Functions</a>, but I haven&rsquo;t yet had a chance to work with Azure and didn&rsquo;t want to get sidetracked too much.</p>
+
+<p>So, AWS Lambda it is.</p>
+
+<h4 id="the-project">The Project</h4>
+
+<p>I&rsquo;ve been using the very nice <a href="http://www.hourstrackerapp.com/">HoursTracker app</a> for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using <a href="https://www.google.com/sheets/about/">Google Docs</a> before sharing them with the client.</p>
+
+<p>For a while now, I&rsquo;ve wanted to automate these manipulations since they tend to become a bit tedious. Being one of those things you do once a month and take only ten minutes or so, it never became just important enough to me to actually go and automate. It was therefore a perfect candidate for playing with some new technology and possibly getting a usable result as a bonus.</p>
+
+<h5 id="inventory-of-parts">Inventory of Parts</h5>
+
+<p>I needed the following parts to assemble the full solution:</p>
+
+<ol>
+<li>An email address to which I could send the exported data from the HoursTracker app.</li>
+<li>A service that would execute some custom code when a new mail is received at the above address.</li>
+<li>Some code that would process the email, extract the CSV data, manipulate it as needed, convert it to the final format, and send it to its destination.</li>
+</ol>
+
+<p>The new stuff for me were the first two items, so I started with those.</p>
+
+<h4 id="receiving-email">Receiving Email</h4>
+
+<p>To receive emails in a way that would work with AWS Lambda, I used Amazon <a href="https://aws.amazon.com/ses/">Simple Email Service (SES)</a>. Amazon provide clear <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html">instructions</a> for setting it up, and I encountered no issues when following them.</p>
+
+<p>If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. <code>api.example.com</code>) to Amazon&rsquo;s <a href="https://aws.amazon.com/route53/">Route53</a> DNS service, and <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html">added an <code>MX</code> record</a> for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.</p>
+
+<p>As part of completing the instructions, I then created a mail Receipt Rule for the address <code>hourstracker@api.example.com</code> with an action that adds any received mail to a specific <a href="https://aws.amazon.com/s3/">S3 bucket</a>.</p>
+
+<p>At this point, the first part of the inventory is complete: We can receive emails sent to <code>hourstracker@api.example.com</code>, and these are then stored in the <code>hourstracker</code> S3 bucket, ready for further processing.</p>
+
+<h4 id="next-time">Next Time</h4>
+
+<p>Receiving and storing the mail brings us to the point where we can call our custom code to process it. This is where AWS Lambda comes in. In the next part of this series, we will write a simple function to get some information from the email, and will tell SES to call it when a new mail arrives.</p>
+</p>
+          <p>25 Sep 2016
+            
+              
+                <a href="http://philipson.co.il/tags/aws/">#aws</a>
+              
+                <a href="http://philipson.co.il/tags/serverless/">#serverless</a>
+              
+            
+          </p>
+          
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+     
+    var disqus_shortname = 'gavriesbl';
+    
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s3 m1">
+      
+        <a class="btn-floating btn-large disabled"><i class="mdi-navigation-arrow-back"></i></a>
+      
+      </div>
+      <div class="col s6 m10 center">&nbsp</div>
+      <div class="col s3 m1">
+      
+        <a class="btn-floating btn-large waves-effect waves-light" href="http://philipson.co.il/post/from-python-to-go/"><i class="mdi-navigation-arrow-forward"></i></a>
+      
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <footer class="page-footer">
+    <div class="footer-copyright">
+      <div class="container">
+      © 2016 by Gavrie Philipson
+      <div class="right">Design <a class="grey-text text-lighten-4" href="http://pdevty.github.io/blog/">pdevty</a></div>
+      </div>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="http://philipson.co.il/js/materialize.min.js"></script>
+  <script src="http://philipson.co.il/js/init.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  </body>
+</html>
+

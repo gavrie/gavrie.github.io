@@ -25,7 +25,7 @@
       <div class="container">
         <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
         <div class="row center">
-          <h5 class="header col s12 light">Musings on programming in Python and Go</h5>
+          <h5 class="header col s12 light">Musings on software and technology</h5>
         </div>
         <div class="row center">
         
@@ -87,7 +87,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 
 <p>So, what is going on here? You may want to think it through and see if you can find the problem.</p>
 
-<h4 id="diving-in:99cb9f24f3ea4237a647e70c92ab88eb">Diving In</h4>
+<h4 id="diving-in">Diving In</h4>
 
 <p>At first sight, this looks like a problem with either Python itself or with the OS (Linux, in our case). How could this happen?  The colleague who first encountered this issue looked at it through the Python debugger, and got as far as the <code>wait()</code> function of <code>subprocess</code>:</p>
 
@@ -117,13 +117,13 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 
 <p>Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores <code>SIGCHLD</code> since it isn&rsquo;t interested in the exit code of its child processes, it makes sense for <code>waitpid()</code> to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.</p>
 
-<h4 id="back-to-the-code:99cb9f24f3ea4237a647e70c92ab88eb">Back to the Code</h4>
+<h4 id="back-to-the-code">Back to the Code</h4>
 
 <p>Do we by any chance ignore <code>SIGCHLD</code> in our application? The chance we do is very small, since we run a lot of child processes and depend on their state all their time, and this fails only occasionally. A quick <code>git grep</code> on the code shows that we <em>do</em> ignore <code>SIGCHLD</code> in one specific standalone Python script, but that script is not part of the application and is run on a remote machine on which we indeed <em>should</em> ignore this signal.</p>
 
 <p>At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &ldquo;Can&rsquo;t reproduce&rdquo;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.</p>
 
-<h4 id="a-week-later:99cb9f24f3ea4237a647e70c92ab88eb">A Week Later</h4>
+<h4 id="a-week-later">A Week Later</h4>
 
 <p>Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague <a href="https://plus.google.com/107274679081446769903/">Erez Horev</a> called me over and we started looking at it together.</p>
 
@@ -137,7 +137,7 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 
 <p>Indeed &ndash; <code>SIGCHLD</code> is being ignored by our application. How can this be? Nowhere in the code do we ignore <code>SIGCHLD</code>, except for that standalone script, which runs only on the remote machine. Or does it?</p>
 
-<h4 id="checking-our-assumptions:99cb9f24f3ea4237a647e70c92ab88eb">Checking our Assumptions</h4>
+<h4 id="checking-our-assumptions">Checking our Assumptions</h4>
 
 <p>At this point, the only thing left to do was to look at that script. It includes the following line, right at the top.</p>
 
@@ -150,13 +150,13 @@ subprocess.CalledProcessError: Command 'false' returned non-zero exit status 1
 
 <p>Moving this line fixed the problem.</p>
 
-<h4 id="question-everything:99cb9f24f3ea4237a647e70c92ab88eb">Question Everything</h4>
+<h4 id="question-everything">Question Everything</h4>
 
 <p><a href="http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html">Mark Dalrymple</a>, in his <a href="http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/">Thoughts on Debugging, Part 1</a>, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.</p>
 
 <p>The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this <em>could not happen</em> since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.</p>
 
-<h4 id="conclusion:99cb9f24f3ea4237a647e70c92ab88eb">Conclusion</h4>
+<h4 id="conclusion">Conclusion</h4>
 
 <p>As a lesson from this, aside from some debugging ideas, please remember: Don&rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python <code>if __name__ == '__main__'</code> construct.</p>
 </p>

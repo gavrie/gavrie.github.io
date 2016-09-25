@@ -25,7 +25,7 @@
       <div class="container">
         <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
         <div class="row center">
-          <h5 class="header col s12 light">Musings on programming in Python and Go</h5>
+          <h5 class="header col s12 light">Musings on software and technology</h5>
         </div>
         <div class="row center">
         
@@ -69,7 +69,7 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
 
 <p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
 
-<h2 id="the-problem:80145b1be4d0162d01385de709b1581f">The Problem</h2>
+<h2 id="the-problem">The Problem</h2>
 
 <p>WWPNs can&rsquo;t just be pulled out of thin air. They are allocated &ndash; in chunks &ndash; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
 
@@ -82,7 +82,7 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
 
 <p>The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.</p>
 
-<h2 id="some-background:80145b1be4d0162d01385de709b1581f">Some Background</h2>
+<h2 id="some-background">Some Background</h2>
 
 <p>We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&rsquo;ll refer to the IEEE&rsquo;s <a href="http://standards.ieee.org/develop/regauth/tut/fibre.pdf">Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)</a>, and cheat a bit.</p>
 
@@ -109,7 +109,7 @@ We&rsquo;ll decode it according to the IEEE Guidelines:</p>
 <li>The vendor-specific part is <code>93:53:6d</code>, which is 24 bits long</li>
 </ul>
 
-<h2 id="using-one-wwpn-to-generate-many-new-ones:80145b1be4d0162d01385de709b1581f">Using One WWPN to Generate Many New Ones</h2>
+<h2 id="using-one-wwpn-to-generate-many-new-ones">Using One WWPN to Generate Many New Ones</h2>
 
 <p>For every physical WWPN, we need to be able to generate up to 256 virtual WWPNs to be used with NPIV (assuming that each HBA port supports up to 256 virtual ports). The trick lies in reusing the vendor-specific part to generate multiple WWPNs per physical port, each of which would be guaranteed to be unique throughout the lab.</p>
 
@@ -157,7 +157,7 @@ Generated WWPN range:
              serial
 </code></pre>
 
-<h2 id="conclusion:80145b1be4d0162d01385de709b1581f">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>While still being a hack, the above scheme allows us to generate as many WWPNs as we need.</p>
 

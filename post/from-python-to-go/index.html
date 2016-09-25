@@ -25,7 +25,7 @@
       <div class="container">
         <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
         <div class="row center">
-          <h5 class="header col s12 light">Musings on programming in Python and Go</h5>
+          <h5 class="header col s12 light">Musings on software and technology</h5>
         </div>
         <div class="row center">
         
@@ -68,7 +68,7 @@
 
 <p>I&rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible. Ultimately this led me to Go. Below I&rsquo;ll describe the process that led me there.</p>
 
-<h4 id="goodbye-for-now-python:2ecf25abdb570cf9d35eafb7134d2b49">Goodbye for now, Python</h4>
+<h4 id="goodbye-for-now-python">Goodbye for now, Python</h4>
 
 <p>At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.</p>
 
@@ -80,7 +80,7 @@
 
 <p>So, we&rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?</p>
 
-<h4 id="hello-go:2ecf25abdb570cf9d35eafb7134d2b49">Hello, Go</h4>
+<h4 id="hello-go">Hello, Go</h4>
 
 <p>At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?</p>
 
@@ -90,11 +90,11 @@
 
 <p>Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.</p>
 
-<h4 id="what-i-liked-about-go:2ecf25abdb570cf9d35eafb7134d2b49">What I liked about Go</h4>
+<h4 id="what-i-liked-about-go">What I liked about Go</h4>
 
 <p>So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:</p>
 
-<h5 id="syntax:2ecf25abdb570cf9d35eafb7134d2b49">Syntax</h5>
+<h5 id="syntax">Syntax</h5>
 
 <p>Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with <code>var</code>, the <code>:=</code> operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&rsquo;s Turbo Pascal (yes, I&rsquo;m disclosing my age here).</p>
 
@@ -104,23 +104,23 @@
 
 <p>Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.</p>
 
-<h5 id="toolset:2ecf25abdb570cf9d35eafb7134d2b49">Toolset</h5>
+<h5 id="toolset">Toolset</h5>
 
 <p>The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: <code>godoc</code> handles documentation; <code>gofmt</code> formats code consistently; <code>gocode</code> autocompletes your code by analysis of actually built code so its results are precise; <code>gorename</code> handles renames in a type-safe way; <code>godef</code> find the definition of every construct you point it at; <code>oracle</code> does amazing code analysis that gives you insight into the flow of your code. Combine all those with <code>vim-go</code> which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.</p>
 
-<h5 id="concurrency:2ecf25abdb570cf9d35eafb7134d2b49">Concurrency</h5>
+<h5 id="concurrency">Concurrency</h5>
 
 <p>Concurrency! Channels are Go&rsquo;s way of handling concurrency and they&rsquo;re marvelous. Go is the only language I&rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&rsquo;s <code>gevent</code>, but in Go it&rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.</p>
 
-<h4 id="what-took-time-to-get-used-to:2ecf25abdb570cf9d35eafb7134d2b49">What took time to get used to</h4>
+<h4 id="what-took-time-to-get-used-to">What took time to get used to</h4>
 
 <p>Some things in Go took time to get used to, and I&rsquo;m not sure yet whether I like them or not:</p>
 
-<h5 id="error-handling:2ecf25abdb570cf9d35eafb7134d2b49">Error Handling</h5>
+<h5 id="error-handling">Error Handling</h5>
 
 <p>Error handling is explicit. Errors are returned as values from functions (using a special <code>error</code> type). Together with multi-valued returns, this is much better than C&rsquo;s error handling, but much less intuitive than Python&rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like <code>errcheck</code> help ensure that you don&rsquo;t miss any. While it&rsquo;s much easier to write code using exceptions, it&rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &ldquo;end user&rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use <code>panic</code>/<code>recover</code> for such code.</p>
 
-<h5 id="generics:2ecf25abdb570cf9d35eafb7134d2b49">Generics?</h5>
+<h5 id="generics">Generics?</h5>
 
 <p>Yes, everyone says it so I will too: Go doesn&rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&rsquo;t write your own <code>set</code> type and have it support sets of <code>int</code> or of <code>string</code> without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of <code>Max</code> or <code>Shuffle</code> functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.</p>
 </p>
@@ -155,7 +155,7 @@
     <div class="row">
       <div class="col s3 m1">
       
-        <a class="btn-floating btn-large disabled"><i class="mdi-navigation-arrow-back"></i></a>
+        <a class="btn-floating btn-large waves-effect waves-light" href="http://philipson.co.il/post/mail-to-lambda/"><i class="mdi-navigation-arrow-back"></i></a>
       
       </div>
       <div class="col s6 m10 center">&nbsp</div>
