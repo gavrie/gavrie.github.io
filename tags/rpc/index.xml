@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Rpc on Gavrie&#39;s Blog</title>
+    <title>Rpc on Philipson Consulting and Training</title>
     <link>http://philipson.co.il/tags/rpc/</link>
-    <description>Recent content in Rpc on Gavrie&#39;s Blog</description>
+    <description>Recent content in Rpc on Philipson Consulting and Training</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>© 2016 by Gavrie Philipson</copyright>
     <lastBuildDate>Wed, 20 Jun 2012 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://philipson.co.il/tags/rpc/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Why I don&#39;t like &#39;transparent&#39; RPC</title>
+      <title>Why I don&#39;t like &#39;Transparent&#39; RPC</title>
       <link>http://philipson.co.il/post/why-i-dont-like-rpc/</link>
       <pubDate>Wed, 20 Jun 2012 00:00:00 +0000</pubDate>
       
@@ -24,7 +23,7 @@
 
 &lt;p&gt;Much clarity could be gained by changing the architecture of this project to be more explicitly distributed. This would involve several agents running on multiple hosts that communicate amongst themselves to get the work done. The agents would have a clean and documented API, making them usable and testable as standalone components, as well as allowing them to act on behalf of a central process. All remote execution would be explicit, using one single method for any kind of execution &amp;ndash; be it shell commands, Python code or anything else.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-problem-with-rpc&#34;&gt;The Problem With RPC&lt;/h2&gt;
+&lt;h2 id=&#34;some-of-the-problems-with-rpc&#34;&gt;Some of the Problems with RPC&lt;/h2&gt;
 
 &lt;p&gt;Our existing codebase makes heavy use of &lt;a href=&#34;http://rpyc.sourceforge.net/&#34;&gt;RPyC&lt;/a&gt;, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.&lt;/p&gt;
 
@@ -36,7 +35,7 @@
 
 &lt;p&gt;The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&amp;rsquo;re at all interested in this debate, I heartily recommend reading some of the &lt;a href=&#34;http://steve.vinoski.net/blog/category/rpc/&#34;&gt;articles by Steve Vinoski&lt;/a&gt;, who is a leading expert on the matter and writes on it very eloquently. &lt;a href=&#34;http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf&#34;&gt;This presentation&lt;/a&gt; summarizes his viewpoint quite nicely, and I quite agree with many of his points.&lt;/p&gt;
 
-&lt;h2 id=&#34;what-now&#34;&gt;What Now?&lt;/h2&gt;
+&lt;h3 id=&#34;what-now&#34;&gt;What Now?&lt;/h3&gt;
 
 &lt;p&gt;So, I&amp;rsquo;m looking for a good tool to create a distributed architecture that is based on explicit message passing. It should be able to send and receive native Python data types by value. It should be nicely designed, clearly documented, and should make the distinction between local code and remote code crystal clear to the developer.&lt;/p&gt;
 

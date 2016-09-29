@@ -7,7 +7,7 @@
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Buffers will fill up... eventually</title>
+  <title>Infrastructure</title>
 
   <meta name="author" content="" />
   <meta name="keywords" content="">
@@ -45,9 +45,9 @@
   <link rel="alternate" href="http://philipson.co.il/index.xml" type="application/rss+xml" title="Philipson Consulting and Training">
 
   
-  <meta property="og:title" content="Buffers will fill up... eventually" />
+  <meta property="og:title" content="Infrastructure" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="/" />
+  <meta property="og:url" content="/categories/infrastructure//" />
   <meta property="og:image" content="img/logo.png" />
 
 </head>
@@ -67,7 +67,7 @@
             <div class="navbar-header">
                 <a class="navbar-brand home" href="http://philipson.co.il">
                     <span class="navbar-collapse">Philipson Consulting and Training</span>
-                    <span class="sr-only">Buffers will fill up... eventually - go to homepage</span>
+                    <span class="sr-only">Infrastructure - go to homepage</span>
                 </a>
                 <div class="navbar-buttons">
                     <button type="button" class="navbar-toggle btn-template-main" data-toggle="collapse" data-target="#navigation">
@@ -132,7 +132,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Buffers will fill up... eventually</h1>
+                <h1>Infrastructure</h1>
             </div>
         </div>
     </div>
@@ -141,139 +141,59 @@
 
         <div id="content">
             <div class="container">
-
                 <div class="row">
-
                     
 
-                    <div class="col-md-9" id="blog-post">
+                    <div class="col-md-9" id="blog-listing-medium">
 
-                        <p class="text-muted text-uppercase mb-small text-right">June 18, 2014</p>
-
-                        <div id="post-content">
-                          
-
-<p>A colleague asked me to look into a problem with him, mentioning that &ldquo;Tlib hangs when we run it&rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server.</p>
-
-<p>Various users complained about the same problem, suggesting that it is not a local issue.</p>
-
-<p>Running the code, and interrupting it with <code>^C</code> when it hangs, turned up a result similar to the following:</p>
-
-<pre><code>^CTraceback (most recent call last):
-  File &quot;./execute_wrong.py&quot;, line 8, in &lt;module&gt;
-    retval, out, err = execute(&quot;git ls-remote&quot;)
-  File &quot;./execute_wrong.py&quot;, line 5, in execute
-    retval = p.wait()
-  File &quot;/usr/lib/python2.7/subprocess.py&quot;, line 1376, in wait
-    pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
-  File &quot;/usr/lib/python2.7/subprocess.py&quot;, line 476, in _eintr_retry_call
-    return func(*args)
-KeyboardInterrupt
-</code></pre>
-
-<p>Interesting. The code seems to hang while waiting for the <code>git</code> child process to terminate. However, running <code>git ls-remote</code> from the command line works fine, so why does it hang when run from the code?</p>
-
-<h1 id="investigating-the-issue">Investigating the Issue</h1>
-
-<p>Let&rsquo;s look at the code history to see if anything has changed recently.</p>
-
-<p>Nope. A quick <code>git blame</code> shows that this code is more than 5 years old, and has been performing flawlessly every day since then. So what else has changed?</p>
-
-<p>Let&rsquo;s see what is happening while waiting for the <code>git</code> child process to finish, by running <code>strace</code> on the process:</p>
-
-<pre><code>$ strace -p 5774
-Process 5774 attached
-write(1, &quot;pull/624/merge\n2fe9da91f5a4b5ba3&quot;..., 4096
-</code></pre>
-
-<p>OK. The process is trying to write to <code>stdout</code>, but hanging while doing so. It looks like some buffer is getting filled, which blocks the process from writing further.</p>
-
-<p>Let&rsquo;s look at the size of the data returned by the child process:</p>
-
-<pre><code>$ git ls-remote | wc -c
-From gitserver:/git/qa/tlib
-   65572
-</code></pre>
-
-<p>Aha! This number looks suspiciously like &ldquo;a bit more than 64k&rdquo;. Which affirms our hypothesis. Let&rsquo;s try to reduce its size by deleting some old remote branches:</p>
-
-<pre><code>$ git push origin :old_branch1
-$ git push origin :old_branch2
-...
-$ git ls-remote | wc -c
-From gitserver:/git/qa/tlib
-   65368
-</code></pre>
-
-<p>Now to run the program again&hellip; It worked! The program continues to run successfully.</p>
-
-<h1 id="the-code">The Code</h1>
-
-<p>Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?</p>
-
-<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">subprocess</span>
-
-<span style="color: #007020; font-weight: bold">def</span> <span style="color: #06287e">execute</span>(command):
-    p <span style="color: #666666">=</span> subprocess<span style="color: #666666">.</span>Popen(command, shell<span style="color: #666666">=</span><span style="color: #007020">True</span>, stdout<span style="color: #666666">=</span>subprocess<span style="color: #666666">.</span>PIPE, stderr<span style="color: #666666">=</span>subprocess<span style="color: #666666">.</span>PIPE)
-    retval <span style="color: #666666">=</span> p<span style="color: #666666">.</span>wait()
-    <span style="color: #007020; font-weight: bold">return</span> retval, p<span style="color: #666666">.</span>stdout<span style="color: #666666">.</span>read(), p<span style="color: #666666">.</span>stderr<span style="color: #666666">.</span>read()
-
-retval, out, err <span style="color: #666666">=</span> execute(<span style="color: #4070a0">&quot;git ls-remote&quot;</span>)
-</pre></div>
-
-
-<p>The problem is that we <code>wait()</code> for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&rsquo;s buffer. Once it exceeded the buffer&rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.</p>
-
-<h1 id="fixing-the-problem">Fixing the Problem</h1>
-
-<p>Now that we see the problem, fixing it is simple: First read, then wait.</p>
-
-<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">subprocess</span>
-
-<span style="color: #007020; font-weight: bold">def</span> <span style="color: #06287e">execute</span>(command):
-    p <span style="color: #666666">=</span> subprocess<span style="color: #666666">.</span>Popen(command, shell<span style="color: #666666">=</span><span style="color: #007020">True</span>, stdout<span style="color: #666666">=</span>subprocess<span style="color: #666666">.</span>PIPE, stderr<span style="color: #666666">=</span>subprocess<span style="color: #666666">.</span>PIPE)
-    out <span style="color: #666666">=</span> p<span style="color: #666666">.</span>stdout<span style="color: #666666">.</span>read()
-    err <span style="color: #666666">=</span> p<span style="color: #666666">.</span>stderr<span style="color: #666666">.</span>read()
-    retval <span style="color: #666666">=</span> p<span style="color: #666666">.</span>wait()
-    <span style="color: #007020; font-weight: bold">return</span> retval, out, err
-
-retval, out, err <span style="color: #666666">=</span> execute(<span style="color: #4070a0">&quot;git ls-remote&quot;</span>)
-</pre></div>
-
-
-<p>Unfortunately, as Alon Horev and Baruch Even pointed out in their comments, this is still not correct. Since we try to read from <code>stdout</code> until it gets an EOF and only then try to read from <code>stderr</code>, the <code>stderr</code> pipe&rsquo;s buffer can fill up if the child process writes a lot of data to it.</p>
-
-<p>The correct solution involves reading from both pipes in tandem. The <code>communicate()</code> method of the <code>Popen</code> class implements this using the <code>select()</code> system call on POSIX, and with threads on Windows platforms.</p>
-
-<h1 id="conclusion">Conclusion</h1>
-
-<p>Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&rsquo;t assume that it will be OK &ndash; because it will come back to bite you, or at least some future user of your code.</p>
-
-<p><p><br></p>
-<sub>Banner image by <a href="https://www.flickr.com/photos/photofarmer/14117597485">photofarmer</a></sub></p>
-
-                        </div>
                         
                         
-                        <div id="comments">
-                            <div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'gavriesbl';
-    var disqus_identifier = 'http:\/\/philipson.co.il\/post\/buffers-will-fill-up-eventually\/';
-    var disqus_title = 'Buffers will fill up... eventually';
-    var disqus_url = 'http:\/\/philipson.co.il\/post\/buffers-will-fill-up-eventually\/';
+                        <section class="post">
+                            <div class="row">
+                                <div class="col-md-4">
+                                  <div class="image">
+                                      <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/">
+                                          
+                                          <img src="http://philipson.co.ilimg/placeholder.png" class="img-responsive" alt="">
+                                          
+                                      </a>
+                                  </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h2><a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/">Generating virtual FC WWPNs for a storage lab</a></h2>
+                                    <div class="clearfix">
+                                        <p class="author-category">
+                                          
+                                          
+                                          
+                                          in <a href="http://philipson.co.ilcategories/infrastructure">infrastructure</a>
+                                          
+                                          
 
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-                        </div>
+                                        </p>
+                                        <p class="date-comments">
+                                            <a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/"><i class="fa fa-calendar-o"></i> February 16, 2012</a>
+                                        </p>
+                                    </div>
+                                    <p class="intro"><p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
+scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
+</p>
+                                    <p class="read-more"><a href="http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/" class="btn btn-template-main">Continue reading</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
                         
 
+                        <ul class="pager">
+                            
+                            <li class="previous disabled"><a href="#">&larr; Newer</a></li>
+                            
+
+                            
+                            <li class="next disabled"><a href="#">Older &rarr;</a></li>
+                            
+                        </ul>
                     </div>
                     
 
@@ -382,7 +302,6 @@ retval, out, err <span style="color: #666666">=</span> execute(<span style="colo
 
                 </div>
                 
-
             </div>
             
         </div>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Python on Gavrie&#39;s Blog</title>
+    <title>Python on Philipson Consulting and Training</title>
     <link>http://philipson.co.il/tags/python/</link>
-    <description>Recent content in Python on Gavrie&#39;s Blog</description>
+    <description>Recent content in Python on Philipson Consulting and Training</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>© 2016 by Gavrie Philipson</copyright>
     <lastBuildDate>Wed, 13 May 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://philipson.co.il/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
@@ -22,7 +21,7 @@
 
 &lt;p&gt;I&amp;rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible. Ultimately this led me to Go. Below I&amp;rsquo;ll describe the process that led me there.&lt;/p&gt;
 
-&lt;h4 id=&#34;goodbye-for-now-python&#34;&gt;Goodbye for now, Python&lt;/h4&gt;
+&lt;h3 id=&#34;taking-a-break-from-python&#34;&gt;Taking a Break From Python&lt;/h3&gt;
 
 &lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
 
@@ -34,7 +33,7 @@
 
 &lt;p&gt;So, we&amp;rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?&lt;/p&gt;
 
-&lt;h4 id=&#34;hello-go&#34;&gt;Hello, Go&lt;/h4&gt;
+&lt;h2 id=&#34;hello-go&#34;&gt;Hello, Go&lt;/h2&gt;
 
 &lt;p&gt;At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?&lt;/p&gt;
 
@@ -44,39 +43,52 @@
 
 &lt;p&gt;Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.&lt;/p&gt;
 
-&lt;h4 id=&#34;what-i-liked-about-go&#34;&gt;What I liked about Go&lt;/h4&gt;
+&lt;h3 id=&#34;what-i-liked-about-go&#34;&gt;What I liked about Go&lt;/h3&gt;
 
 &lt;p&gt;So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:&lt;/p&gt;
 
-&lt;h5 id=&#34;syntax&#34;&gt;Syntax&lt;/h5&gt;
+&lt;h4 id=&#34;syntax&#34;&gt;Syntax&lt;/h4&gt;
 
-&lt;p&gt;Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with &lt;code&gt;var&lt;/code&gt;, the &lt;code&gt;:=&lt;/code&gt; operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&amp;rsquo;s Turbo Pascal (yes, I&amp;rsquo;m disclosing my age here).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with &lt;code&gt;var&lt;/code&gt;, the &lt;code&gt;:=&lt;/code&gt; operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&amp;rsquo;s Turbo Pascal (yes, I&amp;rsquo;m disclosing my age here).&lt;/li&gt;
+&lt;li&gt;High level constructs such as slices and maps are built into the language with their own syntax.&lt;/li&gt;
+&lt;li&gt;High order functions and closures are supported.&lt;/li&gt;
+&lt;li&gt;Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;High level constructs such as slices and maps are built into the language with their own syntax.&lt;/p&gt;
+&lt;h4 id=&#34;toolset&#34;&gt;Toolset&lt;/h4&gt;
 
-&lt;p&gt;High order functions and closures are supported.&lt;/p&gt;
+&lt;p&gt;The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience:&lt;/p&gt;
 
-&lt;p&gt;Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;godoc&lt;/code&gt; handles documentation&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gofmt&lt;/code&gt; formats code consistently&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gocode&lt;/code&gt; autocompletes your code by analysis of actually built code so its results are precise&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gorename&lt;/code&gt; handles renames in a type-safe way&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;godef&lt;/code&gt; find the definition of every construct you point it at&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;oracle&lt;/code&gt; does amazing code analysis that gives you insight into the flow of your code.&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;h5 id=&#34;toolset&#34;&gt;Toolset&lt;/h5&gt;
+&lt;p&gt;Combine all those with &lt;code&gt;vim-go&lt;/code&gt; which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.&lt;/p&gt;
 
-&lt;p&gt;The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: &lt;code&gt;godoc&lt;/code&gt; handles documentation; &lt;code&gt;gofmt&lt;/code&gt; formats code consistently; &lt;code&gt;gocode&lt;/code&gt; autocompletes your code by analysis of actually built code so its results are precise; &lt;code&gt;gorename&lt;/code&gt; handles renames in a type-safe way; &lt;code&gt;godef&lt;/code&gt; find the definition of every construct you point it at; &lt;code&gt;oracle&lt;/code&gt; does amazing code analysis that gives you insight into the flow of your code. Combine all those with &lt;code&gt;vim-go&lt;/code&gt; which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.&lt;/p&gt;
-
-&lt;h5 id=&#34;concurrency&#34;&gt;Concurrency&lt;/h5&gt;
+&lt;h4 id=&#34;concurrency&#34;&gt;Concurrency&lt;/h4&gt;
 
 &lt;p&gt;Concurrency! Channels are Go&amp;rsquo;s way of handling concurrency and they&amp;rsquo;re marvelous. Go is the only language I&amp;rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&amp;rsquo;s &lt;code&gt;gevent&lt;/code&gt;, but in Go it&amp;rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.&lt;/p&gt;
 
-&lt;h4 id=&#34;what-took-time-to-get-used-to&#34;&gt;What took time to get used to&lt;/h4&gt;
+&lt;h3 id=&#34;what-took-time-to-get-used-to&#34;&gt;What took time to get used to&lt;/h3&gt;
 
 &lt;p&gt;Some things in Go took time to get used to, and I&amp;rsquo;m not sure yet whether I like them or not:&lt;/p&gt;
 
-&lt;h5 id=&#34;error-handling&#34;&gt;Error Handling&lt;/h5&gt;
+&lt;h4 id=&#34;error-handling&#34;&gt;Error Handling&lt;/h4&gt;
 
 &lt;p&gt;Error handling is explicit. Errors are returned as values from functions (using a special &lt;code&gt;error&lt;/code&gt; type). Together with multi-valued returns, this is much better than C&amp;rsquo;s error handling, but much less intuitive than Python&amp;rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like &lt;code&gt;errcheck&lt;/code&gt; help ensure that you don&amp;rsquo;t miss any. While it&amp;rsquo;s much easier to write code using exceptions, it&amp;rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &amp;ldquo;end user&amp;rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use &lt;code&gt;panic&lt;/code&gt;/&lt;code&gt;recover&lt;/code&gt; for such code.&lt;/p&gt;
 
-&lt;h5 id=&#34;generics&#34;&gt;Generics?&lt;/h5&gt;
+&lt;h4 id=&#34;generics&#34;&gt;Generics?&lt;/h4&gt;
 
 &lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;
+
+&lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -90,20 +102,22 @@
 
 &lt;p&gt;A few weeks ago, a colleague came to me with an interesting bug: When running a child process with Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module, no exception is thrown when the child process fails. In essence, what happened was the following (typed at the interactive Python prompt):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import subprocess
-&amp;gt;&amp;gt;&amp;gt; subprocess.check_call(&amp;quot;false&amp;quot;)
-0
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #0e84b5; font-weight: bold&#34;&gt;subprocess&lt;/span&gt;
+&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;check_call(&lt;span style=&#34;color: #4070a0&#34;&gt;&amp;quot;false&amp;quot;&lt;/span&gt;)
+&lt;span style=&#34;color: #40a070&#34;&gt;0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;false&lt;/code&gt; command always exits with a nonzero exit code. The expected behavior, as confirmed on another machine, would be as follows:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; subprocess.check_call(&amp;quot;false&amp;quot;)
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;check_call(&lt;span style=&#34;color: #4070a0&#34;&gt;&amp;quot;false&amp;quot;&lt;/span&gt;)
 Traceback (most recent call last):
-  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;
-  File &amp;quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py&amp;quot;, line 542, in check_call
-    raise CalledProcessError(retcode, cmd)
-subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit status 1
-&lt;/code&gt;&lt;/pre&gt;
+  File &lt;span style=&#34;color: #4070a0&#34;&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span style=&#34;color: #40a070&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #666666&#34;&gt;&amp;lt;&lt;/span&gt;module&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&lt;/span&gt;
+  File &lt;span style=&#34;color: #4070a0&#34;&gt;&amp;quot;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/subprocess.py&amp;quot;&lt;/span&gt;, line &lt;span style=&#34;color: #40a070&#34;&gt;542&lt;/span&gt;, &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;in&lt;/span&gt; check_call
+    &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;raise&lt;/span&gt; CalledProcessError(retcode, cmd)
+subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcessError: Command &lt;span style=&#34;color: #4070a0&#34;&gt;&amp;#39;false&amp;#39;&lt;/span&gt; returned non&lt;span style=&#34;color: #666666&#34;&gt;-&lt;/span&gt;zero &lt;span style=&#34;color: #007020&#34;&gt;exit&lt;/span&gt; status &lt;span style=&#34;color: #40a070&#34;&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So, what happens is that &lt;code&gt;subprocess&lt;/code&gt; thinks that the child process exited successfully, even though it did not.&lt;/p&gt;
 
@@ -111,29 +125,30 @@ subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit st
 
 &lt;p&gt;So, what is going on here? You may want to think it through and see if you can find the problem.&lt;/p&gt;
 
-&lt;h4 id=&#34;diving-in&#34;&gt;Diving In&lt;/h4&gt;
+&lt;h2 id=&#34;diving-in&#34;&gt;Diving In&lt;/h2&gt;
 
 &lt;p&gt;At first sight, this looks like a problem with either Python itself or with the OS (Linux, in our case). How could this happen?  The colleague who first encountered this issue looked at it through the Python debugger, and got as far as the &lt;code&gt;wait()&lt;/code&gt; function of &lt;code&gt;subprocess&lt;/code&gt;:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def wait(self):
-    &amp;quot;&amp;quot;&amp;quot;Wait for child process to terminate.  Returns returncode attribute.&amp;quot;&amp;quot;&amp;quot;
-    while self.returncode is None:
-        try:
-            pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
-        except OSError as e:
-            if e.errno != errno.ECHILD:
-                raise
-            # This happens if SIGCLD is set to be ignored or waiting
-            # for child processes has otherwise been disabled for our
-            # process.  This child is dead, we can&#39;t get the status.
-            pid = self.pid
-            sts = 0
-        # Check the pid and loop as waitpid has been known to return
-        # 0 even without WNOHANG in odd situations.  issue14396.
-        if pid == self.pid:
-            self._handle_exitstatus(sts)
-    return self.returncode
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #06287e&#34;&gt;wait&lt;/span&gt;(&lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;):
+    &lt;span style=&#34;color: #4070a0; font-style: italic&#34;&gt;&amp;quot;&amp;quot;&amp;quot;Wait for child process to terminate.  Returns returncode attribute.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;while&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;returncode &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;None&lt;/span&gt;:
+        &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;try&lt;/span&gt;:
+            pid, sts &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; _eintr_retry_call(os&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;waitpid, &lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;pid, &lt;span style=&#34;color: #40a070&#34;&gt;0&lt;/span&gt;)
+        &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;except&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;OSError&lt;/span&gt; &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;as&lt;/span&gt; e:
+            &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;if&lt;/span&gt; e&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;errno &lt;span style=&#34;color: #666666&#34;&gt;!=&lt;/span&gt; errno&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;ECHILD:
+                &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;raise&lt;/span&gt;
+            &lt;span style=&#34;color: #60a0b0; font-style: italic&#34;&gt;# This happens if SIGCLD is set to be ignored or waiting&lt;/span&gt;
+            &lt;span style=&#34;color: #60a0b0; font-style: italic&#34;&gt;# for child processes has otherwise been disabled for our&lt;/span&gt;
+            &lt;span style=&#34;color: #60a0b0; font-style: italic&#34;&gt;# process.  This child is dead, we can&amp;#39;t get the status.&lt;/span&gt;
+            pid &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;pid
+            sts &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #40a070&#34;&gt;0&lt;/span&gt;
+        &lt;span style=&#34;color: #60a0b0; font-style: italic&#34;&gt;# Check the pid and loop as waitpid has been known to return&lt;/span&gt;
+        &lt;span style=&#34;color: #60a0b0; font-style: italic&#34;&gt;# 0 even without WNOHANG in odd situations.  issue14396.&lt;/span&gt;
+        &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;if&lt;/span&gt; pid &lt;span style=&#34;color: #666666&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;pid:
+            &lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;_handle_exitstatus(sts)
+    &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;returncode
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As seen in the code, if &lt;code&gt;os.waitpid&lt;/code&gt; on a child process fails with &lt;code&gt;ECHILD&lt;/code&gt;, an exception is not raised. The reason for this is that &lt;code&gt;ECHILD&lt;/code&gt; is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls &lt;code&gt;wait()&lt;/code&gt; on it. In the interim, the process is a so-called &amp;ldquo;zombie&amp;rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.&lt;/p&gt;
 
@@ -141,32 +156,34 @@ subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit st
 
 &lt;p&gt;Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&amp;rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores &lt;code&gt;SIGCHLD&lt;/code&gt; since it isn&amp;rsquo;t interested in the exit code of its child processes, it makes sense for &lt;code&gt;waitpid()&lt;/code&gt; to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.&lt;/p&gt;
 
-&lt;h4 id=&#34;back-to-the-code&#34;&gt;Back to the Code&lt;/h4&gt;
+&lt;h3 id=&#34;back-to-the-code&#34;&gt;Back to the Code&lt;/h3&gt;
 
 &lt;p&gt;Do we by any chance ignore &lt;code&gt;SIGCHLD&lt;/code&gt; in our application? The chance we do is very small, since we run a lot of child processes and depend on their state all their time, and this fails only occasionally. A quick &lt;code&gt;git grep&lt;/code&gt; on the code shows that we &lt;em&gt;do&lt;/em&gt; ignore &lt;code&gt;SIGCHLD&lt;/code&gt; in one specific standalone Python script, but that script is not part of the application and is run on a remote machine on which we indeed &lt;em&gt;should&lt;/em&gt; ignore this signal.&lt;/p&gt;
 
 &lt;p&gt;At this point, I suspected (wrongly, as we shall see) that this was a problem with the specific host on which it happened, and resolved the issue as &amp;ldquo;Can&amp;rsquo;t reproduce&amp;rdquo;. Since this happened more than once, this was not ideal, so I asked other team members to keep an eye open in case this happened again.&lt;/p&gt;
 
-&lt;h4 id=&#34;a-week-later&#34;&gt;A Week Later&lt;/h4&gt;
+&lt;h3 id=&#34;a-week-later&#34;&gt;A Week Later&lt;/h3&gt;
 
 &lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
 
 &lt;p&gt;We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored &lt;code&gt;SIGCHLD&lt;/code&gt;. To check if this was the case, we ran the following in the debugger:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; signal.getsignal(signal.SIGCHLD)
-1
-&amp;gt;&amp;gt;&amp;gt; signal.SIG_IGN
-1
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; signal&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;getsignal(signal&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;SIGCHLD)
+&lt;span style=&#34;color: #40a070&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color: #666666&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; signal&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;SIG_IGN
+&lt;span style=&#34;color: #40a070&#34;&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Indeed &amp;ndash; &lt;code&gt;SIGCHLD&lt;/code&gt; is being ignored by our application. How can this be? Nowhere in the code do we ignore &lt;code&gt;SIGCHLD&lt;/code&gt;, except for that standalone script, which runs only on the remote machine. Or does it?&lt;/p&gt;
 
-&lt;h4 id=&#34;checking-our-assumptions&#34;&gt;Checking our Assumptions&lt;/h4&gt;
+&lt;h3 id=&#34;checking-our-assumptions&#34;&gt;Checking our Assumptions&lt;/h3&gt;
 
 &lt;p&gt;At this point, the only thing left to do was to look at that script. It includes the following line, right at the top.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;signal&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;signal(signal&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;SIGCHLD, signal&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;SIG_IGN)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Could we, by any chance, have &lt;code&gt;imported&lt;/code&gt; this script as a module in our application, therefore running the above code as a side effect?&lt;/p&gt;
 
@@ -174,15 +191,18 @@ subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit st
 
 &lt;p&gt;Moving this line fixed the problem.&lt;/p&gt;
 
-&lt;h4 id=&#34;question-everything&#34;&gt;Question Everything&lt;/h4&gt;
+&lt;h3 id=&#34;question-everything&#34;&gt;Question Everything&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
 
 &lt;p&gt;The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this &lt;em&gt;could not happen&lt;/em&gt; since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.&lt;/p&gt;
 
-&lt;h4 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h4&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;As a lesson from this, aside from some debugging ideas, please remember: Don&amp;rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python &lt;code&gt;if __name__ == &#39;__main__&#39;&lt;/code&gt; construct.&lt;/p&gt;
+
+&lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -194,7 +214,9 @@ subprocess.CalledProcessError: Command &#39;false&#39; returned non-zero exit st
       <guid>http://philipson.co.il/post/buffers-will-fill-up-eventually/</guid>
       <description>
 
-&lt;p&gt;A colleague asked me to look into a problem with him, mentioning that &amp;ldquo;Tlib hangs when we run it&amp;rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server. Various users complained about the same problem, suggesting that it is not a local issue.&lt;/p&gt;
+&lt;p&gt;A colleague asked me to look into a problem with him, mentioning that &amp;ldquo;Tlib hangs when we run it&amp;rdquo;. Tlib is a fairly large project that is written in Python. His initial analysis showed that it hangs at a very early phase, during with it tries to fetch the latest version to run from a git server.&lt;/p&gt;
+
+&lt;p&gt;Various users complained about the same problem, suggesting that it is not a local issue.&lt;/p&gt;
 
 &lt;p&gt;Running the code, and interrupting it with &lt;code&gt;^C&lt;/code&gt; when it hangs, turned up a result similar to the following:&lt;/p&gt;
 
@@ -212,7 +234,7 @@ KeyboardInterrupt
 
 &lt;p&gt;Interesting. The code seems to hang while waiting for the &lt;code&gt;git&lt;/code&gt; child process to terminate. However, running &lt;code&gt;git ls-remote&lt;/code&gt; from the command line works fine, so why does it hang when run from the code?&lt;/p&gt;
 
-&lt;h2 id=&#34;investigating-the-issue&#34;&gt;Investigating the Issue&lt;/h2&gt;
+&lt;h1 id=&#34;investigating-the-issue&#34;&gt;Investigating the Issue&lt;/h1&gt;
 
 &lt;p&gt;Let&amp;rsquo;s look at the code history to see if anything has changed recently.&lt;/p&gt;
 
@@ -246,47 +268,50 @@ From gitserver:/git/qa/tlib
 
 &lt;p&gt;Now to run the program again&amp;hellip; It worked! The program continues to run successfully.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-code&#34;&gt;The Code&lt;/h2&gt;
+&lt;h1 id=&#34;the-code&#34;&gt;The Code&lt;/h1&gt;
 
 &lt;p&gt;Here is what the original code looked like (slightly changed to protect the innocent). Can you spot what is wrong?&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;
-import subprocess
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #0e84b5; font-weight: bold&#34;&gt;subprocess&lt;/span&gt;
 
-def execute(command):
-    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    retval = p.wait()
-    return retval, p.stdout.read(), p.stderr.read()
+&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #06287e&#34;&gt;execute&lt;/span&gt;(command):
+    p &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;Popen(command, shell&lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #007020&#34;&gt;True&lt;/span&gt;, stdout&lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt;subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;PIPE, stderr&lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt;subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;PIPE)
+    retval &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; p&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;wait()
+    &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;return&lt;/span&gt; retval, p&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;stdout&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;read(), p&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;stderr&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;read()
 
-retval, out, err = execute(&#34;git ls-remote&#34;)
-&lt;/code&gt;&lt;/pre&gt;
+retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execute(&lt;span style=&#34;color: #4070a0&#34;&gt;&amp;quot;git ls-remote&amp;quot;&lt;/span&gt;)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The problem is that we &lt;code&gt;wait()&lt;/code&gt; for the process to terminate, without reading its output. Only after it terminates do we read its output. This code has worked correctly for years, since the output so far happened to be smaller than 64k and fitted completely in the pipe&amp;rsquo;s buffer. Once it exceeded the buffer&amp;rsquo;s size due to one remote branch too many, it blocked the process on the pipe, while the parent was waiting for it to terminate. A classic deadlock condition.&lt;/p&gt;
 
-&lt;h2 id=&#34;fixing-the-problem&#34;&gt;Fixing the Problem&lt;/h2&gt;
+&lt;h1 id=&#34;fixing-the-problem&#34;&gt;Fixing the Problem&lt;/h1&gt;
 
 &lt;p&gt;Now that we see the problem, fixing it is simple: First read, then wait.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;
-import subprocess
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #0e84b5; font-weight: bold&#34;&gt;subprocess&lt;/span&gt;
 
-def execute(command):
-    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out = p.stdout.read()
-    err = p.stderr.read()
-    retval = p.wait()
-    return retval, out, err
+&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #06287e&#34;&gt;execute&lt;/span&gt;(command):
+    p &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;Popen(command, shell&lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #007020&#34;&gt;True&lt;/span&gt;, stdout&lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt;subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;PIPE, stderr&lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt;subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;PIPE)
+    out &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; p&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;stdout&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;read()
+    err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; p&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;stderr&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;read()
+    retval &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; p&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;wait()
+    &lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;return&lt;/span&gt; retval, out, err
 
-retval, out, err = execute(&#34;git ls-remote&#34;)
-&lt;/code&gt;&lt;/pre&gt;
+retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execute(&lt;span style=&#34;color: #4070a0&#34;&gt;&amp;quot;git ls-remote&amp;quot;&lt;/span&gt;)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Unfortunately, as Alon Horev and Baruch Even pointed out in their comments, this is still not correct. Since we try to read from &lt;code&gt;stdout&lt;/code&gt; until it gets an EOF and only then try to read from &lt;code&gt;stderr&lt;/code&gt;, the &lt;code&gt;stderr&lt;/code&gt; pipe&amp;rsquo;s buffer can fill up if the child process writes a lot of data to it.&lt;/p&gt;
 
 &lt;p&gt;The correct solution involves reading from both pipes in tandem. The &lt;code&gt;communicate()&lt;/code&gt; method of the &lt;code&gt;Popen&lt;/code&gt; class implements this using the &lt;code&gt;select()&lt;/code&gt; system call on POSIX, and with threads on Windows platforms.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
 
 &lt;p&gt;Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&amp;rsquo;t assume that it will be OK &amp;ndash; because it will come back to bite you, or at least some future user of your code.&lt;/p&gt;
+
+&lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     

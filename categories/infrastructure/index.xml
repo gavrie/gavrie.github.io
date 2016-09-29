@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Infrastructure on Philipson Consulting and Training</title>
+    <link>http://philipson.co.il/categories/infrastructure/</link>
+    <description>Recent content in Infrastructure on Philipson Consulting and Training</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 16 Feb 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://philipson.co.il/categories/infrastructure/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Generating virtual FC WWPNs for a storage lab</title>
+      <link>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</link>
+      <pubDate>Thu, 16 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</guid>
+      <description>
+
+&lt;p&gt;At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
+scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-problem&#34;&gt;The Problem&lt;/h2&gt;
+
+&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&amp;rsquo;t be using the same WWPN and thereby confuse the fabric.&lt;/li&gt;
+&lt;li&gt;The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;With physical (as opposed to virtual) HBAs, this is managed by allocating a OUI (Organizationally Unique Identifier) to every vendor, who in turns tacks on his own vendor-specific serial number to come up with a unique WWPN. This is similar to the MAC address allocation of Ethernet, Wi-Fi and Bluetooth devices.&lt;/p&gt;
+
+&lt;p&gt;The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.&lt;/p&gt;
+
+&lt;h2 id=&#34;some-background&#34;&gt;Some Background&lt;/h2&gt;
+
+&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s assume that we have an FC HBA with a WWPN of &lt;code&gt;10:00:00:00:c9:93:53:6d&lt;/code&gt;.
+We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;10:00:vv:vv:vv:ss:ss:ss
+\___/ \______/ \______/
+  |      |        |
+  |      |        |
+  |      |         \__ Vendor-specific part (24 bits)
+  |      |
+  |       \__ Vendor OUI (24 bits)
+  |
+   \__ This WWPN uses the Original WWN format
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;According to this diagram, our sample WWPN contains the following information:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;10:00&lt;/code&gt; prefix means that it uses the original WWN format (a.k.a. &amp;ldquo;NAA IEEE 48-bit address format&amp;rdquo;), as opposed to newer formats that starting with another sequence&lt;/li&gt;
+&lt;li&gt;The vendor is &lt;code&gt;00:00:c9&lt;/code&gt;, which is an OUI belonging to Emulex Corporation
+(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;The vendor-specific part is &lt;code&gt;93:53:6d&lt;/code&gt;, which is 24 bits long&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;using-one-wwpn-to-generate-many-new-ones&#34;&gt;Using One WWPN to Generate Many New Ones&lt;/h2&gt;
+
+&lt;p&gt;For every physical WWPN, we need to be able to generate up to 256 virtual WWPNs to be used with NPIV (assuming that each HBA port supports up to 256 virtual ports). The trick lies in reusing the vendor-specific part to generate multiple WWPNs per physical port, each of which would be guaranteed to be unique throughout the lab.&lt;/p&gt;
+
+&lt;p&gt;For that, we rely on the existence of a newer WWN format (&amp;ldquo;NAA IEEE Registered&amp;rdquo;) that has more space for the vendor-specific part:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;5v:vv:vv:vs:ss:ss:ss:ss
+|\_______/\___________/
+|   |        |
+|   |        |
+|   |         \__ Vendor-specific part (extended to 36 bits)
+|   |
+|    \__ Vendor OUI (still 24 bits)
+|
+ \__ Newer WWN format (NAA IEEE Registered)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Good, we now have 36 bits for the vendor-specific part!&lt;/p&gt;
+
+&lt;p&gt;We will use the larger vendor-specific field to include &lt;em&gt;both&lt;/em&gt; the vendor-specific part of the physical ports WWPN (which is just 24 bits), &lt;em&gt;and&lt;/em&gt; our own 12-bit custom part. This will let us generate up to 2&lt;sup&gt;12&lt;/sup&gt; = 4096 virtual ports per physical port, which is more than enough.&lt;/p&gt;
+
+&lt;p&gt;Just to be safe, and to avoid a future clash with HBAs from the same vendor who might use the new numbering scheme as well, we&amp;rsquo;ll modify the OUI to a currently unused one (&lt;code&gt;0000c8&lt;/code&gt; instead of &lt;code&gt;0000c9&lt;/code&gt;). This is of course not 100% future-proof, but is good enough for our purposes.&lt;/p&gt;
+
+&lt;p&gt;This leads us to the following range of generated WWPNs:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Original WWPN:
+
+    10:00:00:00:c9:93:53:6d, semantically represented as:
+
+    1000 0000c9 93536d
+         \____/ \____/
+           |      |
+         vendor   |
+                serial
+
+Generated WWPN range:
+
+    5 0000c8 93536d 000
+    5 0000c8 93536d 001
+    5 0000c8 93536d 002
+    ...
+    5 0000c8 93536d fff
+      \____/ \____/ \_/
+        |      |     |
+      vendor   |    custom
+             serial
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;While still being a hack, the above scheme allows us to generate as many WWPNs as we need.&lt;/p&gt;
+
+&lt;p&gt;It has the advantage of being intuitive, since it is easy to determine just by looking at the WWPNs which ones of them are physical (starting with &lt;code&gt;1000 0000c9&lt;/code&gt;) and which are virtual (starting with &lt;code&gt;5 0000c8&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;It also makes it easy to see which virtual WWPNs belong to each physical port, which is important for debugging purposes: The serial number of the physical port (&lt;code&gt;93536d&lt;/code&gt;) is part of the virtual port&amp;rsquo;s WWPN as well.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

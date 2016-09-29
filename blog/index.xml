@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Philipson Consulting and Training</title>
-    <link>http://philipson.co.il/</link>
-    <description>Recent content on Philipson Consulting and Training</description>
+    <title>Blogs on Philipson Consulting and Training</title>
+    <link>http://philipson.co.il/blog/</link>
+    <description>Recent content in Blogs on Philipson Consulting and Training</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 25 Sep 2016 13:58:46 +0300</lastBuildDate>
-    <atom:link href="http://philipson.co.il/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://philipson.co.il/blog/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Mail to Lambda, Part 1</title>
@@ -749,56 +749,6 @@ syntax, which gets rid of a lot of punctuation and makes the code clearer.&lt;/p
 techniques can be used to make the code clearer to read and maintain.&lt;/p&gt;
 
 &lt;p&gt;See you next time!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>About Gavrie Philipson</title>
-      <link>http://philipson.co.il/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://philipson.co.il/about/</guid>
-      <description>
-
-&lt;p&gt;I am a seasoned software developer and technologist, a people person, and an experienced leader and teacher.&lt;/p&gt;
-
-&lt;p&gt;I have more than 15 years of experience as a software developer, a decade of which as a hands-on team leader and manager. During this time I took care to stay up to date and actively involved in all stages of software development.&lt;/p&gt;
-
-&lt;p&gt;I love to learn and to teach people on the subjects of programming languages, software development and methodologies, and automated testing. I have gained a lot of experience in building strong and effective software development teams, as well as in lecturing, training and coaching people.&lt;/p&gt;
-
-&lt;p&gt;Much of my recent technical expertise involves developing user­space, system­level and networking software on Linux in Go, Python, and C. Past experience includes development of Windows applications and of database­backed Web applications. I’ve also programmed in JavaScript, C++ and C#.&lt;/p&gt;
-
-&lt;p&gt;I have a vast amount of experience with Linux, including software development, system administration, networking, automation and shell scripting.&lt;/p&gt;
-
-&lt;p&gt;During my tenure at IBM I have taught highly popular software development courses in Python to both beginners and veterans, as well as courses on software development tools such as Git.&lt;/p&gt;
-
-&lt;h2 id=&#34;more-information&#34;&gt;More Information&lt;/h2&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-linkedin&#34;&gt;&lt;/span&gt; Read Gavrie&amp;rsquo;s &lt;a href=&#34;https://www.linkedin.com/in/gavrie&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-twitter&#34;&gt;&lt;/span&gt; Follow &lt;a href=&#34;https://twitter.com/gavrieph&#34;&gt;@gavrieph&lt;/a&gt; on Twitter&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-github&#34;&gt;&lt;/span&gt; Check out &lt;a href=&#34;https://github.com/gavrie&#34;&gt;gavrie&lt;/a&gt;&amp;rsquo;s code on GitHub&lt;/p&gt;
-
-&lt;p&gt;
-&lt;br&gt;
-&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Contact</title>
-      <link>http://philipson.co.il/contact/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://philipson.co.il/contact/</guid>
-      <description>
-
-&lt;h1 id=&#34;contact-information&#34;&gt;Contact Information&lt;/h1&gt;
-
-&lt;p&gt;Please feel free to contact us regarding consulting or training services:&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-envelope&#34;&gt;&lt;/span&gt; &lt;a href=&#34;mailto:info@philipson.co.il&#34;&gt;info@philipson.co.il&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Philipson Consulting and Training</title>
-    <link>http://philipson.co.il/</link>
-    <description>Recent content on Philipson Consulting and Training</description>
+    <title>Programming on Philipson Consulting and Training</title>
+    <link>http://philipson.co.il/categories/programming/</link>
+    <description>Recent content in Programming on Philipson Consulting and Training</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 25 Sep 2016 13:58:46 +0300</lastBuildDate>
-    <atom:link href="http://philipson.co.il/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://philipson.co.il/categories/programming/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Mail to Lambda, Part 1</title>
@@ -409,167 +409,6 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
     </item>
     
     <item>
-      <title>The YAGNI/NIH conundrum</title>
-      <link>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</link>
-      <pubDate>Fri, 15 Jun 2012 00:00:00 +0000</pubDate>
-      
-      <guid>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</guid>
-      <description>
-
-&lt;p&gt;&lt;em&gt;Disclaimer:&lt;/em&gt; This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&amp;rsquo;re not a software developer (or a technical person at all).&lt;/p&gt;
-
-&lt;p&gt;One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about  (unless you&amp;rsquo;re one of those people who are nodding your head now and smiling), so I&amp;rsquo;ll explain.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/YAGNI&#34;&gt;YAGNI&lt;/a&gt; stands for &amp;ldquo;You ain&amp;rsquo;t gonna need it&amp;rdquo;, and refers to a software development principle according to which you don&amp;rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Not_invented_here&#34;&gt;NIH&lt;/a&gt; stands for &amp;ldquo;Not Invented Here&amp;rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &amp;ldquo;Hey, I can do this myself, so why should I use this existing project&amp;rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.&lt;/p&gt;
-
-&lt;h2 id=&#34;the-conundrum&#34;&gt;The Conundrum&lt;/h2&gt;
-
-&lt;p&gt;I consider myself a firm believer in the YAGNI principle, and a staunch opponent of the NIH syndrome: I try to avoid writing code that could stay unwritten, since I consider a large codebase a liability rather than an asset. Writing more code means having to expend more resources on maintaining it. In many corporate cultures, it also decreases the ability to respond to change, due to a reluctance to throw away existing code (which is often due to sentimental reasons rather than objective ones).&lt;/p&gt;
-
-&lt;p&gt;Now, as software developers, many of us would much rather write new code than maintain a bunch of old code.&lt;/p&gt;
-
-&lt;p&gt;One reason for this is that old code bases tend to have accumulated a lot of baggage over the years, and we love the idea of getting rid of all that and starting with a fresh, blank page: All those old bugs can be forgotten, all those workarounds and little tricks can be left behind.&lt;/p&gt;
-
-&lt;p&gt;Another reason is that good developers love to learn new ideas and techniques and are itching to try them out. Seeing our own old code after a few months or years make us cringe with the feeling, &amp;ldquo;who was the idiot that wrote this?!&amp;rdquo;. We are sure that the code we&amp;rsquo;re going to write now, with our new and shiny tools, will be better by leaps and bounds. And then the cycle starts all over again.&lt;/p&gt;
-
-&lt;h2 id=&#34;coding-in-the-corporate-world&#34;&gt;Coding in the Corporate World&lt;/h2&gt;
-
-&lt;p&gt;I&amp;rsquo;d like to argue that in the corporate world, as opposed to the Open Source world, writing new code can be an irresponsible thing to do. In the corporate world, we write code not just to scratch our own itches. We&amp;rsquo;re creating something that may very well continue to exist long after we have moved on to greener pastures. Other people will have to maintain what we created. Adhering to good software engineering principles means that not only our own lives will be easier down the road, but also those of other people.&lt;/p&gt;
-
-&lt;p&gt;Now, those who profess not to care about the experience of other people, or who think that at the very least it is less important that their own experience, may want to consider a few points:&lt;/p&gt;
-
-&lt;p&gt;First of all, those &amp;ldquo;other people&amp;rdquo; may be yourselves a few months or years from now, trying to adapt your own code to new requirements. Suddenly, all this code is no longer new nor fun, and you&amp;rsquo;ll have to dig in to adapt it to the required changes.&lt;/p&gt;
-
-&lt;p&gt;Second, those other people may be your future co-workers, managers or employees. They will remember what you left them with.&lt;/p&gt;
-
-&lt;p&gt;Third, people will appreciate your efforts to make their lives easier (or at least won&amp;rsquo;t hate you for making it harder). This increases the likelihood that they will want to work with you in the future.&lt;/p&gt;
-
-&lt;p&gt;So all this makes sense even from a perfectly selfish point of view.&lt;/p&gt;
-
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;When faced with a new software problem to solve, I always spend a significant amount of energy in investigating existing solutions and see if they can work for me. I will resort to writing code only if I fail to find a solution that has enough similarity or has a good enough quality. Of course, as my friend Eli claims, this may very well mean that I often pass on the chance to be creative by deferring to existing solutions. But that&amp;rsquo;s something I can live with: I feel the need to reach the right balance between creativity and responsibility.&lt;/p&gt;
-
-&lt;p&gt;I can find creativity in ways other than writing a lot of new code: I&amp;rsquo;d rather leverage existing code that I like and that is maintained by a third party (which becomes more and more commong with the huge Open Source ecosystem). It is more important to me to feel happy with a solution than it is to prove to myself that I can solve a problem that has been solved before by others. That just seems so wasteful.&lt;/p&gt;
-
-&lt;p&gt;In an upcoming post, I will analyze a specific case that I encountered in light of the above thoughts.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Generating virtual FC WWPNs for a storage lab</title>
-      <link>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</link>
-      <pubDate>Thu, 16 Feb 2012 00:00:00 +0000</pubDate>
-      
-      <guid>http://philipson.co.il/post/generating-virtual-fc-wwpns-for-a-storage-lab/</guid>
-      <description>
-
-&lt;p&gt;At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
-scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
-
-&lt;h2 id=&#34;the-problem&#34;&gt;The Problem&lt;/h2&gt;
-
-&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&amp;rsquo;t be using the same WWPN and thereby confuse the fabric.&lt;/li&gt;
-&lt;li&gt;The WWPN should not have a chance of clashing with official WWPNs of purchased HBAs.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;With physical (as opposed to virtual) HBAs, this is managed by allocating a OUI (Organizationally Unique Identifier) to every vendor, who in turns tacks on his own vendor-specific serial number to come up with a unique WWPN. This is similar to the MAC address allocation of Ethernet, Wi-Fi and Bluetooth devices.&lt;/p&gt;
-
-&lt;p&gt;The textbook solution for our problem would have involved the use of an officially allocated OUI to generate legal WWPNs, but that seemed like overkill for lab project which would never be used on a production SAN.&lt;/p&gt;
-
-&lt;h2 id=&#34;some-background&#34;&gt;Some Background&lt;/h2&gt;
-
-&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s assume that we have an FC HBA with a WWPN of &lt;code&gt;10:00:00:00:c9:93:53:6d&lt;/code&gt;.
-We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;10:00:vv:vv:vv:ss:ss:ss
-\___/ \______/ \______/
-  |      |        |
-  |      |        |
-  |      |         \__ Vendor-specific part (24 bits)
-  |      |
-  |       \__ Vendor OUI (24 bits)
-  |
-   \__ This WWPN uses the Original WWN format
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;According to this diagram, our sample WWPN contains the following information:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;The &lt;code&gt;10:00&lt;/code&gt; prefix means that it uses the original WWN format (a.k.a. &amp;ldquo;NAA IEEE 48-bit address format&amp;rdquo;), as opposed to newer formats that starting with another sequence&lt;/li&gt;
-&lt;li&gt;The vendor is &lt;code&gt;00:00:c9&lt;/code&gt;, which is an OUI belonging to Emulex Corporation
-(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
-&lt;li&gt;The vendor-specific part is &lt;code&gt;93:53:6d&lt;/code&gt;, which is 24 bits long&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;using-one-wwpn-to-generate-many-new-ones&#34;&gt;Using One WWPN to Generate Many New Ones&lt;/h2&gt;
-
-&lt;p&gt;For every physical WWPN, we need to be able to generate up to 256 virtual WWPNs to be used with NPIV (assuming that each HBA port supports up to 256 virtual ports). The trick lies in reusing the vendor-specific part to generate multiple WWPNs per physical port, each of which would be guaranteed to be unique throughout the lab.&lt;/p&gt;
-
-&lt;p&gt;For that, we rely on the existence of a newer WWN format (&amp;ldquo;NAA IEEE Registered&amp;rdquo;) that has more space for the vendor-specific part:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;5v:vv:vv:vs:ss:ss:ss:ss
-|\_______/\___________/
-|   |        |
-|   |        |
-|   |         \__ Vendor-specific part (extended to 36 bits)
-|   |
-|    \__ Vendor OUI (still 24 bits)
-|
- \__ Newer WWN format (NAA IEEE Registered)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Good, we now have 36 bits for the vendor-specific part!&lt;/p&gt;
-
-&lt;p&gt;We will use the larger vendor-specific field to include &lt;em&gt;both&lt;/em&gt; the vendor-specific part of the physical ports WWPN (which is just 24 bits), &lt;em&gt;and&lt;/em&gt; our own 12-bit custom part. This will let us generate up to 2&lt;sup&gt;12&lt;/sup&gt; = 4096 virtual ports per physical port, which is more than enough.&lt;/p&gt;
-
-&lt;p&gt;Just to be safe, and to avoid a future clash with HBAs from the same vendor who might use the new numbering scheme as well, we&amp;rsquo;ll modify the OUI to a currently unused one (&lt;code&gt;0000c8&lt;/code&gt; instead of &lt;code&gt;0000c9&lt;/code&gt;). This is of course not 100% future-proof, but is good enough for our purposes.&lt;/p&gt;
-
-&lt;p&gt;This leads us to the following range of generated WWPNs:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Original WWPN:
-
-    10:00:00:00:c9:93:53:6d, semantically represented as:
-
-    1000 0000c9 93536d
-         \____/ \____/
-           |      |
-         vendor   |
-                serial
-
-Generated WWPN range:
-
-    5 0000c8 93536d 000
-    5 0000c8 93536d 001
-    5 0000c8 93536d 002
-    ...
-    5 0000c8 93536d fff
-      \____/ \____/ \_/
-        |      |     |
-      vendor   |    custom
-             serial
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;While still being a hack, the above scheme allows us to generate as many WWPNs as we need.&lt;/p&gt;
-
-&lt;p&gt;It has the advantage of being intuitive, since it is easy to determine just by looking at the WWPNs which ones of them are physical (starting with &lt;code&gt;1000 0000c9&lt;/code&gt;) and which are virtual (starting with &lt;code&gt;5 0000c8&lt;/code&gt;).&lt;/p&gt;
-
-&lt;p&gt;It also makes it easy to see which virtual WWPNs belong to each physical port, which is important for debugging purposes: The serial number of the physical port (&lt;code&gt;93536d&lt;/code&gt;) is part of the virtual port&amp;rsquo;s WWPN as well.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Improving readability and flow control in Python</title>
       <link>http://philipson.co.il/post/improving-readability-and-flow-control-in-python/</link>
       <pubDate>Thu, 16 Feb 2012 00:00:00 +0000</pubDate>
@@ -749,56 +588,6 @@ syntax, which gets rid of a lot of punctuation and makes the code clearer.&lt;/p
 techniques can be used to make the code clearer to read and maintain.&lt;/p&gt;
 
 &lt;p&gt;See you next time!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>About Gavrie Philipson</title>
-      <link>http://philipson.co.il/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://philipson.co.il/about/</guid>
-      <description>
-
-&lt;p&gt;I am a seasoned software developer and technologist, a people person, and an experienced leader and teacher.&lt;/p&gt;
-
-&lt;p&gt;I have more than 15 years of experience as a software developer, a decade of which as a hands-on team leader and manager. During this time I took care to stay up to date and actively involved in all stages of software development.&lt;/p&gt;
-
-&lt;p&gt;I love to learn and to teach people on the subjects of programming languages, software development and methodologies, and automated testing. I have gained a lot of experience in building strong and effective software development teams, as well as in lecturing, training and coaching people.&lt;/p&gt;
-
-&lt;p&gt;Much of my recent technical expertise involves developing user­space, system­level and networking software on Linux in Go, Python, and C. Past experience includes development of Windows applications and of database­backed Web applications. I’ve also programmed in JavaScript, C++ and C#.&lt;/p&gt;
-
-&lt;p&gt;I have a vast amount of experience with Linux, including software development, system administration, networking, automation and shell scripting.&lt;/p&gt;
-
-&lt;p&gt;During my tenure at IBM I have taught highly popular software development courses in Python to both beginners and veterans, as well as courses on software development tools such as Git.&lt;/p&gt;
-
-&lt;h2 id=&#34;more-information&#34;&gt;More Information&lt;/h2&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-linkedin&#34;&gt;&lt;/span&gt; Read Gavrie&amp;rsquo;s &lt;a href=&#34;https://www.linkedin.com/in/gavrie&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-twitter&#34;&gt;&lt;/span&gt; Follow &lt;a href=&#34;https://twitter.com/gavrieph&#34;&gt;@gavrieph&lt;/a&gt; on Twitter&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-github&#34;&gt;&lt;/span&gt; Check out &lt;a href=&#34;https://github.com/gavrie&#34;&gt;gavrie&lt;/a&gt;&amp;rsquo;s code on GitHub&lt;/p&gt;
-
-&lt;p&gt;
-&lt;br&gt;
-&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Contact</title>
-      <link>http://philipson.co.il/contact/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://philipson.co.il/contact/</guid>
-      <description>
-
-&lt;h1 id=&#34;contact-information&#34;&gt;Contact Information&lt;/h1&gt;
-
-&lt;p&gt;Please feel free to contact us regarding consulting or training services:&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;fa fa-envelope&#34;&gt;&lt;/span&gt; &lt;a href=&#34;mailto:info@philipson.co.il&#34;&gt;info@philipson.co.il&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

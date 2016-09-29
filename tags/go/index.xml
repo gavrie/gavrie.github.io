@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Go on Gavrie&#39;s Blog</title>
+    <title>Go on Philipson Consulting and Training</title>
     <link>http://philipson.co.il/tags/go/</link>
-    <description>Recent content in Go on Gavrie&#39;s Blog</description>
+    <description>Recent content in Go on Philipson Consulting and Training</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>© 2016 by Gavrie Philipson</copyright>
     <lastBuildDate>Wed, 13 May 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://philipson.co.il/tags/go/index.xml" rel="self" type="application/rss+xml" />
     
@@ -22,7 +21,7 @@
 
 &lt;p&gt;I&amp;rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible. Ultimately this led me to Go. Below I&amp;rsquo;ll describe the process that led me there.&lt;/p&gt;
 
-&lt;h4 id=&#34;goodbye-for-now-python&#34;&gt;Goodbye for now, Python&lt;/h4&gt;
+&lt;h3 id=&#34;taking-a-break-from-python&#34;&gt;Taking a Break From Python&lt;/h3&gt;
 
 &lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
 
@@ -34,7 +33,7 @@
 
 &lt;p&gt;So, we&amp;rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?&lt;/p&gt;
 
-&lt;h4 id=&#34;hello-go&#34;&gt;Hello, Go&lt;/h4&gt;
+&lt;h2 id=&#34;hello-go&#34;&gt;Hello, Go&lt;/h2&gt;
 
 &lt;p&gt;At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?&lt;/p&gt;
 
@@ -44,39 +43,52 @@
 
 &lt;p&gt;Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.&lt;/p&gt;
 
-&lt;h4 id=&#34;what-i-liked-about-go&#34;&gt;What I liked about Go&lt;/h4&gt;
+&lt;h3 id=&#34;what-i-liked-about-go&#34;&gt;What I liked about Go&lt;/h3&gt;
 
 &lt;p&gt;So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:&lt;/p&gt;
 
-&lt;h5 id=&#34;syntax&#34;&gt;Syntax&lt;/h5&gt;
+&lt;h4 id=&#34;syntax&#34;&gt;Syntax&lt;/h4&gt;
 
-&lt;p&gt;Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with &lt;code&gt;var&lt;/code&gt;, the &lt;code&gt;:=&lt;/code&gt; operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&amp;rsquo;s Turbo Pascal (yes, I&amp;rsquo;m disclosing my age here).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with &lt;code&gt;var&lt;/code&gt;, the &lt;code&gt;:=&lt;/code&gt; operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&amp;rsquo;s Turbo Pascal (yes, I&amp;rsquo;m disclosing my age here).&lt;/li&gt;
+&lt;li&gt;High level constructs such as slices and maps are built into the language with their own syntax.&lt;/li&gt;
+&lt;li&gt;High order functions and closures are supported.&lt;/li&gt;
+&lt;li&gt;Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;High level constructs such as slices and maps are built into the language with their own syntax.&lt;/p&gt;
+&lt;h4 id=&#34;toolset&#34;&gt;Toolset&lt;/h4&gt;
 
-&lt;p&gt;High order functions and closures are supported.&lt;/p&gt;
+&lt;p&gt;The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience:&lt;/p&gt;
 
-&lt;p&gt;Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;godoc&lt;/code&gt; handles documentation&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gofmt&lt;/code&gt; formats code consistently&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gocode&lt;/code&gt; autocompletes your code by analysis of actually built code so its results are precise&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gorename&lt;/code&gt; handles renames in a type-safe way&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;godef&lt;/code&gt; find the definition of every construct you point it at&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;oracle&lt;/code&gt; does amazing code analysis that gives you insight into the flow of your code.&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;h5 id=&#34;toolset&#34;&gt;Toolset&lt;/h5&gt;
+&lt;p&gt;Combine all those with &lt;code&gt;vim-go&lt;/code&gt; which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.&lt;/p&gt;
 
-&lt;p&gt;The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: &lt;code&gt;godoc&lt;/code&gt; handles documentation; &lt;code&gt;gofmt&lt;/code&gt; formats code consistently; &lt;code&gt;gocode&lt;/code&gt; autocompletes your code by analysis of actually built code so its results are precise; &lt;code&gt;gorename&lt;/code&gt; handles renames in a type-safe way; &lt;code&gt;godef&lt;/code&gt; find the definition of every construct you point it at; &lt;code&gt;oracle&lt;/code&gt; does amazing code analysis that gives you insight into the flow of your code. Combine all those with &lt;code&gt;vim-go&lt;/code&gt; which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.&lt;/p&gt;
-
-&lt;h5 id=&#34;concurrency&#34;&gt;Concurrency&lt;/h5&gt;
+&lt;h4 id=&#34;concurrency&#34;&gt;Concurrency&lt;/h4&gt;
 
 &lt;p&gt;Concurrency! Channels are Go&amp;rsquo;s way of handling concurrency and they&amp;rsquo;re marvelous. Go is the only language I&amp;rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&amp;rsquo;s &lt;code&gt;gevent&lt;/code&gt;, but in Go it&amp;rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.&lt;/p&gt;
 
-&lt;h4 id=&#34;what-took-time-to-get-used-to&#34;&gt;What took time to get used to&lt;/h4&gt;
+&lt;h3 id=&#34;what-took-time-to-get-used-to&#34;&gt;What took time to get used to&lt;/h3&gt;
 
 &lt;p&gt;Some things in Go took time to get used to, and I&amp;rsquo;m not sure yet whether I like them or not:&lt;/p&gt;
 
-&lt;h5 id=&#34;error-handling&#34;&gt;Error Handling&lt;/h5&gt;
+&lt;h4 id=&#34;error-handling&#34;&gt;Error Handling&lt;/h4&gt;
 
 &lt;p&gt;Error handling is explicit. Errors are returned as values from functions (using a special &lt;code&gt;error&lt;/code&gt; type). Together with multi-valued returns, this is much better than C&amp;rsquo;s error handling, but much less intuitive than Python&amp;rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like &lt;code&gt;errcheck&lt;/code&gt; help ensure that you don&amp;rsquo;t miss any. While it&amp;rsquo;s much easier to write code using exceptions, it&amp;rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &amp;ldquo;end user&amp;rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use &lt;code&gt;panic&lt;/code&gt;/&lt;code&gt;recover&lt;/code&gt; for such code.&lt;/p&gt;
 
-&lt;h5 id=&#34;generics&#34;&gt;Generics?&lt;/h5&gt;
+&lt;h4 id=&#34;generics&#34;&gt;Generics?&lt;/h4&gt;
 
 &lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;
+
+&lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     

@@ -1,74 +1,163 @@
 <!DOCTYPE html>
-<html lang="en-us">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>From Python to Go</title>
-  <link href="http://philipson.co.il/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="http://philipson.co.il/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css">
-  <style type="text/css">
+
+  <meta name="author" content="" />
+  <meta name="keywords" content="">
+
   
-    footer.page-footer{background-image: url(http://philipson.co.il/images/default.png);}
+
+  <meta name="generator" content="Hugo 0.16" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
   
-  </style>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+  
+  <link href="http://philipson.co.ilcss/animate.css" rel="stylesheet">
+
+  
+  <link href="http://philipson.co.ilcss/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+  
+  <link href="http://philipson.co.ilcss/custom.css" rel="stylesheet">
+
+  
+    
+
+  
+  <link rel="shortcut icon" href="http://philipson.co.ilimg/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="http://philipson.co.ilimg/apple-touch-icon.png" />
+  
+
+  <link href="http://philipson.co.ilcss/owl.carousel.css" rel="stylesheet">
+  <link href="http://philipson.co.ilcss/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="http://philipson.co.il/index.xml" type="application/rss+xml" title="Philipson Consulting and Training">
+
+  
+  <meta property="og:title" content="From Python to Go" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="/" />
+  <meta property="og:image" content="img/logo.png" />
+
 </head>
-<body>
-  <ul id="slide-out" class="side-nav">
-    <li><a href="http://philipson.co.il"><i class="mdi-action-home left"></i>Home<i class="mdi-hardware-keyboard-arrow-right right"></i></a></li>
-    <li><a href="http://philipson.co.il/categories"><i class="mdi-action-perm-media left"></i>Categories<i class="mdi-hardware-keyboard-arrow-right right"></i></a></li>
-    <li><a href="http://philipson.co.il/tags"><i class="mdi-action-loyalty left"></i>Tags<i class="mdi-hardware-keyboard-arrow-right right"></i></a></li>
-  </ul>
-  <div id="index-banner" class="parallax-container">
-  <a data-activates="slide-out" class="btn-floating button-collapse" style="top: 5px; left: 5px;"><i class="mdi-navigation-menu"></i></a>
-    <div class="section no-pad-bot">
-      <div class="container">
-        <h1 class="header center teal-text text-lighten-2"><a href="http://philipson.co.il">Gavrie&#39;s Blog</a></h1>
-        <div class="row center">
-          <h5 class="header col s12 light">Musings on software and technology</h5>
+
+
+  <body>
+
+    <div id="all">
+
+        <header>
+
+          <div class="navbar-affixed-top" data-spy="affix" data-offset-top="200">
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="http://philipson.co.il">
+                    <span class="navbar-collapse">Philipson Consulting and Training</span>
+                    <span class="sr-only">From Python to Go - go to homepage</span>
+                </a>
+                <div class="navbar-buttons">
+                    <button type="button" class="navbar-toggle btn-template-main" data-toggle="collapse" data-target="#navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <i class="fa fa-align-justify"></i>
+                    </button>
+                </div>
+            </div>
+            
+
+            <div class="navbar-collapse collapse" id="navigation">
+                <ul class="nav navbar-nav navbar-right">
+                    
+                    <li class="dropdown">
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li class="dropdown">
+                        <a href="/blog/">Blog</a>
+                    </li>
+                    
+                    <li class="dropdown">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li class="dropdown">
+                        <a href="/contact/">Contact</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
         </div>
-        <div class="row center">
-        
-          <a href="https://github.com/gavrie"><img src="http://philipson.co.il/images/github2-dreamstale35.png"></a>
-        
-        
-        
-          <a href="https://twitter.com/gavrieph"><img src="http://philipson.co.il/images/twitter-dreamstale71.png"></a>
-        
-        
-        
-          <a href="https://www.linkedin.com/in/gavrie"><img src="http://philipson.co.il/images/linkedin-dreamstale45.png"></a>
-        
-          <a href="http://philipson.co.il/index.xml"><img src="http://philipson.co.il/images/feed-dreamstale27.png"></a>
+    </div>
+    
+
+</div>
+
+
+
+
+        </header>
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>From Python to Go</h1>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="parallax">
-    
-      <img src="http://philipson.co.il/images/default.png">
-    
-    </div>
-  </div>
+</div>
 
 
+        <div id="content">
+            <div class="container">
 
-<div class="container">
-  <div class="section">
+                <div class="row">
 
-    <div class="row">
-      <div class="col s12">
-        <div class="card-panel">
-          <h4>From Python to Go</h4>
-          <p>
-           
-          </p>
-          <p>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        <p class="text-muted text-uppercase mb-small text-right">May 13, 2015</p>
+
+                        <div id="post-content">
+                          
 
 <p>I have been programming in Python in one capacity or another since around 2000. That&rsquo;s almost 15 years. Over those years, I&rsquo;ve come to know the language fairly well. I originally came to Python from C and Perl, and it was quite refreshing to come to a language that is simple to use, has a consistent syntax and library, and is quite powerful.</p>
 
 <p>I&rsquo;ve worked on several small to large applications in Python since then, and reached a point where its limitations became quite visible. Ultimately this led me to Go. Below I&rsquo;ll describe the process that led me there.</p>
 
-<h4 id="goodbye-for-now-python">Goodbye for now, Python</h4>
+<h3 id="taking-a-break-from-python">Taking a Break From Python</h3>
 
 <p>At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.</p>
 
@@ -80,7 +169,7 @@
 
 <p>So, we&rsquo;re looking for a statically typed language with good support for concurrency and easy deployment. But which one?</p>
 
-<h4 id="hello-go">Hello, Go</h4>
+<h2 id="hello-go">Hello, Go</h2>
 
 <p>At this point, I had read a lot about Go and played with it a bit. It promises a simple and modern language with static typing, great concurrency support, easy deployment and a large and exponentially growing community. Sounds almost too good to be true. Does it deliver?</p>
 
@@ -90,100 +179,294 @@
 
 <p>Of course, all of the above are my opinion only and I have no intention at this point of convincing anyone. I just wanted to reach the initial conclusion that giving Go a try might be a good idea.</p>
 
-<h4 id="what-i-liked-about-go">What I liked about Go</h4>
+<h3 id="what-i-liked-about-go">What I liked about Go</h3>
 
 <p>So, I started learning Go in earnest and writing some real code in it. There were several things that I liked a lot:</p>
 
-<h5 id="syntax">Syntax</h5>
+<h4 id="syntax">Syntax</h4>
 
-<p>Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with <code>var</code>, the <code>:=</code> operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&rsquo;s Turbo Pascal (yes, I&rsquo;m disclosing my age here).</p>
+<ul>
+<li>Syntax is simple and consistent. It feels somewhere between Python and C and level of abstractness. It reminds me of Pascal in several places: Declaring variables with <code>var</code>, the <code>:=</code> operator, the much stronger typing than C. Pascal was a language that I adored as a teenager, having done wonderful things in Borland&rsquo;s Turbo Pascal (yes, I&rsquo;m disclosing my age here).</li>
+<li>High level constructs such as slices and maps are built into the language with their own syntax.</li>
+<li>High order functions and closures are supported.</li>
+<li>Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.</li>
+</ul>
 
-<p>High level constructs such as slices and maps are built into the language with their own syntax.</p>
+<h4 id="toolset">Toolset</h4>
 
-<p>High order functions and closures are supported.</p>
+<p>The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience:</p>
 
-<p>Consistency everywhere: The syntax is consistent, as is the standard library. There is a consistent coding style with well-defined rules. While this may sound like a headache that limits expressivity, it makes third party code a joy to read and understand.</p>
+<ul>
+<li><code>godoc</code> handles documentation</li>
+<li><code>gofmt</code> formats code consistently</li>
+<li><code>gocode</code> autocompletes your code by analysis of actually built code so its results are precise</li>
+<li><code>gorename</code> handles renames in a type-safe way</li>
+<li><code>godef</code> find the definition of every construct you point it at</li>
+<li><code>oracle</code> does amazing code analysis that gives you insight into the flow of your code.</li>
+</ul>
 
-<h5 id="toolset">Toolset</h5>
+<p>Combine all those with <code>vim-go</code> which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.</p>
 
-<p>The toolset is absolutely wonderful. Following the UNIX philosophy, the Go community has created several strong tools that each does one thing very well. Those tools integrate with the command line and with you editor to deliver a great development experience: <code>godoc</code> handles documentation; <code>gofmt</code> formats code consistently; <code>gocode</code> autocompletes your code by analysis of actually built code so its results are precise; <code>gorename</code> handles renames in a type-safe way; <code>godef</code> find the definition of every construct you point it at; <code>oracle</code> does amazing code analysis that gives you insight into the flow of your code. Combine all those with <code>vim-go</code> which makes all those tools accessible from Vim with a keystroke, and you have the ideal developer setup.</p>
-
-<h5 id="concurrency">Concurrency</h5>
+<h4 id="concurrency">Concurrency</h4>
 
 <p>Concurrency! Channels are Go&rsquo;s way of handling concurrency and they&rsquo;re marvelous. Go is the only language I&rsquo;ve worked in so far that does not need to distinguish between asynchronous and synchronous code: You simply write as if everything is synchronous. This reminds one of Python&rsquo;s <code>gevent</code>, but in Go it&rsquo;s native to the language and used everywhere. There is no need to manually manage futures/promises/threads/locks/mutexes, or to carefully consider if code should be asynchronous or not. This reduces the maintenance burden significantly.</p>
 
-<h4 id="what-took-time-to-get-used-to">What took time to get used to</h4>
+<h3 id="what-took-time-to-get-used-to">What took time to get used to</h3>
 
 <p>Some things in Go took time to get used to, and I&rsquo;m not sure yet whether I like them or not:</p>
 
-<h5 id="error-handling">Error Handling</h5>
+<h4 id="error-handling">Error Handling</h4>
 
 <p>Error handling is explicit. Errors are returned as values from functions (using a special <code>error</code> type). Together with multi-valued returns, this is much better than C&rsquo;s error handling, but much less intuitive than Python&rsquo;s exceptions. You are forced to consider every error at its site of origin. Tools like <code>errcheck</code> help ensure that you don&rsquo;t miss any. While it&rsquo;s much easier to write code using exceptions, it&rsquo;s nice to be forced to copy with errors and not forget about them until your code breaks. I believe this leads to more robust code, which is a worthwhile price to pay. One exception is &ldquo;end user&rdquo; code such as tests that begin to look very tedious with explicit error handling. It may be worthwhile to use <code>panic</code>/<code>recover</code> for such code.</p>
 
-<h5 id="generics">Generics?</h5>
+<h4 id="generics">Generics?</h4>
 
 <p>Yes, everyone says it so I will too: Go doesn&rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&rsquo;t write your own <code>set</code> type and have it support sets of <code>int</code> or of <code>string</code> without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of <code>Max</code> or <code>Shuffle</code> functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.</p>
-</p>
-          <p>13 May 2015
-            
-              
-                <a href="http://philipson.co.il/tags/python/">#python</a>
-              
-                <a href="http://philipson.co.il/tags/go/">#go</a>
-              
-            
-          </p>
-          
-            <div id="disqus_thread"></div>
+
+<p><p><br></p>
+<sub>Banner image by <a href="https://www.flickr.com/photos/crapeye/14134681339/">crapeye</a></sub></p>
+
+                        </div>
+                        
+                        
+                        <div id="comments">
+                            <div id="disqus_thread"></div>
 <script type="text/javascript">
-     
     var disqus_shortname = 'gavriesbl';
-    
-     
+    var disqus_identifier = 'http:\/\/philipson.co.il\/post\/from-python-to-go\/';
+    var disqus_title = 'From Python to Go';
+    var disqus_url = 'http:\/\/philipson.co.il\/post\/from-python-to-go\/';
+
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-          
-        </div>
-      </div>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+                        </div>
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+
+                    <div class="col-md-3">
+
+                        
+
+                        
+
+<div class="panel panel-default sidebar-menu">
+
+    <div class="panel-heading">
+        <h3 class="panel-title">Search</h3>
     </div>
 
-    <div class="row">
-      <div class="col s3 m1">
-      
-        <a class="btn-floating btn-large waves-effect waves-light" href="http://philipson.co.il/post/mail-to-lambda/"><i class="mdi-navigation-arrow-back"></i></a>
-      
-      </div>
-      <div class="col s6 m10 center">&nbsp</div>
-      <div class="col s3 m1">
-      
-        <a class="btn-floating btn-large waves-effect waves-light" href="http://philipson.co.il/post/a-subprocess-bug-nah/"><i class="mdi-navigation-arrow-forward"></i></a>
-      
-      </div>
+    <div class="panel-body">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" role="search">
+            <div class="input-group">
+                <input type="search" name="q" results="0" class="form-control" placeholder="Search">
+                <input type="hidden" name="q" value="site:http://philipson.co.il">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </form>
     </div>
-
-  </div>
 </div>
 
-  <footer class="page-footer">
-    <div class="footer-copyright">
-      <div class="container">
-      © 2016 by Gavrie Philipson
-      <div class="right">Design <a class="grey-text text-lighten-4" href="http://pdevty.github.io/blog/">pdevty</a></div>
-      </div>
+
+
+
+
+
+
+<div class="panel panel-default sidebar-menu">
+
+    <div class="panel-heading">
+        <h3 class="panel-title">Categories</h3>
     </div>
-  </footer>
-  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="http://philipson.co.il/js/materialize.min.js"></script>
-  <script src="http://philipson.co.il/js/init.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
-  
+
+    <div class="panel-body">
+        <ul class="nav nav-pills nav-stacked">
+            
+            <li><a href="http://philipson.co.ilcategories/infrastructure">infrastructure (1)</a>
+            </li>
+            
+            <li><a href="http://philipson.co.ilcategories/methodology">methodology (1)</a>
+            </li>
+            
+            <li><a href="http://philipson.co.ilcategories/programming">programming (6)</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="panel sidebar-menu">
+    <div class="panel-heading">
+        <h3 class="panel-title">Tags</h3>
+    </div>
+
+    <div class="panel-body">
+        <ul class="tag-cloud">
+            
+            <li><a href="http://philipson.co.iltags/aws"><i class="fa fa-tags"></i> aws</a>
+            </li>
+            
+            <li><a href="http://philipson.co.iltags/go"><i class="fa fa-tags"></i> go</a>
+            </li>
+            
+            <li><a href="http://philipson.co.iltags/python"><i class="fa fa-tags"></i> python</a>
+            </li>
+            
+            <li><a href="http://philipson.co.iltags/rpc"><i class="fa fa-tags"></i> rpc</a>
+            </li>
+            
+            <li><a href="http://philipson.co.iltags/serverless"><i class="fa fa-tags"></i> serverless</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+                        
+
+                    </div>
+                    
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="http://philipson.co.il/post/mail-to-lambda/">
+                          
+                            <img src="http://philipson.co.ilimg/banners/mailboxes.jpg" class="img-responsive" alt="">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="http://philipson.co.il/post/mail-to-lambda/">Mail to Lambda, Part 1</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="http://philipson.co.il/post/from-python-to-go/">
+                          
+                            <img src="http://philipson.co.ilimg/banners/gopher.jpg" class="img-responsive" alt="">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="http://philipson.co.il/post/from-python-to-go/">From Python to Go</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="http://philipson.co.il/post/a-subprocess-bug-nah/">
+                          
+                            <img src="http://philipson.co.ilimg/banners/bug.jpg" class="img-responsive" alt="">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="http://philipson.co.il/post/a-subprocess-bug-nah/">A subprocess bug? Nah.</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-left">Copyright © 2016 by Gavrie Philipson; all rights reserved.</p>
+            
+            <p class="pull-right">
+              Template by <a href="http://bootstrapious.com/free-templates">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<script src="http://philipson.co.iljs/jquery.cookie.js"></script>
+<script src="http://philipson.co.iljs/waypoints.min.js"></script>
+<script src="http://philipson.co.iljs/jquery.counterup.min.js"></script>
+<script src="http://philipson.co.iljs/jquery.parallax-1.1.3.js"></script>
+<script src="http://philipson.co.iljs/front.js"></script>
+
+
+<script src="http://philipson.co.iljs/owl.carousel.min.js"></script>
+
 
   </body>
 </html>
-

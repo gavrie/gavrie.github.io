@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Methodology on Philipson Consulting and Training</title>
+    <link>http://philipson.co.il/categories/methodology/</link>
+    <description>Recent content in Methodology on Philipson Consulting and Training</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 15 Jun 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://philipson.co.il/categories/methodology/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>The YAGNI/NIH conundrum</title>
+      <link>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</link>
+      <pubDate>Fri, 15 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://philipson.co.il/post/the-yagni-slash-nih-conundrum/</guid>
+      <description>
+
+&lt;p&gt;&lt;em&gt;Disclaimer:&lt;/em&gt; This post is about software development, but it is more about the human side of it than about the technical side. This means you may enjoy it even if you&amp;rsquo;re not a software developer (or a technical person at all).&lt;/p&gt;
+
+&lt;p&gt;One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about  (unless you&amp;rsquo;re one of those people who are nodding your head now and smiling), so I&amp;rsquo;ll explain.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/YAGNI&#34;&gt;YAGNI&lt;/a&gt; stands for &amp;ldquo;You ain&amp;rsquo;t gonna need it&amp;rdquo;, and refers to a software development principle according to which you don&amp;rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Not_invented_here&#34;&gt;NIH&lt;/a&gt; stands for &amp;ldquo;Not Invented Here&amp;rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &amp;ldquo;Hey, I can do this myself, so why should I use this existing project&amp;rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-conundrum&#34;&gt;The Conundrum&lt;/h2&gt;
+
+&lt;p&gt;I consider myself a firm believer in the YAGNI principle, and a staunch opponent of the NIH syndrome: I try to avoid writing code that could stay unwritten, since I consider a large codebase a liability rather than an asset. Writing more code means having to expend more resources on maintaining it. In many corporate cultures, it also decreases the ability to respond to change, due to a reluctance to throw away existing code (which is often due to sentimental reasons rather than objective ones).&lt;/p&gt;
+
+&lt;p&gt;Now, as software developers, many of us would much rather write new code than maintain a bunch of old code.&lt;/p&gt;
+
+&lt;p&gt;One reason for this is that old code bases tend to have accumulated a lot of baggage over the years, and we love the idea of getting rid of all that and starting with a fresh, blank page: All those old bugs can be forgotten, all those workarounds and little tricks can be left behind.&lt;/p&gt;
+
+&lt;p&gt;Another reason is that good developers love to learn new ideas and techniques and are itching to try them out. Seeing our own old code after a few months or years make us cringe with the feeling, &amp;ldquo;who was the idiot that wrote this?!&amp;rdquo;. We are sure that the code we&amp;rsquo;re going to write now, with our new and shiny tools, will be better by leaps and bounds. And then the cycle starts all over again.&lt;/p&gt;
+
+&lt;h2 id=&#34;coding-in-the-corporate-world&#34;&gt;Coding in the Corporate World&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;d like to argue that in the corporate world, as opposed to the Open Source world, writing new code can be an irresponsible thing to do. In the corporate world, we write code not just to scratch our own itches. We&amp;rsquo;re creating something that may very well continue to exist long after we have moved on to greener pastures. Other people will have to maintain what we created. Adhering to good software engineering principles means that not only our own lives will be easier down the road, but also those of other people.&lt;/p&gt;
+
+&lt;p&gt;Now, those who profess not to care about the experience of other people, or who think that at the very least it is less important that their own experience, may want to consider a few points:&lt;/p&gt;
+
+&lt;p&gt;First of all, those &amp;ldquo;other people&amp;rdquo; may be yourselves a few months or years from now, trying to adapt your own code to new requirements. Suddenly, all this code is no longer new nor fun, and you&amp;rsquo;ll have to dig in to adapt it to the required changes.&lt;/p&gt;
+
+&lt;p&gt;Second, those other people may be your future co-workers, managers or employees. They will remember what you left them with.&lt;/p&gt;
+
+&lt;p&gt;Third, people will appreciate your efforts to make their lives easier (or at least won&amp;rsquo;t hate you for making it harder). This increases the likelihood that they will want to work with you in the future.&lt;/p&gt;
+
+&lt;p&gt;So all this makes sense even from a perfectly selfish point of view.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;When faced with a new software problem to solve, I always spend a significant amount of energy in investigating existing solutions and see if they can work for me. I will resort to writing code only if I fail to find a solution that has enough similarity or has a good enough quality. Of course, as my friend Eli claims, this may very well mean that I often pass on the chance to be creative by deferring to existing solutions. But that&amp;rsquo;s something I can live with: I feel the need to reach the right balance between creativity and responsibility.&lt;/p&gt;
+
+&lt;p&gt;I can find creativity in ways other than writing a lot of new code: I&amp;rsquo;d rather leverage existing code that I like and that is maintained by a third party (which becomes more and more commong with the huge Open Source ecosystem). It is more important to me to feel happy with a solution than it is to prove to myself that I can solve a problem that has been solved before by others. That just seems so wasteful.&lt;/p&gt;
+
+&lt;p&gt;In an upcoming post, I will analyze a specific case that I encountered in light of the above thoughts.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
