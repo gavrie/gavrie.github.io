@@ -25,7 +25,7 @@
 
 &lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
 
-&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
+&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34; target=&#34;_blank&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34; target=&#34;_blank&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
 
 &lt;p&gt;Another pain point is concurrency: A modern application need to do several things concurrently. Raw multithreading with mutexes and semaphores is an old and rusty programming model, which in any case is not very suitable to Python with its GIL limitation. And Gevent is very nice, but not a standard part of the language and very hard to debug.&lt;/p&gt;
 
@@ -88,7 +88,7 @@
 &lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34; target=&#34;_blank&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -121,7 +121,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;p&gt;So, what happens is that &lt;code&gt;subprocess&lt;/code&gt; thinks that the child process exited successfully, even though it did not.&lt;/p&gt;
 
-&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
+&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34; target=&#34;_blank&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
 
 &lt;p&gt;So, what is going on here? You may want to think it through and see if you can find the problem.&lt;/p&gt;
 
@@ -152,7 +152,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;p&gt;As seen in the code, if &lt;code&gt;os.waitpid&lt;/code&gt; on a child process fails with &lt;code&gt;ECHILD&lt;/code&gt;, an exception is not raised. The reason for this is that &lt;code&gt;ECHILD&lt;/code&gt; is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls &lt;code&gt;wait()&lt;/code&gt; on it. In the interim, the process is a so-called &amp;ldquo;zombie&amp;rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.&lt;/p&gt;
 
-&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34; target=&#34;_blank&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&amp;rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores &lt;code&gt;SIGCHLD&lt;/code&gt; since it isn&amp;rsquo;t interested in the exit code of its child processes, it makes sense for &lt;code&gt;waitpid()&lt;/code&gt; to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.&lt;/p&gt;
 
@@ -164,7 +164,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;h3 id=&#34;a-week-later&#34;&gt;A Week Later&lt;/h3&gt;
 
-&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
+&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34; target=&#34;_blank&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
 
 &lt;p&gt;We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored &lt;code&gt;SIGCHLD&lt;/code&gt;. To check if this was the case, we ran the following in the debugger:&lt;/p&gt;
 
@@ -193,7 +193,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;h3 id=&#34;question-everything&#34;&gt;Question Everything&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34; target=&#34;_blank&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34; target=&#34;_blank&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
 
 &lt;p&gt;The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this &lt;em&gt;could not happen&lt;/em&gt; since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.&lt;/p&gt;
 
@@ -202,7 +202,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 &lt;p&gt;As a lesson from this, aside from some debugging ideas, please remember: Don&amp;rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python &lt;code&gt;if __name__ == &#39;__main__&#39;&lt;/code&gt; construct.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34; target=&#34;_blank&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -311,7 +311,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 &lt;p&gt;Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&amp;rsquo;t assume that it will be OK &amp;ndash; because it will come back to bite you, or at least some future user of your code.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34; target=&#34;_blank&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     

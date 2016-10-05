@@ -17,23 +17,23 @@
       <guid>http://philipson.co.il/post/taming-a-legacy-application-with-docker/</guid>
       <description>
 
-&lt;p&gt;I&amp;rsquo;ll be the first one to admit that I have been spoiled by &lt;a href=&#34;http://programmableinfrastructure.com/&#34;&gt;programmable infrastructure&lt;/a&gt;. It becomes easy to forget that not too long ago we used to spend hours upon hours on installing a physical server or VM, when nowadays all it takes is a simple &lt;code&gt;docker run&lt;/code&gt; to do so many things.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ll be the first one to admit that I have been spoiled by &lt;a href=&#34;http://programmableinfrastructure.com/&#34; target=&#34;_blank&#34;&gt;programmable infrastructure&lt;/a&gt;. It becomes easy to forget that not too long ago we used to spend hours upon hours on installing a physical server or VM, when nowadays all it takes is a simple &lt;code&gt;docker run&lt;/code&gt; to do so many things.&lt;/p&gt;
 
 &lt;p&gt;That&amp;rsquo;s why I sighed inwardly when I needed to install a staging server for a legacy LAMP application.&lt;/p&gt;
 
 &lt;h2 id=&#34;staging-testrail&#34;&gt;Staging TestRail&lt;/h2&gt;
 
-&lt;p&gt;One of my clients uses &lt;a href=&#34;http://www.gurock.com/testrail/&#34;&gt;TestRail&lt;/a&gt;, a Web based test management tool. They have it installed in a VM on their premises. They asked me to do some work related to automated reporting of test results via &lt;a href=&#34;http://docs.gurock.com/testrail-api2/start&#34;&gt;the TestRail API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;One of my clients uses &lt;a href=&#34;http://www.gurock.com/testrail/&#34; target=&#34;_blank&#34;&gt;TestRail&lt;/a&gt;, a Web based test management tool. They have it installed in a VM on their premises. They asked me to do some work related to automated reporting of test results via &lt;a href=&#34;http://docs.gurock.com/testrail-api2/start&#34; target=&#34;_blank&#34;&gt;the TestRail API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;The first thing I usually do in such cases is install a staging server: A duplicate of the production server on my laptop (or in the cloud somewhere) that allows me to play with it without endangering the production server. To get such a staging server in this case would mean installing TestRail from scratch, and then feeding it with a copy of the data from the customer&amp;rsquo;s production database. While it may have been possible to clone the production VM and use that instead, this would be both heavyweight (a big fat VM) and nonreproducible (what went into this VM?).&lt;/p&gt;
 
-&lt;p&gt;So, on to the installation. Unfortunately TestRail do not provide a Docker image or a VM image. All they have is &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34;&gt;instructions on installing a Linux or Windows server&lt;/a&gt; with the relevant dependencies, adding &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34;&gt;a proprietary PHP extension&lt;/a&gt;, then installing a LAMP environment, creating their database, &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34;&gt;and some more stuff&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So, on to the installation. Unfortunately TestRail do not provide a Docker image or a VM image. All they have is &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34; target=&#34;_blank&#34;&gt;instructions on installing a Linux or Windows server&lt;/a&gt; with the relevant dependencies, adding &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34; target=&#34;_blank&#34;&gt;a proprietary PHP extension&lt;/a&gt;, then installing a LAMP environment, creating their database, &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34; target=&#34;_blank&#34;&gt;and some more stuff&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;It might not be so bad to do this once, but it never ends there. You always end up needing to reinstall several times. It also would be nice to be able to share the result with other developers so they can easily create their own staging servers.&lt;/p&gt;
 
 &lt;h2 id=&#34;dockerizing-testrail&#34;&gt;Dockerizing TestRail&lt;/h2&gt;
 
-&lt;p&gt;What would be really nice is to have a &lt;code&gt;Dockerfile&lt;/code&gt; that would do all the above work, making it simple to install and start a new staging server in a container. I looked around a bit to see if someone had already done this. I did find some prior attempts (such as &lt;a href=&#34;https://github.com/garethjevans/docker-testrail&#34;&gt;this one&lt;/a&gt;), but these only created a base image with some dependencies and not a full solution.&lt;/p&gt;
+&lt;p&gt;What would be really nice is to have a &lt;code&gt;Dockerfile&lt;/code&gt; that would do all the above work, making it simple to install and start a new staging server in a container. I looked around a bit to see if someone had already done this. I did find some prior attempts (such as &lt;a href=&#34;https://github.com/garethjevans/docker-testrail&#34; target=&#34;_blank&#34;&gt;this one&lt;/a&gt;), but these only created a base image with some dependencies and not a full solution.&lt;/p&gt;
 
 &lt;p&gt;I then proceeded to create a &lt;code&gt;Dockerfile&lt;/code&gt; that does a full installation.&lt;/p&gt;
 
@@ -50,7 +50,7 @@
 
 &lt;h2 id=&#34;creating-the-base-image&#34;&gt;Creating the Base Image&lt;/h2&gt;
 
-&lt;p&gt;The TestRail &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34;&gt;installation requirements&lt;/a&gt; recommend installing Ubuntu LTS, as well as MySQL, PHP and Apache. In short, a standard LAMP stack. We pick Ubuntu 14.04 LTS, a.k.a. &lt;code&gt;trusty&lt;/code&gt;, since the latest release includes PHP 7 which doesn&amp;rsquo;t seem to be supported by TestRail.&lt;/p&gt;
+&lt;p&gt;The TestRail &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34; target=&#34;_blank&#34;&gt;installation requirements&lt;/a&gt; recommend installing Ubuntu LTS, as well as MySQL, PHP and Apache. In short, a standard LAMP stack. We pick Ubuntu 14.04 LTS, a.k.a. &lt;code&gt;trusty&lt;/code&gt;, since the latest release includes PHP 7 which doesn&amp;rsquo;t seem to be supported by TestRail.&lt;/p&gt;
 
 &lt;p&gt;We therefore write the following &lt;code&gt;Dockerfile&lt;/code&gt;:&lt;/p&gt;
 
@@ -69,7 +69,7 @@
 
 &lt;h2 id=&#34;installing-ioncube&#34;&gt;Installing ionCube&lt;/h2&gt;
 
-&lt;p&gt;The ionCube PHP extension that TestRail requires is proprietary software, so we cannot distribute it. Instead, we download it automatically in the &lt;code&gt;Dockerfile&lt;/code&gt;. We then follow &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34;&gt;the instructions&lt;/a&gt; to install it:&lt;/p&gt;
+&lt;p&gt;The ionCube PHP extension that TestRail requires is proprietary software, so we cannot distribute it. Instead, we download it automatically in the &lt;code&gt;Dockerfile&lt;/code&gt;. We then follow &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34; target=&#34;_blank&#34;&gt;the instructions&lt;/a&gt; to install it:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;RUN&lt;/span&gt; curl -O http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64_5.1.2.tar.gz &lt;span style=&#34;color: #666666&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color: #4070a0; font-weight: bold&#34;&gt;\&lt;/span&gt;
     tar vxfz ioncube_loaders_lin_*.tar.gz &lt;span style=&#34;color: #666666&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color: #4070a0; font-weight: bold&#34;&gt;\&lt;/span&gt;
@@ -99,7 +99,7 @@
 
 &lt;h2 id=&#34;completing-the-installation-automatically&#34;&gt;Completing the Installation Automatically&lt;/h2&gt;
 
-&lt;p&gt;According to &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34;&gt;the instructions&lt;/a&gt;, to complete the installation, we now need to:
+&lt;p&gt;According to &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34; target=&#34;_blank&#34;&gt;the instructions&lt;/a&gt;, to complete the installation, we now need to:
 - Create the TestRail database
 - Run its Installation Wizard
 - Configure a background task to run&lt;/p&gt;
@@ -172,7 +172,7 @@ sleep infinity
 &lt;p&gt;We can now log into TestRail by browsing to:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://localhost:7070/testrail/&#34;&gt;http://localhost:7070/testrail/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://localhost:7070/testrail/&#34; target=&#34;_blank&#34;&gt;http://localhost:7070/testrail/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;The default user is &lt;code&gt;admin@admin.com&lt;/code&gt;, and the password is &lt;code&gt;admin&lt;/code&gt;.&lt;/p&gt;
@@ -185,10 +185,10 @@ sleep infinity
 
 &lt;p&gt;We described how we created a fully automated process for installing and configuring a legacy LAMP application. Such a process makes it easy to create and destroy staging servers as needed without relying on any pre-existing state.&lt;/p&gt;
 
-&lt;p&gt;If you want to recreate the Docker image, or create your own variant, feel free to get the above code from &lt;a href=&#34;https://github.com/gavrie/testrail&#34;&gt;its GitHub repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to recreate the Docker image, or create your own variant, feel free to get the above code from &lt;a href=&#34;https://github.com/gavrie/testrail&#34; target=&#34;_blank&#34;&gt;its GitHub repository&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/ballance/5203638978/&#34;&gt;ballance&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/ballance/5203638978/&#34; target=&#34;_blank&#34;&gt;ballance&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -201,13 +201,13 @@ sleep infinity
       <description>
 
 &lt;p&gt;At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
-scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
+scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34; target=&#34;_blank&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
+&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34; target=&#34;_blank&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-problem&#34;&gt;The Problem&lt;/h2&gt;
 
-&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
+&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34; target=&#34;_blank&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&amp;rsquo;t be using the same WWPN and thereby confuse the fabric.&lt;/li&gt;
@@ -220,7 +220,7 @@ scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt;
 
 &lt;h2 id=&#34;some-background&#34;&gt;Some Background&lt;/h2&gt;
 
-&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
+&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34; target=&#34;_blank&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s assume that we have an FC HBA with a WWPN of &lt;code&gt;10:00:00:00:c9:93:53:6d&lt;/code&gt;.
 We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
@@ -241,7 +241,7 @@ We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;10:00&lt;/code&gt; prefix means that it uses the original WWN format (a.k.a. &amp;ldquo;NAA IEEE 48-bit address format&amp;rdquo;), as opposed to newer formats that starting with another sequence&lt;/li&gt;
 &lt;li&gt;The vendor is &lt;code&gt;00:00:c9&lt;/code&gt;, which is an OUI belonging to Emulex Corporation
-(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
+(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34; target=&#34;_blank&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;The vendor-specific part is &lt;code&gt;93:53:6d&lt;/code&gt;, which is 24 bits long&lt;/li&gt;
 &lt;/ul&gt;
 

@@ -153,23 +153,23 @@
                         <div id="post-content">
                           
 
-<p>I&rsquo;ll be the first one to admit that I have been spoiled by <a href="http://programmableinfrastructure.com/">programmable infrastructure</a>. It becomes easy to forget that not too long ago we used to spend hours upon hours on installing a physical server or VM, when nowadays all it takes is a simple <code>docker run</code> to do so many things.</p>
+<p>I&rsquo;ll be the first one to admit that I have been spoiled by <a href="http://programmableinfrastructure.com/" target="_blank">programmable infrastructure</a>. It becomes easy to forget that not too long ago we used to spend hours upon hours on installing a physical server or VM, when nowadays all it takes is a simple <code>docker run</code> to do so many things.</p>
 
 <p>That&rsquo;s why I sighed inwardly when I needed to install a staging server for a legacy LAMP application.</p>
 
 <h2 id="staging-testrail">Staging TestRail</h2>
 
-<p>One of my clients uses <a href="http://www.gurock.com/testrail/">TestRail</a>, a Web based test management tool. They have it installed in a VM on their premises. They asked me to do some work related to automated reporting of test results via <a href="http://docs.gurock.com/testrail-api2/start">the TestRail API</a>.</p>
+<p>One of my clients uses <a href="http://www.gurock.com/testrail/" target="_blank">TestRail</a>, a Web based test management tool. They have it installed in a VM on their premises. They asked me to do some work related to automated reporting of test results via <a href="http://docs.gurock.com/testrail-api2/start" target="_blank">the TestRail API</a>.</p>
 
 <p>The first thing I usually do in such cases is install a staging server: A duplicate of the production server on my laptop (or in the cloud somewhere) that allows me to play with it without endangering the production server. To get such a staging server in this case would mean installing TestRail from scratch, and then feeding it with a copy of the data from the customer&rsquo;s production database. While it may have been possible to clone the production VM and use that instead, this would be both heavyweight (a big fat VM) and nonreproducible (what went into this VM?).</p>
 
-<p>So, on to the installation. Unfortunately TestRail do not provide a Docker image or a VM image. All they have is <a href="http://docs.gurock.com/testrail-admin/installation-requirements">instructions on installing a Linux or Windows server</a> with the relevant dependencies, adding <a href="http://docs.gurock.com/testrail-admin/howto-installing-ioncube">a proprietary PHP extension</a>, then installing a LAMP environment, creating their database, <a href="http://docs.gurock.com/testrail-admin/installation-unix">and some more stuff</a>.</p>
+<p>So, on to the installation. Unfortunately TestRail do not provide a Docker image or a VM image. All they have is <a href="http://docs.gurock.com/testrail-admin/installation-requirements" target="_blank">instructions on installing a Linux or Windows server</a> with the relevant dependencies, adding <a href="http://docs.gurock.com/testrail-admin/howto-installing-ioncube" target="_blank">a proprietary PHP extension</a>, then installing a LAMP environment, creating their database, <a href="http://docs.gurock.com/testrail-admin/installation-unix" target="_blank">and some more stuff</a>.</p>
 
 <p>It might not be so bad to do this once, but it never ends there. You always end up needing to reinstall several times. It also would be nice to be able to share the result with other developers so they can easily create their own staging servers.</p>
 
 <h2 id="dockerizing-testrail">Dockerizing TestRail</h2>
 
-<p>What would be really nice is to have a <code>Dockerfile</code> that would do all the above work, making it simple to install and start a new staging server in a container. I looked around a bit to see if someone had already done this. I did find some prior attempts (such as <a href="https://github.com/garethjevans/docker-testrail">this one</a>), but these only created a base image with some dependencies and not a full solution.</p>
+<p>What would be really nice is to have a <code>Dockerfile</code> that would do all the above work, making it simple to install and start a new staging server in a container. I looked around a bit to see if someone had already done this. I did find some prior attempts (such as <a href="https://github.com/garethjevans/docker-testrail" target="_blank">this one</a>), but these only created a base image with some dependencies and not a full solution.</p>
 
 <p>I then proceeded to create a <code>Dockerfile</code> that does a full installation.</p>
 
@@ -186,7 +186,7 @@
 
 <h2 id="creating-the-base-image">Creating the Base Image</h2>
 
-<p>The TestRail <a href="http://docs.gurock.com/testrail-admin/installation-requirements">installation requirements</a> recommend installing Ubuntu LTS, as well as MySQL, PHP and Apache. In short, a standard LAMP stack. We pick Ubuntu 14.04 LTS, a.k.a. <code>trusty</code>, since the latest release includes PHP 7 which doesn&rsquo;t seem to be supported by TestRail.</p>
+<p>The TestRail <a href="http://docs.gurock.com/testrail-admin/installation-requirements" target="_blank">installation requirements</a> recommend installing Ubuntu LTS, as well as MySQL, PHP and Apache. In short, a standard LAMP stack. We pick Ubuntu 14.04 LTS, a.k.a. <code>trusty</code>, since the latest release includes PHP 7 which doesn&rsquo;t seem to be supported by TestRail.</p>
 
 <p>We therefore write the following <code>Dockerfile</code>:</p>
 
@@ -205,7 +205,7 @@
 
 <h2 id="installing-ioncube">Installing ionCube</h2>
 
-<p>The ionCube PHP extension that TestRail requires is proprietary software, so we cannot distribute it. Instead, we download it automatically in the <code>Dockerfile</code>. We then follow <a href="http://docs.gurock.com/testrail-admin/howto-installing-ioncube">the instructions</a> to install it:</p>
+<p>The ionCube PHP extension that TestRail requires is proprietary software, so we cannot distribute it. Instead, we download it automatically in the <code>Dockerfile</code>. We then follow <a href="http://docs.gurock.com/testrail-admin/howto-installing-ioncube" target="_blank">the instructions</a> to install it:</p>
 
 <div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">RUN</span> curl -O http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64_5.1.2.tar.gz <span style="color: #666666">&amp;&amp;</span> <span style="color: #4070a0; font-weight: bold">\</span>
     tar vxfz ioncube_loaders_lin_*.tar.gz <span style="color: #666666">&amp;&amp;</span> <span style="color: #4070a0; font-weight: bold">\</span>
@@ -235,7 +235,7 @@
 
 <h2 id="completing-the-installation-automatically">Completing the Installation Automatically</h2>
 
-<p>According to <a href="http://docs.gurock.com/testrail-admin/installation-unix">the instructions</a>, to complete the installation, we now need to:
+<p>According to <a href="http://docs.gurock.com/testrail-admin/installation-unix" target="_blank">the instructions</a>, to complete the installation, we now need to:
 - Create the TestRail database
 - Run its Installation Wizard
 - Configure a background task to run</p>
@@ -308,7 +308,7 @@ sleep infinity
 <p>We can now log into TestRail by browsing to:</p>
 
 <ul>
-<li><a href="http://localhost:7070/testrail/">http://localhost:7070/testrail/</a></li>
+<li><a href="http://localhost:7070/testrail/" target="_blank">http://localhost:7070/testrail/</a></li>
 </ul>
 
 <p>The default user is <code>admin@admin.com</code>, and the password is <code>admin</code>.</p>
@@ -321,10 +321,10 @@ sleep infinity
 
 <p>We described how we created a fully automated process for installing and configuring a legacy LAMP application. Such a process makes it easy to create and destroy staging servers as needed without relying on any pre-existing state.</p>
 
-<p>If you want to recreate the Docker image, or create your own variant, feel free to get the above code from <a href="https://github.com/gavrie/testrail">its GitHub repository</a>.</p>
+<p>If you want to recreate the Docker image, or create your own variant, feel free to get the above code from <a href="https://github.com/gavrie/testrail" target="_blank">its GitHub repository</a>.</p>
 
 <p><p><br></p>
-<sub>Banner image by <a href="https://www.flickr.com/photos/ballance/5203638978/">ballance</a></sub></p>
+<sub>Banner image by <a href="https://www.flickr.com/photos/ballance/5203638978/" target="_blank">ballance</a></sub></p>
 
                         </div>
                         

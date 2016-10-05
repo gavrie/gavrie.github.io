@@ -153,7 +153,7 @@
                         <div id="post-content">
                           
 
-<p>For a while now, I&rsquo;ve been interested in experimenting with the new <a href="http://martinfowler.com/articles/serverless.html">Serverless</a> fad and see what it is all about. The idea is that you don&rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function.</p>
+<p>For a while now, I&rsquo;ve been interested in experimenting with the new <a href="http://martinfowler.com/articles/serverless.html" target="_blank">Serverless</a> fad and see what it is all about. The idea is that you don&rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function.</p>
 
 <p>The hype is all about being able to scale your code without pain and being able to upgrade it easily, but of course this technology also makes it very easy to experiment without having to worry about the deployment method <em>du jour</em> &ndash; do I need to create a VM? A container? A pod? Nope, just a function.</p>
 
@@ -163,13 +163,13 @@
 
 <h2 id="going-serverless">Going Serverless</h2>
 
-<p>The leading Serverless offerings include <a href="https://aws.amazon.com/lambda/">AWS Lambda</a> and <a href="https://cloud.google.com/functions/">Google Cloud Functions</a>. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is <a href="https://azure.microsoft.com/en-us/services/functions/">Azure Functions</a>, but I haven&rsquo;t yet had a chance to work with Azure and didn&rsquo;t want to get sidetracked too much.</p>
+<p>The leading Serverless offerings include <a href="https://aws.amazon.com/lambda/" target="_blank">AWS Lambda</a> and <a href="https://cloud.google.com/functions/" target="_blank">Google Cloud Functions</a>. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is <a href="https://azure.microsoft.com/en-us/services/functions/" target="_blank">Azure Functions</a>, but I haven&rsquo;t yet had a chance to work with Azure and didn&rsquo;t want to get sidetracked too much.</p>
 
 <p>So, AWS Lambda it is.</p>
 
 <h2 id="the-project">The Project</h2>
 
-<p>I&rsquo;ve been using the very nice <a href="http://www.hourstrackerapp.com/">HoursTracker app</a> for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using <a href="https://www.google.com/sheets/about/">Google Docs</a> before sharing them with the client.</p>
+<p>I&rsquo;ve been using the very nice <a href="http://www.hourstrackerapp.com/" target="_blank">HoursTracker app</a> for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using <a href="https://www.google.com/sheets/about/" target="_blank">Google Docs</a> before sharing them with the client.</p>
 
 <p>For a while now, I&rsquo;ve wanted to automate these manipulations since they tend to become a bit tedious. Being one of those things you do once a month and take only ten minutes or so, it never became just important enough to me to actually go and automate. It was therefore a perfect candidate for playing with some new technology and possibly getting a usable result as a bonus.</p>
 
@@ -187,11 +187,11 @@
 
 <h3 id="receiving-email">Receiving Email</h3>
 
-<p>To receive emails in a way that would work with AWS Lambda, I used Amazon <a href="https://aws.amazon.com/ses/">Simple Email Service (SES)</a>. Amazon provide clear <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html">instructions</a> for setting it up, and I encountered no issues when following them.</p>
+<p>To receive emails in a way that would work with AWS Lambda, I used Amazon <a href="https://aws.amazon.com/ses/" target="_blank">Simple Email Service (SES)</a>. Amazon provide clear <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html" target="_blank">instructions</a> for setting it up, and I encountered no issues when following them.</p>
 
-<p>If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. <code>api.example.com</code>) to Amazon&rsquo;s <a href="https://aws.amazon.com/route53/">Route53</a> DNS service, and <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html">added an <code>MX</code> record</a> for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.</p>
+<p>If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. <code>api.example.com</code>) to Amazon&rsquo;s <a href="https://aws.amazon.com/route53/" target="_blank">Route53</a> DNS service, and <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html" target="_blank">added an <code>MX</code> record</a> for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.</p>
 
-<p>As part of completing the instructions, I then created a mail Receipt Rule for the address <code>hourstracker@api.example.com</code> with an action that adds any received mail to a specific <a href="https://aws.amazon.com/s3/">S3 bucket</a>.</p>
+<p>As part of completing the instructions, I then created a mail Receipt Rule for the address <code>hourstracker@api.example.com</code> with an action that adds any received mail to a specific <a href="https://aws.amazon.com/s3/" target="_blank">S3 bucket</a>.</p>
 
 <p>At this point, the first part of the inventory is complete: We can receive emails sent to <code>hourstracker@api.example.com</code>, and these are then stored in the <code>hourstracker</code> S3 bucket, ready for further processing.</p>
 
@@ -200,7 +200,7 @@
 <p>Receiving and storing the mail brings us to the point where we can call our custom code to process it. This is where AWS Lambda comes in. In the next part of this series, we will write a simple function to get some information from the email, and will tell SES to call it when a new mail arrives.</p>
 
 <p><p><br></p>
-<sub>Banner image by <a href="https://www.flickr.com/photos/cimatti/4592329874/">cimatti</a></sub></p>
+<sub>Banner image by <a href="https://www.flickr.com/photos/cimatti/4592329874/" target="_blank">cimatti</a></sub></p>
 
                         </div>
                         

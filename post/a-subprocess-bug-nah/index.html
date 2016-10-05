@@ -174,7 +174,7 @@ subprocess<span style="color: #666666">.</span>CalledProcessError: Command <span
 
 <p>So, what happens is that <code>subprocess</code> thinks that the child process exited successfully, even though it did not.</p>
 
-<p>This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of <a href="http://en.wikipedia.org/wiki/Fail-fast">failing early</a>, as embodied by the way Python uses exceptions instead of error codes.</p>
+<p>This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of <a href="http://en.wikipedia.org/wiki/Fail-fast" target="_blank">failing early</a>, as embodied by the way Python uses exceptions instead of error codes.</p>
 
 <p>So, what is going on here? You may want to think it through and see if you can find the problem.</p>
 
@@ -205,7 +205,7 @@ subprocess<span style="color: #666666">.</span>CalledProcessError: Command <span
 
 <p>As seen in the code, if <code>os.waitpid</code> on a child process fails with <code>ECHILD</code>, an exception is not raised. The reason for this is that <code>ECHILD</code> is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls <code>wait()</code> on it. In the interim, the process is a so-called &ldquo;zombie&rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.</p>
 
-<p>The above piece of code went into Python&rsquo;s <code>subprocess</code> module as part of a fix for another problem, as documented in <a href="http://bugs.python.org/issue1731717">this Python bug report</a>.</p>
+<p>The above piece of code went into Python&rsquo;s <code>subprocess</code> module as part of a fix for another problem, as documented in <a href="http://bugs.python.org/issue1731717" target="_blank">this Python bug report</a>.</p>
 
 <p>Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores <code>SIGCHLD</code> since it isn&rsquo;t interested in the exit code of its child processes, it makes sense for <code>waitpid()</code> to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.</p>
 
@@ -217,7 +217,7 @@ subprocess<span style="color: #666666">.</span>CalledProcessError: Command <span
 
 <h3 id="a-week-later">A Week Later</h3>
 
-<p>Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague <a href="https://plus.google.com/107274679081446769903/">Erez Horev</a> called me over and we started looking at it together.</p>
+<p>Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague <a href="https://plus.google.com/107274679081446769903/" target="_blank">Erez Horev</a> called me over and we started looking at it together.</p>
 
 <p>We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored <code>SIGCHLD</code>. To check if this was the case, we ran the following in the debugger:</p>
 
@@ -246,7 +246,7 @@ subprocess<span style="color: #666666">.</span>CalledProcessError: Command <span
 
 <h3 id="question-everything">Question Everything</h3>
 
-<p><a href="http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html">Mark Dalrymple</a>, in his <a href="http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/">Thoughts on Debugging, Part 1</a>, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.</p>
+<p><a href="http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html" target="_blank">Mark Dalrymple</a>, in his <a href="http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/" target="_blank">Thoughts on Debugging, Part 1</a>, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.</p>
 
 <p>The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this <em>could not happen</em> since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.</p>
 
@@ -255,7 +255,7 @@ subprocess<span style="color: #666666">.</span>CalledProcessError: Command <span
 <p>As a lesson from this, aside from some debugging ideas, please remember: Don&rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python <code>if __name__ == '__main__'</code> construct.</p>
 
 <p><p><br></p>
-<sub>Banner image by <a href="https://www.flickr.com/photos/searleb/3122477836/">searleb</a></sub></p>
+<sub>Banner image by <a href="https://www.flickr.com/photos/searleb/3122477836/" target="_blank">searleb</a></sub></p>
 
                         </div>
                         

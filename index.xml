@@ -17,23 +17,23 @@
       <guid>http://philipson.co.il/post/taming-a-legacy-application-with-docker/</guid>
       <description>
 
-&lt;p&gt;I&amp;rsquo;ll be the first one to admit that I have been spoiled by &lt;a href=&#34;http://programmableinfrastructure.com/&#34;&gt;programmable infrastructure&lt;/a&gt;. It becomes easy to forget that not too long ago we used to spend hours upon hours on installing a physical server or VM, when nowadays all it takes is a simple &lt;code&gt;docker run&lt;/code&gt; to do so many things.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ll be the first one to admit that I have been spoiled by &lt;a href=&#34;http://programmableinfrastructure.com/&#34; target=&#34;_blank&#34;&gt;programmable infrastructure&lt;/a&gt;. It becomes easy to forget that not too long ago we used to spend hours upon hours on installing a physical server or VM, when nowadays all it takes is a simple &lt;code&gt;docker run&lt;/code&gt; to do so many things.&lt;/p&gt;
 
 &lt;p&gt;That&amp;rsquo;s why I sighed inwardly when I needed to install a staging server for a legacy LAMP application.&lt;/p&gt;
 
 &lt;h2 id=&#34;staging-testrail&#34;&gt;Staging TestRail&lt;/h2&gt;
 
-&lt;p&gt;One of my clients uses &lt;a href=&#34;http://www.gurock.com/testrail/&#34;&gt;TestRail&lt;/a&gt;, a Web based test management tool. They have it installed in a VM on their premises. They asked me to do some work related to automated reporting of test results via &lt;a href=&#34;http://docs.gurock.com/testrail-api2/start&#34;&gt;the TestRail API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;One of my clients uses &lt;a href=&#34;http://www.gurock.com/testrail/&#34; target=&#34;_blank&#34;&gt;TestRail&lt;/a&gt;, a Web based test management tool. They have it installed in a VM on their premises. They asked me to do some work related to automated reporting of test results via &lt;a href=&#34;http://docs.gurock.com/testrail-api2/start&#34; target=&#34;_blank&#34;&gt;the TestRail API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;The first thing I usually do in such cases is install a staging server: A duplicate of the production server on my laptop (or in the cloud somewhere) that allows me to play with it without endangering the production server. To get such a staging server in this case would mean installing TestRail from scratch, and then feeding it with a copy of the data from the customer&amp;rsquo;s production database. While it may have been possible to clone the production VM and use that instead, this would be both heavyweight (a big fat VM) and nonreproducible (what went into this VM?).&lt;/p&gt;
 
-&lt;p&gt;So, on to the installation. Unfortunately TestRail do not provide a Docker image or a VM image. All they have is &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34;&gt;instructions on installing a Linux or Windows server&lt;/a&gt; with the relevant dependencies, adding &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34;&gt;a proprietary PHP extension&lt;/a&gt;, then installing a LAMP environment, creating their database, &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34;&gt;and some more stuff&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So, on to the installation. Unfortunately TestRail do not provide a Docker image or a VM image. All they have is &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34; target=&#34;_blank&#34;&gt;instructions on installing a Linux or Windows server&lt;/a&gt; with the relevant dependencies, adding &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34; target=&#34;_blank&#34;&gt;a proprietary PHP extension&lt;/a&gt;, then installing a LAMP environment, creating their database, &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34; target=&#34;_blank&#34;&gt;and some more stuff&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;It might not be so bad to do this once, but it never ends there. You always end up needing to reinstall several times. It also would be nice to be able to share the result with other developers so they can easily create their own staging servers.&lt;/p&gt;
 
 &lt;h2 id=&#34;dockerizing-testrail&#34;&gt;Dockerizing TestRail&lt;/h2&gt;
 
-&lt;p&gt;What would be really nice is to have a &lt;code&gt;Dockerfile&lt;/code&gt; that would do all the above work, making it simple to install and start a new staging server in a container. I looked around a bit to see if someone had already done this. I did find some prior attempts (such as &lt;a href=&#34;https://github.com/garethjevans/docker-testrail&#34;&gt;this one&lt;/a&gt;), but these only created a base image with some dependencies and not a full solution.&lt;/p&gt;
+&lt;p&gt;What would be really nice is to have a &lt;code&gt;Dockerfile&lt;/code&gt; that would do all the above work, making it simple to install and start a new staging server in a container. I looked around a bit to see if someone had already done this. I did find some prior attempts (such as &lt;a href=&#34;https://github.com/garethjevans/docker-testrail&#34; target=&#34;_blank&#34;&gt;this one&lt;/a&gt;), but these only created a base image with some dependencies and not a full solution.&lt;/p&gt;
 
 &lt;p&gt;I then proceeded to create a &lt;code&gt;Dockerfile&lt;/code&gt; that does a full installation.&lt;/p&gt;
 
@@ -50,7 +50,7 @@
 
 &lt;h2 id=&#34;creating-the-base-image&#34;&gt;Creating the Base Image&lt;/h2&gt;
 
-&lt;p&gt;The TestRail &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34;&gt;installation requirements&lt;/a&gt; recommend installing Ubuntu LTS, as well as MySQL, PHP and Apache. In short, a standard LAMP stack. We pick Ubuntu 14.04 LTS, a.k.a. &lt;code&gt;trusty&lt;/code&gt;, since the latest release includes PHP 7 which doesn&amp;rsquo;t seem to be supported by TestRail.&lt;/p&gt;
+&lt;p&gt;The TestRail &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-requirements&#34; target=&#34;_blank&#34;&gt;installation requirements&lt;/a&gt; recommend installing Ubuntu LTS, as well as MySQL, PHP and Apache. In short, a standard LAMP stack. We pick Ubuntu 14.04 LTS, a.k.a. &lt;code&gt;trusty&lt;/code&gt;, since the latest release includes PHP 7 which doesn&amp;rsquo;t seem to be supported by TestRail.&lt;/p&gt;
 
 &lt;p&gt;We therefore write the following &lt;code&gt;Dockerfile&lt;/code&gt;:&lt;/p&gt;
 
@@ -69,7 +69,7 @@
 
 &lt;h2 id=&#34;installing-ioncube&#34;&gt;Installing ionCube&lt;/h2&gt;
 
-&lt;p&gt;The ionCube PHP extension that TestRail requires is proprietary software, so we cannot distribute it. Instead, we download it automatically in the &lt;code&gt;Dockerfile&lt;/code&gt;. We then follow &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34;&gt;the instructions&lt;/a&gt; to install it:&lt;/p&gt;
+&lt;p&gt;The ionCube PHP extension that TestRail requires is proprietary software, so we cannot distribute it. Instead, we download it automatically in the &lt;code&gt;Dockerfile&lt;/code&gt;. We then follow &lt;a href=&#34;http://docs.gurock.com/testrail-admin/howto-installing-ioncube&#34; target=&#34;_blank&#34;&gt;the instructions&lt;/a&gt; to install it:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f0f0f0&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #007020; font-weight: bold&#34;&gt;RUN&lt;/span&gt; curl -O http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64_5.1.2.tar.gz &lt;span style=&#34;color: #666666&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color: #4070a0; font-weight: bold&#34;&gt;\&lt;/span&gt;
     tar vxfz ioncube_loaders_lin_*.tar.gz &lt;span style=&#34;color: #666666&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color: #4070a0; font-weight: bold&#34;&gt;\&lt;/span&gt;
@@ -99,7 +99,7 @@
 
 &lt;h2 id=&#34;completing-the-installation-automatically&#34;&gt;Completing the Installation Automatically&lt;/h2&gt;
 
-&lt;p&gt;According to &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34;&gt;the instructions&lt;/a&gt;, to complete the installation, we now need to:
+&lt;p&gt;According to &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34; target=&#34;_blank&#34;&gt;the instructions&lt;/a&gt;, to complete the installation, we now need to:
 - Create the TestRail database
 - Run its Installation Wizard
 - Configure a background task to run&lt;/p&gt;
@@ -172,7 +172,7 @@ sleep infinity
 &lt;p&gt;We can now log into TestRail by browsing to:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://localhost:7070/testrail/&#34;&gt;http://localhost:7070/testrail/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://localhost:7070/testrail/&#34; target=&#34;_blank&#34;&gt;http://localhost:7070/testrail/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;The default user is &lt;code&gt;admin@admin.com&lt;/code&gt;, and the password is &lt;code&gt;admin&lt;/code&gt;.&lt;/p&gt;
@@ -185,10 +185,10 @@ sleep infinity
 
 &lt;p&gt;We described how we created a fully automated process for installing and configuring a legacy LAMP application. Such a process makes it easy to create and destroy staging servers as needed without relying on any pre-existing state.&lt;/p&gt;
 
-&lt;p&gt;If you want to recreate the Docker image, or create your own variant, feel free to get the above code from &lt;a href=&#34;https://github.com/gavrie/testrail&#34;&gt;its GitHub repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to recreate the Docker image, or create your own variant, feel free to get the above code from &lt;a href=&#34;https://github.com/gavrie/testrail&#34; target=&#34;_blank&#34;&gt;its GitHub repository&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/ballance/5203638978/&#34;&gt;ballance&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/ballance/5203638978/&#34; target=&#34;_blank&#34;&gt;ballance&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -200,7 +200,7 @@ sleep infinity
       <guid>http://philipson.co.il/post/mail-to-lambda/</guid>
       <description>
 
-&lt;p&gt;For a while now, I&amp;rsquo;ve been interested in experimenting with the new &lt;a href=&#34;http://martinfowler.com/articles/serverless.html&#34;&gt;Serverless&lt;/a&gt; fad and see what it is all about. The idea is that you don&amp;rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function.&lt;/p&gt;
+&lt;p&gt;For a while now, I&amp;rsquo;ve been interested in experimenting with the new &lt;a href=&#34;http://martinfowler.com/articles/serverless.html&#34; target=&#34;_blank&#34;&gt;Serverless&lt;/a&gt; fad and see what it is all about. The idea is that you don&amp;rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function.&lt;/p&gt;
 
 &lt;p&gt;The hype is all about being able to scale your code without pain and being able to upgrade it easily, but of course this technology also makes it very easy to experiment without having to worry about the deployment method &lt;em&gt;du jour&lt;/em&gt; &amp;ndash; do I need to create a VM? A container? A pod? Nope, just a function.&lt;/p&gt;
 
@@ -210,13 +210,13 @@ sleep infinity
 
 &lt;h2 id=&#34;going-serverless&#34;&gt;Going Serverless&lt;/h2&gt;
 
-&lt;p&gt;The leading Serverless offerings include &lt;a href=&#34;https://aws.amazon.com/lambda/&#34;&gt;AWS Lambda&lt;/a&gt; and &lt;a href=&#34;https://cloud.google.com/functions/&#34;&gt;Google Cloud Functions&lt;/a&gt;. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is &lt;a href=&#34;https://azure.microsoft.com/en-us/services/functions/&#34;&gt;Azure Functions&lt;/a&gt;, but I haven&amp;rsquo;t yet had a chance to work with Azure and didn&amp;rsquo;t want to get sidetracked too much.&lt;/p&gt;
+&lt;p&gt;The leading Serverless offerings include &lt;a href=&#34;https://aws.amazon.com/lambda/&#34; target=&#34;_blank&#34;&gt;AWS Lambda&lt;/a&gt; and &lt;a href=&#34;https://cloud.google.com/functions/&#34; target=&#34;_blank&#34;&gt;Google Cloud Functions&lt;/a&gt;. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is &lt;a href=&#34;https://azure.microsoft.com/en-us/services/functions/&#34; target=&#34;_blank&#34;&gt;Azure Functions&lt;/a&gt;, but I haven&amp;rsquo;t yet had a chance to work with Azure and didn&amp;rsquo;t want to get sidetracked too much.&lt;/p&gt;
 
 &lt;p&gt;So, AWS Lambda it is.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-project&#34;&gt;The Project&lt;/h2&gt;
 
-&lt;p&gt;I&amp;rsquo;ve been using the very nice &lt;a href=&#34;http://www.hourstrackerapp.com/&#34;&gt;HoursTracker app&lt;/a&gt; for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&amp;rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using &lt;a href=&#34;https://www.google.com/sheets/about/&#34;&gt;Google Docs&lt;/a&gt; before sharing them with the client.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ve been using the very nice &lt;a href=&#34;http://www.hourstrackerapp.com/&#34; target=&#34;_blank&#34;&gt;HoursTracker app&lt;/a&gt; for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&amp;rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using &lt;a href=&#34;https://www.google.com/sheets/about/&#34; target=&#34;_blank&#34;&gt;Google Docs&lt;/a&gt; before sharing them with the client.&lt;/p&gt;
 
 &lt;p&gt;For a while now, I&amp;rsquo;ve wanted to automate these manipulations since they tend to become a bit tedious. Being one of those things you do once a month and take only ten minutes or so, it never became just important enough to me to actually go and automate. It was therefore a perfect candidate for playing with some new technology and possibly getting a usable result as a bonus.&lt;/p&gt;
 
@@ -234,11 +234,11 @@ sleep infinity
 
 &lt;h3 id=&#34;receiving-email&#34;&gt;Receiving Email&lt;/h3&gt;
 
-&lt;p&gt;To receive emails in a way that would work with AWS Lambda, I used Amazon &lt;a href=&#34;https://aws.amazon.com/ses/&#34;&gt;Simple Email Service (SES)&lt;/a&gt;. Amazon provide clear &lt;a href=&#34;http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html&#34;&gt;instructions&lt;/a&gt; for setting it up, and I encountered no issues when following them.&lt;/p&gt;
+&lt;p&gt;To receive emails in a way that would work with AWS Lambda, I used Amazon &lt;a href=&#34;https://aws.amazon.com/ses/&#34; target=&#34;_blank&#34;&gt;Simple Email Service (SES)&lt;/a&gt;. Amazon provide clear &lt;a href=&#34;http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html&#34; target=&#34;_blank&#34;&gt;instructions&lt;/a&gt; for setting it up, and I encountered no issues when following them.&lt;/p&gt;
 
-&lt;p&gt;If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. &lt;code&gt;api.example.com&lt;/code&gt;) to Amazon&amp;rsquo;s &lt;a href=&#34;https://aws.amazon.com/route53/&#34;&gt;Route53&lt;/a&gt; DNS service, and &lt;a href=&#34;https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html&#34;&gt;added an &lt;code&gt;MX&lt;/code&gt; record&lt;/a&gt; for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.&lt;/p&gt;
+&lt;p&gt;If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. &lt;code&gt;api.example.com&lt;/code&gt;) to Amazon&amp;rsquo;s &lt;a href=&#34;https://aws.amazon.com/route53/&#34; target=&#34;_blank&#34;&gt;Route53&lt;/a&gt; DNS service, and &lt;a href=&#34;https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html&#34; target=&#34;_blank&#34;&gt;added an &lt;code&gt;MX&lt;/code&gt; record&lt;/a&gt; for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.&lt;/p&gt;
 
-&lt;p&gt;As part of completing the instructions, I then created a mail Receipt Rule for the address &lt;code&gt;hourstracker@api.example.com&lt;/code&gt; with an action that adds any received mail to a specific &lt;a href=&#34;https://aws.amazon.com/s3/&#34;&gt;S3 bucket&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;As part of completing the instructions, I then created a mail Receipt Rule for the address &lt;code&gt;hourstracker@api.example.com&lt;/code&gt; with an action that adds any received mail to a specific &lt;a href=&#34;https://aws.amazon.com/s3/&#34; target=&#34;_blank&#34;&gt;S3 bucket&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;At this point, the first part of the inventory is complete: We can receive emails sent to &lt;code&gt;hourstracker@api.example.com&lt;/code&gt;, and these are then stored in the &lt;code&gt;hourstracker&lt;/code&gt; S3 bucket, ready for further processing.&lt;/p&gt;
 
@@ -247,7 +247,7 @@ sleep infinity
 &lt;p&gt;Receiving and storing the mail brings us to the point where we can call our custom code to process it. This is where AWS Lambda comes in. In the next part of this series, we will write a simple function to get some information from the email, and will tell SES to call it when a new mail arrives.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/cimatti/4592329874/&#34;&gt;cimatti&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/cimatti/4592329874/&#34; target=&#34;_blank&#34;&gt;cimatti&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -267,7 +267,7 @@ sleep infinity
 
 &lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
 
-&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
+&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34; target=&#34;_blank&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34; target=&#34;_blank&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
 
 &lt;p&gt;Another pain point is concurrency: A modern application need to do several things concurrently. Raw multithreading with mutexes and semaphores is an old and rusty programming model, which in any case is not very suitable to Python with its GIL limitation. And Gevent is very nice, but not a standard part of the language and very hard to debug.&lt;/p&gt;
 
@@ -330,7 +330,7 @@ sleep infinity
 &lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34; target=&#34;_blank&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -363,7 +363,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;p&gt;So, what happens is that &lt;code&gt;subprocess&lt;/code&gt; thinks that the child process exited successfully, even though it did not.&lt;/p&gt;
 
-&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
+&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34; target=&#34;_blank&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
 
 &lt;p&gt;So, what is going on here? You may want to think it through and see if you can find the problem.&lt;/p&gt;
 
@@ -394,7 +394,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;p&gt;As seen in the code, if &lt;code&gt;os.waitpid&lt;/code&gt; on a child process fails with &lt;code&gt;ECHILD&lt;/code&gt;, an exception is not raised. The reason for this is that &lt;code&gt;ECHILD&lt;/code&gt; is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls &lt;code&gt;wait()&lt;/code&gt; on it. In the interim, the process is a so-called &amp;ldquo;zombie&amp;rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.&lt;/p&gt;
 
-&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34; target=&#34;_blank&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&amp;rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores &lt;code&gt;SIGCHLD&lt;/code&gt; since it isn&amp;rsquo;t interested in the exit code of its child processes, it makes sense for &lt;code&gt;waitpid()&lt;/code&gt; to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.&lt;/p&gt;
 
@@ -406,7 +406,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;h3 id=&#34;a-week-later&#34;&gt;A Week Later&lt;/h3&gt;
 
-&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
+&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34; target=&#34;_blank&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
 
 &lt;p&gt;We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored &lt;code&gt;SIGCHLD&lt;/code&gt;. To check if this was the case, we ran the following in the debugger:&lt;/p&gt;
 
@@ -435,7 +435,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;h3 id=&#34;question-everything&#34;&gt;Question Everything&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34; target=&#34;_blank&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34; target=&#34;_blank&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
 
 &lt;p&gt;The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this &lt;em&gt;could not happen&lt;/em&gt; since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.&lt;/p&gt;
 
@@ -444,7 +444,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 &lt;p&gt;As a lesson from this, aside from some debugging ideas, please remember: Don&amp;rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python &lt;code&gt;if __name__ == &#39;__main__&#39;&lt;/code&gt; construct.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34; target=&#34;_blank&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -553,7 +553,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 &lt;p&gt;Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&amp;rsquo;t assume that it will be OK &amp;ndash; because it will come back to bite you, or at least some future user of your code.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34; target=&#34;_blank&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -573,7 +573,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 
 &lt;h2 id=&#34;some-of-the-problems-with-rpc&#34;&gt;Some of the Problems with RPC&lt;/h2&gt;
 
-&lt;p&gt;Our existing codebase makes heavy use of &lt;a href=&#34;http://rpyc.sourceforge.net/&#34;&gt;RPyC&lt;/a&gt;, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.&lt;/p&gt;
+&lt;p&gt;Our existing codebase makes heavy use of &lt;a href=&#34;http://rpyc.sourceforge.net/&#34; target=&#34;_blank&#34;&gt;RPyC&lt;/a&gt;, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.&lt;/p&gt;
 
 &lt;p&gt;Using a variant of RPC sounds like a great solution. RPyC is also a very nice and seamless tool. Code that is running remotely looks just like code that is running locally. Which is the exact reason for why I &lt;em&gt;don&amp;rsquo;t&lt;/em&gt; like using it: I don&amp;rsquo;t want transparent RPC! I want it to be immediately clear which code runs locally and which code runs remotely. &amp;ldquo;Seamless&amp;rdquo; RPC encourages the writing of spaghetti code, because it&amp;rsquo;s so easy to mix local and remote code. This makes it deceptively easy to write distributed code without thinking about the design of the API and about which parts should reside on each side of the connection. Code can quickly become an intermix of RPC calls with local calls, causing it to be an opaque blob that is impossible to test or debug. In addition, its performance can quickly deteriorate: Objects are being serialized back and forth all the time, and tens of implicit network round-trips introduce latency all around the code.&lt;/p&gt;
 
@@ -581,7 +581,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 
 &lt;p&gt;So, yes, I don&amp;rsquo;t like RPC, especially not &lt;em&gt;stateful RPC&lt;/em&gt; that supports access of remote objects by reference. I can live with simple designs like XML-RPC, supporting value-based RPC with native data types, which are fairly easy to understand and debug: There are no remote objects, just data that is passing back and forth. But I dislike tools that try to hide everything under a shiny exterior, and try to act as if remote code were just the same as local code, and as if remote objects actually exist locally with magic proxies doing all the work behind the scenes.&lt;/p&gt;
 
-&lt;p&gt;The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&amp;rsquo;re at all interested in this debate, I heartily recommend reading some of the &lt;a href=&#34;http://steve.vinoski.net/blog/category/rpc/&#34;&gt;articles by Steve Vinoski&lt;/a&gt;, who is a leading expert on the matter and writes on it very eloquently. &lt;a href=&#34;http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf&#34;&gt;This presentation&lt;/a&gt; summarizes his viewpoint quite nicely, and I quite agree with many of his points.&lt;/p&gt;
+&lt;p&gt;The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&amp;rsquo;re at all interested in this debate, I heartily recommend reading some of the &lt;a href=&#34;http://steve.vinoski.net/blog/category/rpc/&#34; target=&#34;_blank&#34;&gt;articles by Steve Vinoski&lt;/a&gt;, who is a leading expert on the matter and writes on it very eloquently. &lt;a href=&#34;http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf&#34; target=&#34;_blank&#34;&gt;This presentation&lt;/a&gt; summarizes his viewpoint quite nicely, and I quite agree with many of his points.&lt;/p&gt;
 
 &lt;h3 id=&#34;what-now&#34;&gt;What Now?&lt;/h3&gt;
 
@@ -603,9 +603,9 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 
 &lt;p&gt;One of the recurring issues that I encounter as a software developer is that of having to decide where on the scale between YAGNI and NIH I want to be. You are probably wondering what the hell I am talking about  (unless you&amp;rsquo;re one of those people who are nodding your head now and smiling), so I&amp;rsquo;ll explain.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/YAGNI&#34;&gt;YAGNI&lt;/a&gt; stands for &amp;ldquo;You ain&amp;rsquo;t gonna need it&amp;rdquo;, and refers to a software development principle according to which you don&amp;rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/YAGNI&#34; target=&#34;_blank&#34;&gt;YAGNI&lt;/a&gt; stands for &amp;ldquo;You ain&amp;rsquo;t gonna need it&amp;rdquo;, and refers to a software development principle according to which you don&amp;rsquo;t want to start writing a huge bunch of code up front until you know exactly what you are going to need. Since software requirements change all the time, and one of the common maladies of many code bases is superfluous complexity due to over-engineering and over-abstraction, it makes a lot of sense to implement only what you know you are going to need right now, and leave the rest for later.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Not_invented_here&#34;&gt;NIH&lt;/a&gt; stands for &amp;ldquo;Not Invented Here&amp;rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &amp;ldquo;Hey, I can do this myself, so why should I use this existing project&amp;rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Not_invented_here&#34; target=&#34;_blank&#34;&gt;NIH&lt;/a&gt; stands for &amp;ldquo;Not Invented Here&amp;rdquo;, and refers to a reluctance among some software developers to base their work on code written by someone else: &amp;ldquo;Hey, I can do this myself, so why should I use this existing project&amp;rdquo;? This leads people to reinvent the wheel time and again, creating a proliferation of half-baked solutions to problems that have been solved fairly well at other times and places. In addition to the waste of resources in the creating the solution in the first place, it also creates yet another maintainability headache.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-conundrum&#34;&gt;The Conundrum&lt;/h2&gt;
 
@@ -650,13 +650,13 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
       <description>
 
 &lt;p&gt;At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
-scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
+scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt; of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique &lt;a href=&#34;http://en.wikipedia.org/wiki/World_Wide_Port_Name&#34; target=&#34;_blank&#34;&gt;World-Wide Port Name (WWPN)&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
+&lt;p&gt;The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use &lt;a href=&#34;http://en.wikipedia.org/wiki/NPIV&#34; target=&#34;_blank&#34;&gt;N_Port ID Virtualization&lt;/a&gt;, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-problem&#34;&gt;The Problem&lt;/h2&gt;
 
-&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
+&lt;p&gt;WWPNs can&amp;rsquo;t just be pulled out of thin air. They are allocated &amp;ndash; in chunks &amp;ndash; by a central authority, the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/&#34; target=&#34;_blank&#34;&gt;IEEE Registration Authority&lt;/a&gt;. Just making up random WWPNs could cause trouble for two reasons:&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&amp;rsquo;t be using the same WWPN and thereby confuse the fabric.&lt;/li&gt;
@@ -669,7 +669,7 @@ scalability of a storage product, we needed to create a &lt;em&gt;lot&lt;/em&gt;
 
 &lt;h2 id=&#34;some-background&#34;&gt;Some Background&lt;/h2&gt;
 
-&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
+&lt;p&gt;We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&amp;rsquo;ll refer to the IEEE&amp;rsquo;s &lt;a href=&#34;http://standards.ieee.org/develop/regauth/tut/fibre.pdf&#34; target=&#34;_blank&#34;&gt;Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)&lt;/a&gt;, and cheat a bit.&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s assume that we have an FC HBA with a WWPN of &lt;code&gt;10:00:00:00:c9:93:53:6d&lt;/code&gt;.
 We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
@@ -690,7 +690,7 @@ We&amp;rsquo;ll decode it according to the IEEE Guidelines:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;10:00&lt;/code&gt; prefix means that it uses the original WWN format (a.k.a. &amp;ldquo;NAA IEEE 48-bit address format&amp;rdquo;), as opposed to newer formats that starting with another sequence&lt;/li&gt;
 &lt;li&gt;The vendor is &lt;code&gt;00:00:c9&lt;/code&gt;, which is an OUI belonging to Emulex Corporation
-(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
+(according to the &lt;a href=&#34;http://standards.ieee.org/develop/regauth/oui/oui.txt&#34; target=&#34;_blank&#34;&gt;OUI list&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;The vendor-specific part is &lt;code&gt;93:53:6d&lt;/code&gt;, which is 24 bits long&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -957,11 +957,11 @@ techniques can be used to make the code clearer to read and maintain.&lt;/p&gt;
 
 &lt;h2 id=&#34;more-information&#34;&gt;More Information&lt;/h2&gt;
 
-&lt;p&gt;&lt;span class=&#34;fa fa-linkedin&#34;&gt;&lt;/span&gt; Read Gavrie&amp;rsquo;s &lt;a href=&#34;https://www.linkedin.com/in/gavrie&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;fa fa-linkedin&#34;&gt;&lt;/span&gt; Read Gavrie&amp;rsquo;s &lt;a href=&#34;https://www.linkedin.com/in/gavrie&#34; target=&#34;_blank&#34;&gt;LinkedIn Profile&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;span class=&#34;fa fa-twitter&#34;&gt;&lt;/span&gt; Follow &lt;a href=&#34;https://twitter.com/gavrieph&#34;&gt;@gavrieph&lt;/a&gt; on Twitter&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;fa fa-twitter&#34;&gt;&lt;/span&gt; Follow &lt;a href=&#34;https://twitter.com/gavrieph&#34; target=&#34;_blank&#34;&gt;@gavrieph&lt;/a&gt; on Twitter&lt;/p&gt;
 
-&lt;p&gt;&lt;span class=&#34;fa fa-github&#34;&gt;&lt;/span&gt; Check out &lt;a href=&#34;https://github.com/gavrie&#34;&gt;gavrie&lt;/a&gt;&amp;rsquo;s code on GitHub&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;fa fa-github&#34;&gt;&lt;/span&gt; Check out &lt;a href=&#34;https://github.com/gavrie&#34; target=&#34;_blank&#34;&gt;gavrie&lt;/a&gt;&amp;rsquo;s code on GitHub&lt;/p&gt;
 
 &lt;p&gt;
 &lt;br&gt;
@@ -979,9 +979,9 @@ techniques can be used to make the code clearer to read and maintain.&lt;/p&gt;
 
 &lt;h1 id=&#34;contact-information&#34;&gt;Contact Information&lt;/h1&gt;
 
-&lt;p&gt;Please feel free to contact us regarding consulting or training services:&lt;/p&gt;
+&lt;p&gt;Please feel free to contact us regarding consulting or training services. You can send email directly, or use the below form.&lt;/p&gt;
 
-&lt;p&gt;&lt;span class=&#34;fa fa-envelope&#34;&gt;&lt;/span&gt; &lt;a href=&#34;mailto:info@philipson.co.il&#34;&gt;info@philipson.co.il&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;fa fa-envelope&#34;&gt;&lt;/span&gt; &lt;a href=&#34;mailto:info@philipson.co.il&#34; target=&#34;_blank&#34;&gt;info@philipson.co.il&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

@@ -154,13 +154,13 @@
                           
 
 <p>At work, I encountered an interesting problem: While testing the Fibre Channel (FC)
-scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name">World-Wide Port Name (WWPN)</a>.</p>
+scalability of a storage product, we needed to create a <em>lot</em> of FC connections between hosts and the storage system. This would in turn require a large number of FC Initiators, each of which having a unique <a href="http://en.wikipedia.org/wiki/World_Wide_Port_Name" target="_blank">World-Wide Port Name (WWPN)</a>.</p>
 
-<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
+<p>The easiest and cheapest method to set up a lot of initiators without actually purchasing zillions of FC HBAs would be to use <a href="http://en.wikipedia.org/wiki/NPIV" target="_blank">N_Port ID Virtualization</a>, a.k.a. NPIV. This method allows a single FC HBA to present itself to the FC fabric with multiple WWPNs. This, in turn, allows the creation of many connections to the target storage device from a small number of hosts.</p>
 
 <h2 id="the-problem">The Problem</h2>
 
-<p>WWPNs can&rsquo;t just be pulled out of thin air. They are allocated &ndash; in chunks &ndash; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
+<p>WWPNs can&rsquo;t just be pulled out of thin air. They are allocated &ndash; in chunks &ndash; by a central authority, the <a href="http://standards.ieee.org/develop/regauth/" target="_blank">IEEE Registration Authority</a>. Just making up random WWPNs could cause trouble for two reasons:</p>
 
 <ol>
 <li>The WWPN must be unique on the fabric, which means it must be generated in a deterministic way so that two hosts won&rsquo;t be using the same WWPN and thereby confuse the fabric.</li>
@@ -173,7 +173,7 @@ scalability of a storage product, we needed to create a <em>lot</em> of FC conne
 
 <h2 id="some-background">Some Background</h2>
 
-<p>We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&rsquo;ll refer to the IEEE&rsquo;s <a href="http://standards.ieee.org/develop/regauth/tut/fibre.pdf">Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)</a>, and cheat a bit.</p>
+<p>We now require a kind of a compromise which takes care of the above two issues without causing too much bureaucratic pain. To reach such a solution, we&rsquo;ll refer to the IEEE&rsquo;s <a href="http://standards.ieee.org/develop/regauth/tut/fibre.pdf" target="_blank">Guidelines for Fibre Channel Use of the Organizationally Unique Identifier (OUI)</a>, and cheat a bit.</p>
 
 <p>Let&rsquo;s assume that we have an FC HBA with a WWPN of <code>10:00:00:00:c9:93:53:6d</code>.
 We&rsquo;ll decode it according to the IEEE Guidelines:</p>
@@ -194,7 +194,7 @@ We&rsquo;ll decode it according to the IEEE Guidelines:</p>
 <ul>
 <li>The <code>10:00</code> prefix means that it uses the original WWN format (a.k.a. &ldquo;NAA IEEE 48-bit address format&rdquo;), as opposed to newer formats that starting with another sequence</li>
 <li>The vendor is <code>00:00:c9</code>, which is an OUI belonging to Emulex Corporation
-(according to the <a href="http://standards.ieee.org/develop/regauth/oui/oui.txt">OUI list</a>)</li>
+(according to the <a href="http://standards.ieee.org/develop/regauth/oui/oui.txt" target="_blank">OUI list</a>)</li>
 <li>The vendor-specific part is <code>93:53:6d</code>, which is 24 bits long</li>
 </ul>
 

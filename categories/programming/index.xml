@@ -17,7 +17,7 @@
       <guid>http://philipson.co.il/post/mail-to-lambda/</guid>
       <description>
 
-&lt;p&gt;For a while now, I&amp;rsquo;ve been interested in experimenting with the new &lt;a href=&#34;http://martinfowler.com/articles/serverless.html&#34;&gt;Serverless&lt;/a&gt; fad and see what it is all about. The idea is that you don&amp;rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function.&lt;/p&gt;
+&lt;p&gt;For a while now, I&amp;rsquo;ve been interested in experimenting with the new &lt;a href=&#34;http://martinfowler.com/articles/serverless.html&#34; target=&#34;_blank&#34;&gt;Serverless&lt;/a&gt; fad and see what it is all about. The idea is that you don&amp;rsquo;t need to care any more about installing a real or virtual server, or even about creating a container image. Instead, you just write some code and deploy it somewhere in the cloud as a function.&lt;/p&gt;
 
 &lt;p&gt;The hype is all about being able to scale your code without pain and being able to upgrade it easily, but of course this technology also makes it very easy to experiment without having to worry about the deployment method &lt;em&gt;du jour&lt;/em&gt; &amp;ndash; do I need to create a VM? A container? A pod? Nope, just a function.&lt;/p&gt;
 
@@ -27,13 +27,13 @@
 
 &lt;h2 id=&#34;going-serverless&#34;&gt;Going Serverless&lt;/h2&gt;
 
-&lt;p&gt;The leading Serverless offerings include &lt;a href=&#34;https://aws.amazon.com/lambda/&#34;&gt;AWS Lambda&lt;/a&gt; and &lt;a href=&#34;https://cloud.google.com/functions/&#34;&gt;Google Cloud Functions&lt;/a&gt;. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is &lt;a href=&#34;https://azure.microsoft.com/en-us/services/functions/&#34;&gt;Azure Functions&lt;/a&gt;, but I haven&amp;rsquo;t yet had a chance to work with Azure and didn&amp;rsquo;t want to get sidetracked too much.&lt;/p&gt;
+&lt;p&gt;The leading Serverless offerings include &lt;a href=&#34;https://aws.amazon.com/lambda/&#34; target=&#34;_blank&#34;&gt;AWS Lambda&lt;/a&gt; and &lt;a href=&#34;https://cloud.google.com/functions/&#34; target=&#34;_blank&#34;&gt;Google Cloud Functions&lt;/a&gt;. Initially I preferred to play with the newer Cloud Functions, but it is still in alpha and requires asking for access, which I did but have not yet received at the time of this writing. Another option is &lt;a href=&#34;https://azure.microsoft.com/en-us/services/functions/&#34; target=&#34;_blank&#34;&gt;Azure Functions&lt;/a&gt;, but I haven&amp;rsquo;t yet had a chance to work with Azure and didn&amp;rsquo;t want to get sidetracked too much.&lt;/p&gt;
 
 &lt;p&gt;So, AWS Lambda it is.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-project&#34;&gt;The Project&lt;/h2&gt;
 
-&lt;p&gt;I&amp;rsquo;ve been using the very nice &lt;a href=&#34;http://www.hourstrackerapp.com/&#34;&gt;HoursTracker app&lt;/a&gt; for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&amp;rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using &lt;a href=&#34;https://www.google.com/sheets/about/&#34;&gt;Google Docs&lt;/a&gt; before sharing them with the client.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ve been using the very nice &lt;a href=&#34;http://www.hourstrackerapp.com/&#34; target=&#34;_blank&#34;&gt;HoursTracker app&lt;/a&gt; for quite a while now to manage my work hours. It allows me to easily track the amount of hours worked for several clients. When the time comes to report hours, I use the app&amp;rsquo;s export function to email myself a CSV file and then I do some manipulations on the data using &lt;a href=&#34;https://www.google.com/sheets/about/&#34; target=&#34;_blank&#34;&gt;Google Docs&lt;/a&gt; before sharing them with the client.&lt;/p&gt;
 
 &lt;p&gt;For a while now, I&amp;rsquo;ve wanted to automate these manipulations since they tend to become a bit tedious. Being one of those things you do once a month and take only ten minutes or so, it never became just important enough to me to actually go and automate. It was therefore a perfect candidate for playing with some new technology and possibly getting a usable result as a bonus.&lt;/p&gt;
 
@@ -51,11 +51,11 @@
 
 &lt;h3 id=&#34;receiving-email&#34;&gt;Receiving Email&lt;/h3&gt;
 
-&lt;p&gt;To receive emails in a way that would work with AWS Lambda, I used Amazon &lt;a href=&#34;https://aws.amazon.com/ses/&#34;&gt;Simple Email Service (SES)&lt;/a&gt;. Amazon provide clear &lt;a href=&#34;http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html&#34;&gt;instructions&lt;/a&gt; for setting it up, and I encountered no issues when following them.&lt;/p&gt;
+&lt;p&gt;To receive emails in a way that would work with AWS Lambda, I used Amazon &lt;a href=&#34;https://aws.amazon.com/ses/&#34; target=&#34;_blank&#34;&gt;Simple Email Service (SES)&lt;/a&gt;. Amazon provide clear &lt;a href=&#34;http://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email.html&#34; target=&#34;_blank&#34;&gt;instructions&lt;/a&gt; for setting it up, and I encountered no issues when following them.&lt;/p&gt;
 
-&lt;p&gt;If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. &lt;code&gt;api.example.com&lt;/code&gt;) to Amazon&amp;rsquo;s &lt;a href=&#34;https://aws.amazon.com/route53/&#34;&gt;Route53&lt;/a&gt; DNS service, and &lt;a href=&#34;https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html&#34;&gt;added an &lt;code&gt;MX&lt;/code&gt; record&lt;/a&gt; for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.&lt;/p&gt;
+&lt;p&gt;If you want to do the same thing, note that it requires having a custom domain for which you can modify DNS records. I chose to delegate a specific subdomain of my domain (e.g. &lt;code&gt;api.example.com&lt;/code&gt;) to Amazon&amp;rsquo;s &lt;a href=&#34;https://aws.amazon.com/route53/&#34; target=&#34;_blank&#34;&gt;Route53&lt;/a&gt; DNS service, and &lt;a href=&#34;https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-mx-record.html&#34; target=&#34;_blank&#34;&gt;added an &lt;code&gt;MX&lt;/code&gt; record&lt;/a&gt; for that subdomain so that mails sent to it would be handled by SES. All this is explained in the documentation mentioned above.&lt;/p&gt;
 
-&lt;p&gt;As part of completing the instructions, I then created a mail Receipt Rule for the address &lt;code&gt;hourstracker@api.example.com&lt;/code&gt; with an action that adds any received mail to a specific &lt;a href=&#34;https://aws.amazon.com/s3/&#34;&gt;S3 bucket&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;As part of completing the instructions, I then created a mail Receipt Rule for the address &lt;code&gt;hourstracker@api.example.com&lt;/code&gt; with an action that adds any received mail to a specific &lt;a href=&#34;https://aws.amazon.com/s3/&#34; target=&#34;_blank&#34;&gt;S3 bucket&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;At this point, the first part of the inventory is complete: We can receive emails sent to &lt;code&gt;hourstracker@api.example.com&lt;/code&gt;, and these are then stored in the &lt;code&gt;hourstracker&lt;/code&gt; S3 bucket, ready for further processing.&lt;/p&gt;
 
@@ -64,7 +64,7 @@
 &lt;p&gt;Receiving and storing the mail brings us to the point where we can call our custom code to process it. This is where AWS Lambda comes in. In the next part of this series, we will write a simple function to get some information from the email, and will tell SES to call it when a new mail arrives.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/cimatti/4592329874/&#34;&gt;cimatti&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/cimatti/4592329874/&#34; target=&#34;_blank&#34;&gt;cimatti&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -84,7 +84,7 @@
 
 &lt;p&gt;At my current job I started work on developing an automated testing system from scratch. One of the first questions that came up was which programming language to use. I was quite certain that Python would no longer cut it, being simply too painful to develop large applications in. It took me a while to admit this to myself, having long been a staunch supporter of dynamic languages and having taught a long series of Python courses in which I defended the Python approach to Java and C++ programmers. But once I ceded this point, I went back looking for a statically typed language.&lt;/p&gt;
 
-&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
+&lt;p&gt;Dynamic typing is wonderful and great, but in a large application the codebase simply becomes too complicated to understand and navigate. Python has a lot of &amp;ldquo;magic&amp;rdquo; features behind its deceptively simple façade, and it becomes tempting to do a lot of metaprogramming. One constant point of frustration was the large gap between the textual representation of the code and the runtime memory model: There is no direct mapping. It&amp;rsquo;s simply impossible to tell your editor to &amp;ldquo;go to definition&amp;rdquo; of a function or method and be sure that it reaches the correct target. Note that recent developments, such as &lt;a href=&#34;https://www.python.org/dev/peps/pep-0484/&#34; target=&#34;_blank&#34;&gt;PEP 484 &amp;ndash; Type Hints&lt;/a&gt; and &lt;a href=&#34;http://mypy-lang.org/&#34; target=&#34;_blank&#34;&gt;mypy&lt;/a&gt;, may change this in the future if they catch on.&lt;/p&gt;
 
 &lt;p&gt;Another pain point is concurrency: A modern application need to do several things concurrently. Raw multithreading with mutexes and semaphores is an old and rusty programming model, which in any case is not very suitable to Python with its GIL limitation. And Gevent is very nice, but not a standard part of the language and very hard to debug.&lt;/p&gt;
 
@@ -147,7 +147,7 @@
 &lt;p&gt;Yes, everyone says it so I will too: Go doesn&amp;rsquo;t support generics for custom data types. While its built-in maps and slices are generic, you can&amp;rsquo;t write your own &lt;code&gt;set&lt;/code&gt; type and have it support sets of &lt;code&gt;int&lt;/code&gt; or of &lt;code&gt;string&lt;/code&gt; without duplicating code. In practice this has not been a great concern for me so far, apart from having to occasionally supply multiple versions of &lt;code&gt;Max&lt;/code&gt; or &lt;code&gt;Shuffle&lt;/code&gt; functions with identical logic for different types. There are several approaches for generics support that make use of interfaces or of code generation, and one of those may become an accepted norm. Even if not, the current situation is quite bearable.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/crapeye/14134681339/&#34; target=&#34;_blank&#34;&gt;crapeye&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -180,7 +180,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;p&gt;So, what happens is that &lt;code&gt;subprocess&lt;/code&gt; thinks that the child process exited successfully, even though it did not.&lt;/p&gt;
 
-&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
+&lt;p&gt;This behavior, of course, wreaks total havoc with the application. Instead of an exception being thrown due to the failed child process, the application goes on and fails at a later point when it tries to do something based on the data received from the child process. This goes against the good design principle of &lt;a href=&#34;http://en.wikipedia.org/wiki/Fail-fast&#34; target=&#34;_blank&#34;&gt;failing early&lt;/a&gt;, as embodied by the way Python uses exceptions instead of error codes.&lt;/p&gt;
 
 &lt;p&gt;So, what is going on here? You may want to think it through and see if you can find the problem.&lt;/p&gt;
 
@@ -211,7 +211,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;p&gt;As seen in the code, if &lt;code&gt;os.waitpid&lt;/code&gt; on a child process fails with &lt;code&gt;ECHILD&lt;/code&gt;, an exception is not raised. The reason for this is that &lt;code&gt;ECHILD&lt;/code&gt; is returned in cases where there is no child process to be waited for. Normally, when a process terminates, the kernel keeps information such as its exit code until the parent calls &lt;code&gt;wait()&lt;/code&gt; on it. In the interim, the process is a so-called &amp;ldquo;zombie&amp;rdquo;. If there is no child process (even not a zombie), we cannot know if it succeeded or failed.&lt;/p&gt;
 
-&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The above piece of code went into Python&amp;rsquo;s &lt;code&gt;subprocess&lt;/code&gt; module as part of a fix for another problem, as documented in &lt;a href=&#34;http://bugs.python.org/issue1731717&#34; target=&#34;_blank&#34;&gt;this Python bug report&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Python chooses to assume that the child process exited successfully. Is this a correct assumption? Well, it&amp;rsquo;s as good as any other. In the legitimate use case, namely when a process explicitly ignores &lt;code&gt;SIGCHLD&lt;/code&gt; since it isn&amp;rsquo;t interested in the exit code of its child processes, it makes sense for &lt;code&gt;waitpid()&lt;/code&gt; to always complete successfully. Of course this can be argued against, but it is not a senseless assumption.&lt;/p&gt;
 
@@ -223,7 +223,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;h3 id=&#34;a-week-later&#34;&gt;A Week Later&lt;/h3&gt;
 
-&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
+&lt;p&gt;Of course, a week later it happened again. Fortunately, this time it was caught as it happened and we could look at the live process in the debugger. My colleague &lt;a href=&#34;https://plus.google.com/107274679081446769903/&#34; target=&#34;_blank&#34;&gt;Erez Horev&lt;/a&gt; called me over and we started looking at it together.&lt;/p&gt;
 
 &lt;p&gt;We easily reproduced the issue in the debugger. After a lot of dead ends, we concluded that the only logical way of this happening was indeed if the application ignored &lt;code&gt;SIGCHLD&lt;/code&gt;. To check if this was the case, we ran the following in the debugger:&lt;/p&gt;
 
@@ -252,7 +252,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 
 &lt;h3 id=&#34;question-everything&#34;&gt;Question Everything&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.bignerdranch.com/about-us/nerds/mark-dalrymple.html&#34; target=&#34;_blank&#34;&gt;Mark Dalrymple&lt;/a&gt;, in his &lt;a href=&#34;http://www.bignerdranch.com/blog/thoughts-on-debugging-part-1/&#34; target=&#34;_blank&#34;&gt;Thoughts on Debugging, Part 1&lt;/a&gt;, talks about the hierarchy of potential blame when debugging. In short, new code is the first suspect, after which come old code, library code etc. The point here is that the chance of there being a bug in Python is much smaller than that of there being a bug in your own code. Not only that, but the chance of the bug being in new code is the highest.&lt;/p&gt;
 
 &lt;p&gt;The idea of there being a bug in Python or an OS issue might have been valid, but it was not likely. The assumption that this &lt;em&gt;could not happen&lt;/em&gt; since the relevant code does not run turned out to be false. The bug was indeed in our code, and in new code at that.&lt;/p&gt;
 
@@ -261,7 +261,7 @@ subprocess&lt;span style=&#34;color: #666666&#34;&gt;.&lt;/span&gt;CalledProcess
 &lt;p&gt;As a lesson from this, aside from some debugging ideas, please remember: Don&amp;rsquo;t run any code that may have side effects at the module top level! Somehow, some day, your module will be imported by other code that may be hurt by this side effect. Put all code in functions, or use the Python &lt;code&gt;if __name__ == &#39;__main__&#39;&lt;/code&gt; construct.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/searleb/3122477836/&#34; target=&#34;_blank&#34;&gt;searleb&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -370,7 +370,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 &lt;p&gt;Buffers, filesystems, databases will all fill up sometime in the future. Always take this into account when writing code. Any time you generate some data, be sure to set up a process to prune the data and don&amp;rsquo;t assume that it will be OK &amp;ndash; because it will come back to bite you, or at least some future user of your code.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
-&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
+&lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/photofarmer/14117597485&#34; target=&#34;_blank&#34;&gt;photofarmer&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -390,7 +390,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 
 &lt;h2 id=&#34;some-of-the-problems-with-rpc&#34;&gt;Some of the Problems with RPC&lt;/h2&gt;
 
-&lt;p&gt;Our existing codebase makes heavy use of &lt;a href=&#34;http://rpyc.sourceforge.net/&#34;&gt;RPyC&lt;/a&gt;, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.&lt;/p&gt;
+&lt;p&gt;Our existing codebase makes heavy use of &lt;a href=&#34;http://rpyc.sourceforge.net/&#34; target=&#34;_blank&#34;&gt;RPyC&lt;/a&gt;, a native Python RPC implementation, for remote execution of arbitrary Python code on remote machines.&lt;/p&gt;
 
 &lt;p&gt;Using a variant of RPC sounds like a great solution. RPyC is also a very nice and seamless tool. Code that is running remotely looks just like code that is running locally. Which is the exact reason for why I &lt;em&gt;don&amp;rsquo;t&lt;/em&gt; like using it: I don&amp;rsquo;t want transparent RPC! I want it to be immediately clear which code runs locally and which code runs remotely. &amp;ldquo;Seamless&amp;rdquo; RPC encourages the writing of spaghetti code, because it&amp;rsquo;s so easy to mix local and remote code. This makes it deceptively easy to write distributed code without thinking about the design of the API and about which parts should reside on each side of the connection. Code can quickly become an intermix of RPC calls with local calls, causing it to be an opaque blob that is impossible to test or debug. In addition, its performance can quickly deteriorate: Objects are being serialized back and forth all the time, and tens of implicit network round-trips introduce latency all around the code.&lt;/p&gt;
 
@@ -398,7 +398,7 @@ retval, out, err &lt;span style=&#34;color: #666666&#34;&gt;=&lt;/span&gt; execu
 
 &lt;p&gt;So, yes, I don&amp;rsquo;t like RPC, especially not &lt;em&gt;stateful RPC&lt;/em&gt; that supports access of remote objects by reference. I can live with simple designs like XML-RPC, supporting value-based RPC with native data types, which are fairly easy to understand and debug: There are no remote objects, just data that is passing back and forth. But I dislike tools that try to hide everything under a shiny exterior, and try to act as if remote code were just the same as local code, and as if remote objects actually exist locally with magic proxies doing all the work behind the scenes.&lt;/p&gt;
 
-&lt;p&gt;The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&amp;rsquo;re at all interested in this debate, I heartily recommend reading some of the &lt;a href=&#34;http://steve.vinoski.net/blog/category/rpc/&#34;&gt;articles by Steve Vinoski&lt;/a&gt;, who is a leading expert on the matter and writes on it very eloquently. &lt;a href=&#34;http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf&#34;&gt;This presentation&lt;/a&gt; summarizes his viewpoint quite nicely, and I quite agree with many of his points.&lt;/p&gt;
+&lt;p&gt;The above is just one of the issues in the long-standing debate regarding RPC vs. Messaging. If you&amp;rsquo;re at all interested in this debate, I heartily recommend reading some of the &lt;a href=&#34;http://steve.vinoski.net/blog/category/rpc/&#34; target=&#34;_blank&#34;&gt;articles by Steve Vinoski&lt;/a&gt;, who is a leading expert on the matter and writes on it very eloquently. &lt;a href=&#34;http://qconlondon.com/dl/qcon-london-2009/slides/SteveVinoski_RPCAndItsOffspringConvenientYetFundamentallyFlawed.pdf&#34; target=&#34;_blank&#34;&gt;This presentation&lt;/a&gt; summarizes his viewpoint quite nicely, and I quite agree with many of his points.&lt;/p&gt;
 
 &lt;h3 id=&#34;what-now&#34;&gt;What Now?&lt;/h3&gt;
 
