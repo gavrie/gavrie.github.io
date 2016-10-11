@@ -99,10 +99,13 @@
 
 &lt;h2 id=&#34;completing-the-installation-automatically&#34;&gt;Completing the Installation Automatically&lt;/h2&gt;
 
-&lt;p&gt;According to &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34; target=&#34;_blank&#34;&gt;the instructions&lt;/a&gt;, to complete the installation, we now need to:
-- Create the TestRail database
-- Run its Installation Wizard
-- Configure a background task to run&lt;/p&gt;
+&lt;p&gt;According to &lt;a href=&#34;http://docs.gurock.com/testrail-admin/installation-unix&#34; target=&#34;_blank&#34;&gt;the instructions&lt;/a&gt;, to complete the installation, we now need to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create the TestRail database&lt;/li&gt;
+&lt;li&gt;Run its Installation Wizard&lt;/li&gt;
+&lt;li&gt;Configure a background task to run&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;The Web-based Installation wizard asks several questions, and as a result it creates a &lt;code&gt;config.php&lt;/code&gt; file. It would be great to avoid running it, and instead provide the answers directly. To achieve this, I ran the wizard once, and then saved the &lt;code&gt;config.php&lt;/code&gt; file. I then dumped the database contents using &lt;code&gt;mysqldump testrail &amp;gt; testrail.sql&lt;/code&gt;, so we can skip the wizard entirely. Instead, we copy the &lt;code&gt;config.php&lt;/code&gt; file to its location and recreate the database from the dumped data.&lt;/p&gt;
 
@@ -185,7 +188,7 @@ sleep infinity
 
 &lt;p&gt;We described how we created a fully automated process for installing and configuring a legacy LAMP application. Such a process makes it easy to create and destroy staging servers as needed without relying on any pre-existing state.&lt;/p&gt;
 
-&lt;p&gt;If you want to recreate the Docker image, or create your own variant, feel free to get the above code from &lt;a href=&#34;https://github.com/gavrie/testrail&#34; target=&#34;_blank&#34;&gt;its GitHub repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you want to recreate the Docker image, or create your own variant, feel free to get the above code from &lt;a href=&#34;https://github.com/gavrie/testrail-docker&#34; target=&#34;_blank&#34;&gt;its GitHub repository&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;sub&gt;Banner image by &lt;a href=&#34;https://www.flickr.com/photos/ballance/5203638978/&#34; target=&#34;_blank&#34;&gt;ballance&lt;/a&gt;&lt;/sub&gt;&lt;/p&gt;

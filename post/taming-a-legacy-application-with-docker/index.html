@@ -235,10 +235,13 @@
 
 <h2 id="completing-the-installation-automatically">Completing the Installation Automatically</h2>
 
-<p>According to <a href="http://docs.gurock.com/testrail-admin/installation-unix" target="_blank">the instructions</a>, to complete the installation, we now need to:
-- Create the TestRail database
-- Run its Installation Wizard
-- Configure a background task to run</p>
+<p>According to <a href="http://docs.gurock.com/testrail-admin/installation-unix" target="_blank">the instructions</a>, to complete the installation, we now need to:</p>
+
+<ul>
+<li>Create the TestRail database</li>
+<li>Run its Installation Wizard</li>
+<li>Configure a background task to run</li>
+</ul>
 
 <p>The Web-based Installation wizard asks several questions, and as a result it creates a <code>config.php</code> file. It would be great to avoid running it, and instead provide the answers directly. To achieve this, I ran the wizard once, and then saved the <code>config.php</code> file. I then dumped the database contents using <code>mysqldump testrail &gt; testrail.sql</code>, so we can skip the wizard entirely. Instead, we copy the <code>config.php</code> file to its location and recreate the database from the dumped data.</p>
 
@@ -321,7 +324,7 @@ sleep infinity
 
 <p>We described how we created a fully automated process for installing and configuring a legacy LAMP application. Such a process makes it easy to create and destroy staging servers as needed without relying on any pre-existing state.</p>
 
-<p>If you want to recreate the Docker image, or create your own variant, feel free to get the above code from <a href="https://github.com/gavrie/testrail" target="_blank">its GitHub repository</a>.</p>
+<p>If you want to recreate the Docker image, or create your own variant, feel free to get the above code from <a href="https://github.com/gavrie/testrail-docker" target="_blank">its GitHub repository</a>.</p>
 
 <p><p><br></p>
 <sub>Banner image by <a href="https://www.flickr.com/photos/ballance/5203638978/" target="_blank">ballance</a></sub></p>
